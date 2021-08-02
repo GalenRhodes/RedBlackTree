@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1117D2B331AAF0D32EFB3E91 /* RedBlackTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1117DBA745B8C2775043A93D /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D688E480CED23EF13A96 /* RedBlackTreeTests.swift */; };
+		1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */; };
+		1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DE08CD02AE5A97584FC1 /* TreeNode.swift */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,13 +26,14 @@
 /* Begin PBXFileReference section */
 		1117D2592B5FEFEC531E44E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1117D688E480CED23EF13A96 /* RedBlackTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeTests.swift; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
 		1117DB0005FABC039DC8381F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
+		1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeTests.swift; sourceTree = "<group>"; };
 		1117DCB844F8D230DC871047 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		1117DCC4B505E10107FDCA70 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117DD1A7411CA7754BAECE7 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1117DDDDD8D4C2B552CB7431 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
+		1117DE08CD02AE5A97584FC1 /* TreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
 		1117DF611A3BE5130735AAF8 /* .jazzy.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .jazzy.yaml; sourceTree = "<group>"; };
 		83D5452F26B47C3D00B136FC /* RedBlackTree.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RedBlackTree.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83D5453826B47C3D00B136FC /* RedBlackTreeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedBlackTreeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,7 +83,6 @@
 			isa = PBXGroup;
 			children = (
 				1117D2592B5FEFEC531E44E6 /* Info.plist */,
-				1117D688E480CED23EF13A96 /* RedBlackTreeTests.swift */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -109,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				1117D13A35E13BDFB2F826D1 /* Other */,
+				1117DE08CD02AE5A97584FC1 /* TreeNode.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				1117DABE3EF5500CB553A04B /* Other */,
+				1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */,
 			);
 			path = RedBlackTreeTests;
 			sourceTree = "<group>";
@@ -246,6 +249,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,7 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1117DBA745B8C2775043A93D /* RedBlackTreeTests.swift in Sources */,
+				1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
