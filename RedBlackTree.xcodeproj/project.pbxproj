@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,11 +11,20 @@
 		1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */; };
 		1117D3177A4F8D7057637012 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9D907EAA3B3EABFDA0D /* Dictionary.swift */; };
 		1117D60E41081134F769CE9E /* TreeDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D4619229FBE49822744B /* TreeDictionary.swift */; };
+		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DE08CD02AE5A97584FC1 /* TreeNode.swift */; };
+		832D774726B987610005063D /* PGDocFixer in Frameworks */ = {isa = PBXBuildFile; productRef = 832D774626B987610005063D /* PGDocFixer */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		832D774826B988740005063D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83D5452626B47C3D00B136FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83D5452E26B47C3D00B136FC;
+			remoteInfo = RedBlackTree;
+		};
 		83D5453A26B47C3D00B136FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83D5452626B47C3D00B136FC /* Project object */;
@@ -25,12 +34,25 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		832D773B26B986EB0005063D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		1117D2592B5FEFEC531E44E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117D4619229FBE49822744B /* TreeDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeDictionary.swift; sourceTree = "<group>"; };
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
 		1117D9D907EAA3B3EABFDA0D /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
+		1117DA48540485F84963B2F1 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1117DB0005FABC039DC8381F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
 		1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeTests.swift; sourceTree = "<group>"; };
 		1117DCB844F8D230DC871047 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -39,11 +61,21 @@
 		1117DDDDD8D4C2B552CB7431 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
 		1117DE08CD02AE5A97584FC1 /* TreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
 		1117DF611A3BE5130735AAF8 /* .jazzy.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .jazzy.yaml; sourceTree = "<group>"; };
+		832D773D26B986EB0005063D /* DocFixer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DocFixer; sourceTree = BUILT_PRODUCTS_DIR; };
+		832D774426B987030005063D /* DocFixer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DocFixer.entitlements; sourceTree = "<group>"; };
 		83D5452F26B47C3D00B136FC /* RedBlackTree.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RedBlackTree.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83D5453826B47C3D00B136FC /* RedBlackTreeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedBlackTreeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		832D773A26B986EB0005063D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				832D774726B987610005063D /* PGDocFixer in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		83D5452C26B47C3D00B136FC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,6 +123,15 @@
 			name = Other;
 			sourceTree = "<group>";
 		};
+		832D773E26B986EB0005063D /* DocFixer */ = {
+			isa = PBXGroup;
+			children = (
+				832D774426B987030005063D /* DocFixer.entitlements */,
+				1117DA48540485F84963B2F1 /* main.swift */,
+			);
+			path = DocFixer;
+			sourceTree = "<group>";
+		};
 		83D5452526B47C3D00B136FC = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +147,7 @@
 			children = (
 				83D5452F26B47C3D00B136FC /* RedBlackTree.framework */,
 				83D5453826B47C3D00B136FC /* RedBlackTreeTests.xctest */,
+				832D773D26B986EB0005063D /* DocFixer */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -133,6 +175,7 @@
 		83D5454926B47C5200B136FC /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				832D773E26B986EB0005063D /* DocFixer */,
 				83D5453126B47C3D00B136FC /* RedBlackTree */,
 			);
 			path = Sources;
@@ -161,6 +204,28 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		832D773C26B986EB0005063D /* DocFixer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 832D774326B986EB0005063D /* Build configuration list for PBXNativeTarget "DocFixer" */;
+			buildPhases = (
+				832D773926B986EB0005063D /* Sources */,
+				832D773A26B986EB0005063D /* Frameworks */,
+				832D773B26B986EB0005063D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				832D774926B988740005063D /* PBXTargetDependency */,
+				832D774B26B988740005063D /* PBXTargetDependency */,
+			);
+			name = DocFixer;
+			packageProductDependencies = (
+				832D774626B987610005063D /* PGDocFixer */,
+			);
+			productName = DocFixer;
+			productReference = 832D773D26B986EB0005063D /* DocFixer */;
+			productType = "com.apple.product-type.tool";
+		};
 		83D5452E26B47C3D00B136FC /* RedBlackTree */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83D5454326B47C3D00B136FC /* Build configuration list for PBXNativeTarget "RedBlackTree" */;
@@ -206,6 +271,9 @@
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					832D773C26B986EB0005063D = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 					83D5452E26B47C3D00B136FC = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
@@ -223,12 +291,16 @@
 				Base,
 			);
 			mainGroup = 83D5452526B47C3D00B136FC;
+			packageReferences = (
+				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */,
+			);
 			productRefGroup = 83D5453026B47C3D00B136FC /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				83D5452E26B47C3D00B136FC /* RedBlackTree */,
 				83D5453726B47C3D00B136FC /* RedBlackTreeTests */,
+				832D773C26B986EB0005063D /* DocFixer */,
 			);
 		};
 /* End PBXProject section */
@@ -251,6 +323,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		832D773926B986EB0005063D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		83D5452B26B47C3D00B136FC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,6 +352,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		832D774926B988740005063D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83D5452E26B47C3D00B136FC /* RedBlackTree */;
+			targetProxy = 832D774826B988740005063D /* PBXContainerItemProxy */;
+		};
+		832D774B26B988740005063D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 832D774A26B988740005063D /* PGDocFixer */;
+		};
 		83D5453B26B47C3D00B136FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 83D5452E26B47C3D00B136FC /* RedBlackTree */;
@@ -280,6 +369,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		832D774126B986EB0005063D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Sources/DocFixer/DocFixer.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q5XWZ7S7E9;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		832D774226B986EB0005063D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Sources/DocFixer/DocFixer.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q5XWZ7S7E9;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		83D5454126B47C3D00B136FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -488,6 +601,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		832D774326B986EB0005063D /* Build configuration list for PBXNativeTarget "DocFixer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				832D774126B986EB0005063D /* Debug */,
+				832D774226B986EB0005063D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		83D5452926B47C3D00B136FC /* Build configuration list for PBXProject "RedBlackTree" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -516,6 +638,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GalenRhodes/PGDocFixer.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.11;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		832D774626B987610005063D /* PGDocFixer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			productName = PGDocFixer;
+		};
+		832D774A26B988740005063D /* PGDocFixer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			productName = PGDocFixer;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83D5452626B47C3D00B136FC /* Project object */;
 }
