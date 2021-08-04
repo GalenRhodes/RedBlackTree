@@ -61,4 +61,17 @@ extension Dictionary where Key: Comparable {
         self.init(minimumCapacity: tree.count)
         for e in tree { self[e.key] = e.value }
     }
+
+    @inlinable public mutating func merge(_ other: TreeDictionary<Self.Key, Self.Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+        try other.forEach { elem in
+            if let v = self[elem.key] { self[elem.key] = try combine(v, elem.value) }
+            else { self[elem.key] = elem.value }
+        }
+    }
+
+    @inlinable public func merging(_ other: TreeDictionary<Self.Key, Self.Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> [Key: Value]  {
+        var out = mapValues { $0 }
+        try out.merge(other, uniquingKeysWith: combine)
+        return out
+    }
 }
