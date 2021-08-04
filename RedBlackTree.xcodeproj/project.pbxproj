@@ -12,6 +12,7 @@
 		1117D3177A4F8D7057637012 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9D907EAA3B3EABFDA0D /* Dictionary.swift */; };
 		1117D60E41081134F769CE9E /* TreeDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D4619229FBE49822744B /* TreeDictionary.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
+		1117D85677836D8BD80600D2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DE3ED5D06C29C8FB8375 /* Extensions.swift */; };
 		1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DE08CD02AE5A97584FC1 /* TreeNode.swift */; };
 		832D774726B987610005063D /* PGDocFixer in Frameworks */ = {isa = PBXBuildFile; productRef = 832D774626B987610005063D /* PGDocFixer */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
@@ -60,6 +61,7 @@
 		1117DD1A7411CA7754BAECE7 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1117DDDDD8D4C2B552CB7431 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
 		1117DE08CD02AE5A97584FC1 /* TreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
+		1117DE3ED5D06C29C8FB8375 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1117DF611A3BE5130735AAF8 /* .jazzy.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .jazzy.yaml; sourceTree = "<group>"; };
 		832D773D26B986EB0005063D /* DocFixer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DocFixer; sourceTree = BUILT_PRODUCTS_DIR; };
 		832D774426B987030005063D /* DocFixer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DocFixer.entitlements; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				1117DE08CD02AE5A97584FC1 /* TreeNode.swift */,
 				1117D4619229FBE49822744B /* TreeDictionary.swift */,
 				1117D9D907EAA3B3EABFDA0D /* Dictionary.swift */,
+				1117DE3ED5D06C29C8FB8375 /* Extensions.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -292,7 +295,7 @@
 			);
 			mainGroup = 83D5452526B47C3D00B136FC;
 			packageReferences = (
-				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */,
+				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */,
 			);
 			productRefGroup = 83D5453026B47C3D00B136FC /* Products */;
 			projectDirPath = "";
@@ -338,6 +341,7 @@
 				1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */,
 				1117D60E41081134F769CE9E /* TreeDictionary.swift in Sources */,
 				1117D3177A4F8D7057637012 /* Dictionary.swift in Sources */,
+				1117D85677836D8BD80600D2 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,7 +644,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */ = {
+		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GalenRhodes/PGDocFixer.git";
 			requirement = {
@@ -653,12 +657,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		832D774626B987610005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
 			productName = PGDocFixer;
 		};
 		832D774A26B988740005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
 			productName = PGDocFixer;
 		};
 /* End XCSwiftPackageProductDependency section */

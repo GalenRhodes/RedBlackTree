@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TreeDictionary Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/TreeDictionary" class="dashAnchor"></a>
+
+    <a title="TreeDictionary Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          RedBlackTree©
+        </a>
+         (90% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/GalenRhodes/RedBlackTree">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html"> Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      TreeDictionary Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TreeDictionary.html">TreeDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TreeDictionary/Index.html">– Index</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Dictionary.html">Dictionary</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>TreeDictionary</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">TreeDictionary</span><span class="o">&lt;</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">ExpressibleByDictionaryLiteral</span><span class="p">,</span> <span class="kt">BidirectionalCollection</span><span class="p">,</span> <span class="kt">Sequence</span> <span class="k">where</span> <span class="kt">Key</span> <span class="p">:</span> <span class="kt">Comparable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TreeDictionary</span><span class="p">:</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Value</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TreeDictionary</span><span class="p">:</span> <span class="kt">Hashable</span> <span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">Value</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                </div>
+              </div>
+            
+              <div class="slightly-smaller">
+                <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L21-L264">Show on GitHub</a>
+              </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ST7ElementQa"></a>
+                    <a name="//apple_ref/swift/Alias/Element" class="dashAnchor"></a>
+                    <a class="direct-link" href="../Classes/TreeDictionary/Element.html">Element</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sl10startIndex0B0Qzvp"></a>
+                    <a name="//apple_ref/swift/Property/startIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sl10startIndex0B0Qzvp">startIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">startIndex</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sl8endIndex0B0Qzvp"></a>
+                    <a name="//apple_ref/swift/Property/endIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sl8endIndex0B0Qzvp">endIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">endIndex</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sl7isEmptySbvp"></a>
+                    <a name="//apple_ref/swift/Property/isEmpty" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sl7isEmptySbvp">isEmpty</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isEmpty</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sl5countSivp"></a>
+                    <a name="//apple_ref/swift/Property/count" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sl5countSivp">count</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">count</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryCACyxq_Gycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryCACyxq_Gycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a new, empty binary tree dictionary.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L35">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC04treeD0ACyxq_GAE_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(treeDictionary:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryC04treeD0ACyxq_GAE_tcfc">init(treeDictionary:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a new binary tree dictionary with all the elements from this dictionary. It does not create a copy
+of the elements themselves. The original binary tree dictionary is left unchanged.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">treeDictionary</span> <span class="nv">tree</span><span class="p">:</span> <span class="kt">TreeDictionary</span><span class="o">&lt;</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>tree</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The binary tree dictionary to take the elements from.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L43">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC10dictionaryACyxq_GSDyxq_G_tcSHRzrlufc"></a>
+                    <a name="//apple_ref/swift/Method/init(dictionary:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryC10dictionaryACyxq_GSDyxq_G_tcSHRzrlufc">init(dictionary:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a new binary tree dictionary with the elements from the given hashable dictionary.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">dictionary</span><span class="p">:</span> <span class="p">[</span><span class="kt">Key</span> <span class="p">:</span> <span class="kt">Value</span><span class="p">])</span> <span class="k">where</span> <span class="kt">Key</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>dictionary</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The source dictionary.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L50">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC17dictionaryLiteralACyxq_Gx_q_td_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(dictionaryLiteral:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryC17dictionaryLiteralACyxq_Gx_q_td_tcfc">init(dictionaryLiteral:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a new binary tree dictionary with the elements given.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">required</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="n">dictionaryLiteral</span> <span class="nv">elements</span><span class="p">:</span> <span class="p">(</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="p">)</span><span class="o">...</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>elements</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The list of initial elements to put in the dictionary.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L57">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC8elementsACyxq_GSayx_q_tG_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(elements:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryC8elementsACyxq_GSayx_q_tG_tcfc">init(elements:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a new binary tree dictionary with the elements given.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">elements</span><span class="p">:</span> <span class="p">[(</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="p">)])</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>elements</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The list of initial elements to put in the dictionary.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L64">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryCyx3key_q_5valuetAC5IndexVyxq__Gcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryCyx3key_q_5valuetAC5IndexVyxq__Gcip">subscript(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses the key-value pair at the specified position.</p>
+
+<p>This subscript takes an index into the dictionary, instead of a key, and returns the corresponding
+key-value pair as a tuple. When performing collection-based operations that return an index into a
+dictionary, use this subscript with the resulting value.</p>
+
+<p>For example, to find the key for a particular value in a dictionary, use the firstIndex(where:) method.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">countryCodes</span> <span class="o">=</span> <span class="p">[</span><span class="s">"BR"</span><span class="p">:</span> <span class="s">"Brazil"</span><span class="p">,</span> <span class="s">"GH"</span><span class="p">:</span> <span class="s">"Ghana"</span><span class="p">,</span> <span class="s">"JP"</span><span class="p">:</span> <span class="s">"Japan"</span><span class="p">]</span>
+<span class="k">if</span> <span class="k">let</span> <span class="nv">index</span> <span class="o">=</span> <span class="n">countryCodes</span><span class="o">.</span><span class="nf">firstIndex</span><span class="p">(</span><span class="nv">where</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s">"Japan"</span> <span class="p">})</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">countryCodes</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Japan's country code is '</span><span class="se">\(</span><span class="n">countryCodes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">key</span><span class="se">)</span><span class="s">'."</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Didn't find 'Japan' as a value in the dictionary."</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// Prints "(key: "JP", value: "Japan")"</span>
+<span class="c1">// Prints "Japan's country code is 'JP'."</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">position</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">Key</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Value</span><span class="p">)</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>position</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The position of the key-value pair to access. position must be a valid index of the
+                  dictionary and not equal to <code><a href="../Classes/TreeDictionary.html#/s:Sl8endIndex0B0Qzvp">endIndex</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A two-element tuple with the key and value corresponding to position.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L91-L95">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SK8distance4from2toSi5IndexQz_AEtF"></a>
+                    <a name="//apple_ref/swift/Method/distance(from:to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SK8distance4from2toSi5IndexQz_AEtF">distance(from:<wbr>to:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">distance</span><span class="p">(</span><span class="n">from</span> <span class="nv">start</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span><span class="p">,</span> <span class="n">to</span> <span class="nv">end</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SK5index5after5IndexQzAD_tF"></a>
+                    <a name="//apple_ref/swift/Method/index(after:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SK5index5after5IndexQzAD_tF">index(after:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">index</span><span class="p">(</span><span class="n">after</span> <span class="nv">i</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SK5index6before5IndexQzAD_tF"></a>
+                    <a name="//apple_ref/swift/Method/index(before:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SK5index6before5IndexQzAD_tF">index(before:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">index</span><span class="p">(</span><span class="n">before</span> <span class="nv">i</span><span class="p">:</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/TreeDictionary/Index.html">Index</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryCyq_Sgxcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryCyq_Sgxcip">subscript(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses the value associated with the given key for reading and writing.</p>
+
+<p>This key-based subscript returns the value for the given key if the key is found in the dictionary, or nil
+if the key is not found.</p>
+
+<p>The following example creates a new dictionary and prints the value of a key found in the dictionary
+(&ldquo;Coral&rdquo;) and a key not found in the dictionary (&ldquo;Cerise&rdquo;).</p>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">hues</span> <span class="o">=</span> <span class="p">[</span><span class="s">"Heliotrope"</span><span class="p">:</span> <span class="mi">296</span><span class="p">,</span> <span class="s">"Coral"</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="s">"Aquamarine"</span><span class="p">:</span> <span class="mi">156</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hues</span><span class="p">[</span><span class="s">"Coral"</span><span class="p">])</span>
+<span class="c1">// Prints "Optional(16)"</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hues</span><span class="p">[</span><span class="s">"Cerise"</span><span class="p">])</span>
+<span class="c1">// Prints "nil"</span>
+</code></pre>
+
+<p>When you assign a value for a key and that key already exists, the dictionary overwrites the existing
+value. If the dictionary doesn’t contain the key, the key and value are added as a new key-value pair.</p>
+
+<p>Here, the value for the key &ldquo;Coral&rdquo; is updated from 16 to 18 and a new key-value pair is added for the key
+&ldquo;Cerise&rdquo;.</p>
+<pre class="highlight swift"><code><span class="n">hues</span><span class="p">[</span><span class="s">"Coral"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hues</span><span class="p">[</span><span class="s">"Coral"</span><span class="p">])</span>
+<span class="c1">// Prints "Optional(18)"</span>
+
+<span class="n">hues</span><span class="p">[</span><span class="s">"Cerise"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">330</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hues</span><span class="p">[</span><span class="s">"Cerise"</span><span class="p">])</span>
+<span class="c1">// Prints "Optional(330)"</span>
+</code></pre>
+
+<p>If you assign nil as the value for the given key, the dictionary removes that key and its associated value.</p>
+
+<p>In the following example, the key-value pair for the key &ldquo;Aquamarine&rdquo; is removed from the dictionary by
+assigning nil to the key-based subscript.</p>
+<pre class="highlight swift"><code><span class="n">hues</span><span class="p">[</span><span class="s">"Aquamarine"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hues</span><span class="p">)</span>
+<span class="c1">// Prints "["Coral": 18, "Heliotrope": 296, "Cerise": 330]"</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">Key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Value</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key to find in the dictionary.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The value associated with key if key is in the dictionary; otherwise, nil.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L150-L168">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC_7defaultq_x_q_yXKtcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(_:default:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryC_7defaultq_x_q_yXKtcip">subscript(_:<wbr>default:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses the value with the given key, falling back to the given default value if the key isn’t found.</p>
+
+<p>Use this subscript when you want either the value for a particular key or, when that key is not present in
+the dictionary, a default value. This example uses the subscript with a message to use in case an HTTP
+response code isn’t recognized:</p>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">responseMessages</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">:</span> <span class="s">"OK"</span><span class="p">,</span>
+                        <span class="mi">403</span><span class="p">:</span> <span class="s">"Access forbidden"</span><span class="p">,</span>
+                        <span class="mi">404</span><span class="p">:</span> <span class="s">"File not found"</span><span class="p">,</span>
+                        <span class="mi">500</span><span class="p">:</span> <span class="s">"Internal server error"</span><span class="p">]</span>
+
+<span class="k">let</span> <span class="nv">httpResponseCodes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">403</span><span class="p">,</span> <span class="mi">301</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">code</span> <span class="k">in</span> <span class="n">httpResponseCodes</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="n">responseMessages</span><span class="p">[</span><span class="n">code</span><span class="p">,</span> <span class="k">default</span><span class="p">:</span> <span class="s">"Unknown response"</span><span class="p">]</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Response </span><span class="se">\(</span><span class="n">code</span><span class="se">)</span><span class="s">: </span><span class="se">\(</span><span class="n">message</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// Prints "Response 200: OK"</span>
+<span class="c1">// Prints "Response 403: Access forbidden"</span>
+<span class="c1">// Prints "Response 301: Unknown response"</span>
+</code></pre>
+
+<p>When a dictionary’s Value type has value semantics, you can use this subscript to perform in-place
+operations on values in the dictionary. The following example uses this subscript while counting the
+occurrences of each letter in a string:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="s">"Hello, Elle!"</span>
+<span class="k">var</span> <span class="nv">letterCounts</span><span class="p">:</span> <span class="p">[</span><span class="kt">Character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[:]</span>
+<span class="k">for</span> <span class="n">letter</span> <span class="k">in</span> <span class="n">message</span> <span class="p">{</span>
+    <span class="n">letterCounts</span><span class="p">[</span><span class="n">letter</span><span class="p">,</span> <span class="k">default</span><span class="p">:</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="p">}</span>
+<span class="c1">// letterCounts == ["H": 1, "e": 2, "l": 4, "o": 1, ...]</span>
+</code></pre>
+
+<p>When letterCounts[letter, default: 0] += 1 is executed with a value of letter that isn’t already a key in
+letterCounts, the specified default value (0) is returned from the subscript, incremented, and then added
+to the dictionary under that key.</p>
+
+<blockquote>
+<p>Note &gt; Do not use this subscript to modify dictionary values if the dictionary’s Value type is a class.
+In that case, the default value and key are not written back to the dictionary after an operation.</p>
+</blockquote>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">Key</span><span class="p">,</span> <span class="k">default</span> <span class="n">defaultValue</span><span class="p">:</span> <span class="kd">@autoclosure</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key the look up in the dictionary.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>defaultValue</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The default value to use if key doesn’t exist in the dictionary.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The value associated with key in the dictionary; otherwise, <code>defaultValue</code>.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L218-L221">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC9mapValuesySDyxqd__Gqd__q_KXEKSHRzlF"></a>
+                    <a name="//apple_ref/swift/Method/mapValues(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C10DictionaryC9mapValuesySDyxqd__Gqd__q_KXEKSHRzlF">mapValues(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a new dictionary containing the keys of this dictionary with the values transformed by the given
+closure.</p>
+
+<p>Complexity: O(n), where n is the length of the dictionary.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Any error thrown by the closure.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">mapValues</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="kt">Value</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Key</span> <span class="p">:</span> <span class="kt">T</span><span class="p">]</span> <span class="k">where</span> <span class="kt">Key</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>transform</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A closure that transforms a value. transform accepts each value of the dictionary
+                   as its parameter and returns a transformed value of the same or of a different
+                   type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A dictionary containing the keys and transformed values of this dictionary.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L235-L239">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C10DictionaryC5IndexV"></a>
+                    <a name="//apple_ref/swift/Struct/Index" class="dashAnchor"></a>
+                    <a class="direct-link" href="../Classes/TreeDictionary/Index.html">Index</a>
+                    </code>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Key%60%3A%20%60Equatable%60%2C%20%60Value%60%3A%20%60Equatable%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Key`: `Equatable`, `Value`: `Equatable`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Key%60%3A%20%60Equatable%60%2C%20%60Value%60%3A%20%60Equatable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Key</code>: <code>Equatable</code>, <code>Value</code>: <code>Equatable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">TreeDictionary</span><span class="o">&lt;</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">TreeDictionary</span><span class="o">&lt;</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L268-L274">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Key%60%3A%20%60Hashable%60%2C%20%60Value%60%3A%20%60Hashable%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Key`: `Hashable`, `Value`: `Hashable`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Key%60%3A%20%60Hashable%60%2C%20%60Value%60%3A%20%60Hashable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Key</code>: <code>Hashable</code>, <code>Value</code>: <code>Hashable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SH4hash4intoys6HasherVz_tF"></a>
+                    <a name="//apple_ref/swift/Method/hash(into:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SH4hash4intoys6HasherVz_tF">hash(into:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">hash</span><span class="p">(</span><span class="n">into</span> <span class="nv">hasher</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Hasher</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L278-L285">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2021 <a class="link" href="https://blog.projectgalen.com" target="_blank" rel="external">Galen Rhodes</a>. All rights reserved. (Last updated: 2021-08-03)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.7</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

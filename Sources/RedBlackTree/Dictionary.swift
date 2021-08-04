@@ -18,15 +18,46 @@
 import Foundation
 import CoreFoundation
 
-extension Dictionary where Key: Comparable & Hashable {
+extension Dictionary where Key: Comparable {
 
+    /*==========================================================================================================*/
+    /// Create a new, empty binary tree dictionary.
+    /// 
+    /// - Returns: A new, empty binary tree dictionary.
+    ///
     @inlinable public static func treeDictionary() -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary() }
 
+    /*==========================================================================================================*/
+    /// Create a new binary tree dictionary with all the elements from this dictionary. It does not create a copy
+    /// of the elements themselves. The original binary tree dictionary is left unchanged.
+    /// 
+    /// - Parameter tree: The binary tree dictionary to take the elements from.
+    /// - Returns: The binary tree dictionary of elements.
+    ///
+    @inlinable public static func treeDictionary(treeDictionary tree: TreeDictionary<Key, Value>) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(treeDictionary: tree) }
+
+    /*==========================================================================================================*/
+    /// Create a new binary tree dictionary with the elements given.
+    /// 
+    /// - Parameter elements: The list of initial elements to put in the dictionary.
+    /// - Returns: The binary tree dictionary of elements.
+    ///
     @inlinable public static func treeDictionary(dictionaryLiteral elements: (Self.Key, Self.Value)...) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(elements: elements) }
 
+    /*==========================================================================================================*/
+    /// Create a new binary tree dictionary with the elements from the given hashable dictionary.
+    /// 
+    /// - Parameter dictionary: The source dictionary.
+    /// - Returns: The binary tree dictionary of elements.
+    ///
     @inlinable public static func treeDictionary(dictionary: [Self.Key: Self.Value]) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(dictionary: dictionary) }
 
-    public init(treeDictionary tree: TreeDictionary<Key, Value>) {
+    /*==========================================================================================================*/
+    /// Create a Swift Hashable Dictionary from a Binary Tree Dictionary.
+    /// 
+    /// - Parameter tree: The binary tree dictionary.
+    ///
+    public init(treeDictionary tree: TreeDictionary<Self.Key, Self.Value>) {
         self.init(minimumCapacity: tree.count)
         for e in tree { self[e.key] = e.value }
     }

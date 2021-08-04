@@ -1,0 +1,26 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeDictionary.swift",
+      "line": 21,
+      "symbol": "TreeDictionary",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeDictionary.swift",
+      "line": 266,
+      "symbol": "TreeDictionary",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeDictionary.swift",
+      "line": 277,
+      "symbol": "TreeDictionary",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/grhodes/Projects/2021/RedBlackTree"
+}

@@ -1,10 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *     PRODUCT: DocFixer
- *    FILENAME: main.swift
+ *    FILENAME: Extensions.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 3, 2021
+ *        DATE: August 03, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -16,7 +15,12 @@
  *//*****************************************************************************************************************************/
 
 import Foundation
-import PGDocFixer
+import CoreFoundation
 
-DispatchQueue.main.async { exit(Int32(doDocFixer(args: CommandLine.arguments, replacements: []))) }
-dispatchMain()
+extension NSLocking {
+    @inlinable func withLock<T>(do body: () throws -> T) rethrows -> T {
+        lock()
+        defer { unlock() }
+        return try body()
+    }
+}
