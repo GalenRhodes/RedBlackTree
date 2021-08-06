@@ -17,49 +17,43 @@
 import Foundation
 import CoreFoundation
 
-@usableFromInline class TreeNode<Key, Value> where Key: Comparable {
+public class TreeNode<Key, Value> where Key: Comparable {
+    @usableFromInline typealias TNode = TreeNode<Key, Value>
+
     /*==========================================================================================================*/
     /// Colors for the nodes.
     ///
     @usableFromInline enum NodeColor { case Red, Black }
 
     /*==========================================================================================================*/
-    /// Left, Right, or Orphan/None
+    /// Left, Right, or None
     ///
-    @usableFromInline enum NodeDirection { case Left, Right, Orphan }
+    @usableFromInline enum NodeDirection { case Left, Right, Neither }
 
-    //@f:0
     /*==========================================================================================================*/
     /// Key
     ///
-    @usableFromInline private(set)      var key:        Key
+    public let key: Key
     /*==========================================================================================================*/
     /// Value
     ///
-    @usableFromInline                   var value:      Value
-    /*==========================================================================================================*/
-    /// Color
-    ///
-    @usableFromInline private(set)      var color:      NodeColor
-    /*==========================================================================================================*/
-    /// Count of this node (includes all of it's children).
-    ///
-    @usableFromInline private(set)      var count:      Int             = 1
-    /*==========================================================================================================*/
-    /// This node's parent.
-    ///
-    @usableFromInline private(set) weak var parentNode: TreeNode<Key, Value>? = nil
-    /*==========================================================================================================*/
-    /// This node's left child.
-    ///
-    @usableFromInline private(set)      var leftNode:   TreeNode<Key, Value>? = nil { willSet { onWillSet(leftNode, newValue)  } didSet { onDidSet(oldValue, leftNode)  } }
-    /*==========================================================================================================*/
-    /// This node's right child.
-    ///
-    @usableFromInline private(set)      var rightNode:  TreeNode<Key, Value>? = nil { willSet { onWillSet(rightNode, newValue) } didSet { onDidSet(oldValue, rightNode) } }
-    //@f:1
+    public private(set) var value: Value
 
-    @inlinable var data: (key: Key, value: Value) { (key: key, value: value) }
+    @usableFromInline var _count:      UInt   = 0
+    @usableFromInline var _leftNode:   TNode? = nil
+    @usableFromInline var _rightNode:  TNode? = nil
+    @usableFromInline var _parentNode: TNode? = nil
+
+    /*==========================================================================================================*/
+    /// Creates a new node with the given key, value, and color.
+    /// 
+    /// - Parameters:
+    ///   - key: The key.
+    ///   - value: The value.
+    ///
+    public convenience init(key: Key, value: Value) {
+        self.init(key: key, value: value, color: .Black)
+    }
 
     /*==========================================================================================================*/
     /// Creates a new node with the given key, value, and color.
@@ -69,7 +63,7 @@ import CoreFoundation
     ///   - value: The value.
     ///   - color: The color. Defaults to `NodeColor.Black`.
     ///
-    @usableFromInline init(key: Key, value: Value, color: NodeColor = .Black) {
+    @usableFromInline init(key: Key, value: Value, color: NodeColor) {
         self.key = key
         self.value = value
         self.color = color
@@ -81,7 +75,13 @@ import CoreFoundation
     /// - Parameter key: The key.
     /// - Returns: The value or `nil` if there is no value for that key.
     ///
-    @usableFromInline subscript(key: Key) -> TreeNode<Key, Value>? { ((key == self.key) ? self : ((key < self.key) ? leftNode : rightNode)?[key]) }
+    public subscript(key: Key) -> TreeNode<Key, Value>? {
+        switch compare(key, self.key) {
+            case .LessThan:    return leftNode?[key]
+            case .GreaterThan: return rightNode?[key]
+            case .Equal:       return self
+        }
+    }
 
     /*==========================================================================================================*/
     /// Insert the given value associated with the given key into this tree branch.
@@ -91,52 +91,15 @@ import CoreFoundation
     ///   - value: The value.
     /// - Returns: The new root node for the entire tree.
     ///
-    @usableFromInline func insertNode(key: Key, value: Value) -> TreeNode<Key, Value> {
-        if key == self.key {
-            self.value = value
-        }
-        else if key < self.key {
-            if let ln = leftNode { return ln.insertNode(key: key, value: value) }
-            let node = TreeNode<Key, Value>(key: key, value: value, color: .Red)
-            leftNode = node
-            node.insertBalance()
-        }
-        else {
-            if let rn = rightNode { return rn.insertNode(key: key, value: value) }
-            let node = TreeNode<Key, Value>(key: key, value: value, color: .Red)
-            rightNode = node
-            node.insertBalance()
-        }
-        return rootNode
-    }
-
-    /*==========================================================================================================*/
-    /// Re-balance the tree after the insertion of a new node.
-    ///
-    private func insertBalance() {
-        if let p = parentNode {
-            if p.color.isRed {
-                if let g = p.parentNode {
-                    if let u = p.siblingNode, u.color.isRed {
-                        u.color = .Black
-                        p.color = .Black
-                        g.color = .Red
-                        g.insertBalance()
-                    }
-                    else {
-                        let pSide = p.parentSide
-                        if parentSide != pSide { p.rotate(toThe: pSide) }
-                        g.rotate(toThe: !pSide)
-                    }
-                }
-                else {
-                    p.color = .Black
-                }
-            }
-        }
-        else if color.isRed {
-            // This node is the root so it needs to be black.
-            color = .Black
+    public func insertNode(key: Key, value: Value) -> TreeNode<Key, Value> {
+        switch compare(key, self.key) {
+            case .LessThan:
+                return insertNode(side: .Left, key: key, value: value)
+            case .GreaterThan:
+                return insertNode(side: .Right, key: key, value: value)
+            case .Equal:
+                self.value = value
+                return rootNode
         }
     }
 
@@ -145,51 +108,26 @@ import CoreFoundation
     /// 
     /// - Returns: The new root node for the entire tree.
     ///
-    @usableFromInline func removeNode() -> TreeNode<Key, Value>? {
-        if var c = leftNode, let _ = rightNode {
+    public func removeNode() -> TreeNode<Key, Value>? {
+        if let l = leftNode, let _ = rightNode {
             // The node has two children.
-            while let r = c.rightNode { c = r }
-            key = c.key
-            value = c.value
-            return c.removeNode()
+            fullSwap(with: l.last)
+            return removeNode()
         }
         else if let c = leftNode ?? rightNode {
             // The node has one child.
-            if c.color.isRed { c.color = .Black }
-            swap(with: c)
+            if c.isRed { c.color = .Black }
+            simpleSwap(with: c)
             return c.rootNode
         }
         else if let p = parentNode {
             // The node has no children.
-            if color.isBlack { removeBalance() }
-            makeOrphan()
+            if isBlack { removeRepair() }
+            simpleSwap(with: nil)
             return p.rootNode
         }
         // I have no parent and no children so I just go away.
         return nil
-    }
-
-    /*==========================================================================================================*/
-    /// Re-balance the tree after the removal of a node.
-    ///
-    private func removeBalance() {
-        if let p = parentNode {
-            let pSide = parentSide
-            guard siblingNode != nil else { fatalError("Binary Tree Inconsistent.") }
-
-            if NodeColor.isRed(siblingNode) { p.rotate(toThe: pSide) }
-            guard let s = siblingNode else { fatalError("Binary Tree Inconsistent.") }
-
-            if NodeColor.isBlack(s) && NodeColor.isBlack(s.leftNode) && NodeColor.isBlack(s.rightNode) {
-                if NodeColor.isBlack(p) { p.removeBalance() }
-                else { Swift.swap(&p.color, &s.color) }
-            }
-            else {
-                if NodeColor.isRed(pSide.isLeft ? s.leftNode : s.rightNode) { s.rotate(toThe: !pSide) }
-                p.rotate(toThe: pSide)
-                p.siblingNode?.color = .Black
-            }
-        }
     }
 
     /*==========================================================================================================*/
@@ -200,7 +138,7 @@ import CoreFoundation
     ///   - body: The closure to execute for each node.
     /// - Throws: Any error thrown by the closure.
     ///
-    @usableFromInline func forEach(backwards: Bool = false, _ body: (TreeNode<Key, Value>) throws -> Void) rethrows {
+    public func forEach(backwards: Bool = false, _ body: (TreeNode<Key, Value>) throws -> Void) rethrows {
         if backwards {
             if let n = rightNode { try n.forEach(body) }
             try body(self)
@@ -219,90 +157,284 @@ import CoreFoundation
     /// - Parameter index: The numeric index.
     /// - Returns: The node with the given index.
     ///
-    @usableFromInline func node(forIndex idx: Int) -> TreeNode<Key, Value> {
-        if idx < self.index {
-            guard let n = leftNode else { fatalError("Index out of bounds: \(idx)") }
+    public func node(forIndex idx: Int) -> TreeNode<Key, Value> {
+        func foo(_ n: TNode?) -> TNode {
+            guard let n = n else { fatalError("Index out of bounds: \(idx)") }
             return n.node(forIndex: idx)
         }
-        if idx > self.index {
-            guard let n = rightNode else { fatalError("Index out of bounds: \(idx)") }
-            return n.node(forIndex: idx)
-        }
-        return self
+
+        return ((idx == index) ? self : foo((idx < index) ? leftNode : rightNode))
+    }
+
+    /*==========================================================================================================*/
+    /// Returns the first node for which the given predicate returns `true`.
+    /// 
+    /// - Parameter predicate: The predicate.
+    /// - Returns: The node or nil if the predicate never returns `true`.
+    /// - Throws: Any error thrown by the closure.
+    ///
+    public func firstNode(where predicate: (TreeNode<Key, Value>) throws -> Bool) rethrows -> TreeNode<Key, Value>? {
+        if let l = leftNode, let n = try l.firstNode(where: predicate) { return n }
+        if try predicate(self) { return self }
+        if let r = rightNode, let n = try r.firstNode(where: predicate) { return n }
+        return nil
     }
 }
 
 extension TreeNode {
-    //@f:0
     /*==========================================================================================================*/
-    /// The root node for the tree this node is part of.
+    /// Convenience calculated field to convert the node into a tuple.
     ///
-    @inlinable var rootNode:    TreeNode<Key, Value>  { ((parentNode == nil) ? self : parentNode!.rootNode)                                                   }
-    /*==========================================================================================================*/
-    /// This node's sibling.
-    ///
-    @inlinable var siblingNode: TreeNode<Key, Value>? { forSide(l: { parentNode!.rightNode }, r: { parentNode!.leftNode }, o: { nil })                        }
-    /*==========================================================================================================*/
-    /// Which side of it's parent is this node on? `NodeDirection.Left`, `NodeDirection.Right`, or
-    /// `NodeDirection.Orphan` (no parent).
-    ///
-    @inlinable var parentSide:  NodeDirection   { guard let p = parentNode else { return .Orphan }; return ((self === p.leftNode) ? .Left : .Right)     }
-    /*==========================================================================================================*/
-    /// The number of child nodes on the left side of this node.
-    ///
-    @inlinable var leftCount:   Int             { (leftNode?.count ?? 0)                                                                                }
-    /*==========================================================================================================*/
-    /// The number of child nodes on the right side of this node.
-    ///
-    @inlinable var rightCount:  Int             { (rightNode?.count ?? 0)                                                                               }
-    /*==========================================================================================================*/
-    /// The index of this node's parent or zero (0) if this node is the root.
-    ///
-    @inlinable var parentIndex: Int             { (parentNode?.index ?? 0)                                                                              }
+    @inlinable public var       data:       (key: Key, value: Value) { (key: key, value: value) }
+    @inlinable public var       isRed:      Bool { color.isRed }
+    @inlinable public var       isBlack:    Bool { color.isBlack }
     /*==========================================================================================================*/
     /// This node's index.
     ///
-    @inlinable var index:       Int             { forSide(l: { (parentIndex - leftCount - 1) }, r: { (parentIndex + leftCount + 1) }, o: { leftCount }) }
+    @inlinable public var       index:      Int {
+        switch nSide {
+            case .Left:    return (parentIndex - leftCount - 1)
+            case .Right:   return (parentIndex + leftCount + 1)
+            case .Neither: return leftCount
+        }
+    }
     /*==========================================================================================================*/
     /// The node just before this node (in-order).
     ///
-    @inlinable var previous:    TreeNode<Key, Value>? { (leftNode?.prevFalling ?? prevRising)                                                                 }
+    @inlinable public var       previous:   TreeNode<Key, Value>? { (leftNode?.last ?? previousRising) }
     /*==========================================================================================================*/
     /// The node just after this node (in-order).
     ///
-    @inlinable var next:        TreeNode<Key, Value>? { (rightNode?.nextFalling ?? nextRising)                                                                }
-    //@f:1
-
+    @inlinable public var       next:       TreeNode<Key, Value>? { (rightNode?.first ?? nextRising) }
+    @inlinable public var       first:      TreeNode<Key, Value> { (leftNode?.first ?? self) }
+    @inlinable public var       last:       TreeNode<Key, Value> { (rightNode?.last ?? self) }
     /*==========================================================================================================*/
-    /// The next node (in-order) going down the tree.
+    /// Color
     ///
-    @usableFromInline var nextFalling: TreeNode {
-        guard let l = leftNode else { return self }
-        return l.nextFalling
+    @inlinable private(set) var color:      NodeColor {
+        get { NodeColor.color(_count & NodeColor.Red.value) }
+        set { _count = (newValue.value | (_count & ~NodeColor.Red.value)) }
     }
-
+    /*==========================================================================================================*/
+    /// Count of this node (includes all of it's children).
+    ///
+    @inlinable private(set) var count:      Int {
+        get { Int(bitPattern: _count & ~NodeColor.Red.value) }
+        set { _count = ((_count & NodeColor.Red.value) | (UInt(bitPattern: newValue) & ~NodeColor.Red.value)) }
+    }
+    @inlinable public var       parentNode: TreeNode<Key, Value>? { _parentNode }
+    @inlinable public private(set) var leftNode:  TreeNode<Key, Value>? {
+        get { _leftNode }
+        set {
+            guard self !== newValue else { fatalError("A node cannot be a child of itself.") }
+            guard _leftNode !== newValue else { return }
+            if let n = _leftNode { n._parentNode = nil }
+            if let n = newValue {
+                n.simpleSwap(with: nil)
+                n._parentNode = self
+            }
+            _leftNode = newValue
+            recount()
+        }
+    }
+    @inlinable public private(set) var rightNode: TreeNode<Key, Value>? {
+        get { _rightNode }
+        set {
+            guard self !== newValue else { fatalError("A node cannot be a child of itself.") }
+            guard _rightNode !== newValue else { return }
+            if let n = _rightNode { n._parentNode = nil }
+            if let n = newValue {
+                n.simpleSwap(with: nil)
+                n._parentNode = self
+            }
+            _rightNode = newValue
+            recount()
+        }
+    }
+    /*==========================================================================================================*/
+    /// Which side of it's parent is this node on? `NodeDirection.Left`, `NodeDirection.Right`, or
+    /// `NodeDirection.Neither` (no parent).
+    ///
+    @inlinable var nSide:          NodeDirection {
+        guard let p = parentNode else { return .Neither }
+        return (self === p.leftNode ? .Left : .Right)
+    }
+    /*==========================================================================================================*/
+    /// The number of child nodes on the left side of this node.
+    ///
+    @inlinable var leftCount:      Int {
+        guard let n = leftNode else { return 0 }
+        return n.count
+    }
+    /*==========================================================================================================*/
+    /// The number of child nodes on the right side of this node.
+    ///
+    @inlinable var rightCount:     Int {
+        guard let n = rightNode else { return 0 }
+        return n.count
+    }
+    /*==========================================================================================================*/
+    /// The index of this node's parent or zero (0) if this node is the root.
+    ///
+    @inlinable var parentIndex:    Int {
+        guard let p = parentNode else { return 0 }
+        return p.index
+    }
+    /*==========================================================================================================*/
+    /// This node's sibling.
+    ///
+    @inlinable var siblingNode:    TNode? {
+        guard let p = parentNode else { return nil }
+        return p[!nSide]
+    }
+    /*==========================================================================================================*/
+    /// The root node for the tree this node is part of.
+    ///
+    @inlinable var rootNode:       TNode {
+        guard let p = parentNode else { return self }
+        return p.rootNode
+    }
     /*==========================================================================================================*/
     /// The next node (in-order) going up the tree.
     ///
-    @usableFromInline var nextRising: TreeNode? {
+    @inlinable var nextRising:     TNode? {
         guard let p = parentNode else { return nil }
         return ((self === p.leftNode) ? p : p.nextRising)
     }
-
-    /*==========================================================================================================*/
-    /// The previous node (in-order) going down the tree.
-    ///
-    @usableFromInline var prevFalling: TreeNode<Key, Value> {
-        guard let r = rightNode else { return self }
-        return r.prevFalling
-    }
-
     /*==========================================================================================================*/
     /// The previous node (in-order) going up the tree.
     ///
-    @usableFromInline var prevRising: TreeNode<Key, Value>? {
+    @inlinable var previousRising: TNode? {
         guard let p = parentNode else { return nil }
-        return ((self === p.rightNode) ? p : p.prevRising)
+        return ((self === p.rightNode) ? p : p.previousRising)
+    }
+
+    /*==========================================================================================================*/
+    /// This method fully swaps two node's position in the tree.
+    /// 
+    /// - Parameters:
+    ///   - a: The first node.
+    ///   - b: The second node.
+    ///
+    @inlinable static func fullSwap(_ a: TNode, _ b: TNode) {
+        func foo(_ n: TNode, _ p: TNode?, _ l: TNode?, _ r: TNode?, _ d: NodeDirection, _ c: NodeColor, _ i: Int) {
+            if let p = p { p[d] = n }
+            else { n.simpleSwap(with: nil) }
+            n.leftNode = l
+            n.rightNode = r
+            n.color = c
+            n.count = i
+        }
+
+        guard a !== b else { fatalError("Cannot swap a node with itself.") }
+
+        let ap = a.parentNode
+        let ad = a.nSide
+        let al = a.leftNode
+        let ar = a.rightNode
+        let ac = a.color
+        let an = a.count
+
+        let bp = b.parentNode
+        let bd = b.nSide
+        let bl = b.leftNode
+        let br = b.rightNode
+        let bc = b.color
+        let bn = b.count
+
+        foo(a, bp, bl, br, bd, bc, bn)
+        foo(b, ap, al, ar, ad, ac, an)
+    }
+
+    /*==========================================================================================================*/
+    /// This method fully swaps this node with the given node's position in the tree.
+    /// 
+    /// - Parameter node: The node to swap this node with.
+    ///
+    @inlinable func fullSwap(with node: TNode) { TNode.fullSwap(self, node) }
+
+    /*==========================================================================================================*/
+    /// Rotate this node. If `NodeDirection.Neither` is given then nothing happens.
+    /// 
+    /// - Parameter dir: The direction to rotate this node - `NodeDirection.Left`, `NodeDirection.Right`.
+    ///
+    @inlinable func rotate(toThe dir: NodeDirection) {
+        guard dir != .Neither else { fatalError("Which way did you want to rotate the node?") }
+        guard let ch = self[!dir] else { fatalError("Cannot rotate \(dir) because there is no \(!dir) child node to take this nodes place.") }
+        simpleSwap(with: ch)
+        self[!dir] = ch[dir]
+        ch[dir] = self
+        swap(&color, &ch.color)
+    }
+
+    /*==========================================================================================================*/
+    /// Insert a new key/value into the given branch.
+    /// 
+    /// - Parameters:
+    ///   - field: The top node of the branch.
+    ///   - key: The key.
+    ///   - value: The value.
+    /// - Returns: The root node.
+    ///
+    @inlinable func insertNode(side: NodeDirection, key: Key, value: Value) -> TNode {
+        if let n = self[side] { return n.insertNode(key: key, value: value) }
+        let n = TreeNode<Key, Value>(key: key, value: value, color: .Red)
+        self[side] = n
+        n.insertRepair()
+        return rootNode
+    }
+
+    /*==========================================================================================================*/
+    /// Re-balance the tree after the insertion of a new node.
+    ///
+    @usableFromInline func insertRepair() {
+        if let p = parentNode {
+            if p.isRed {
+                if let g = p.parentNode {
+                    if let u = p.siblingNode, u.isRed {
+                        u.color = .Black
+                        p.color = .Black
+                        g.color = .Red
+                        g.insertRepair()
+                    }
+                    else {
+                        if nSide != p.nSide { p.rotate(toThe: p.nSide) }
+                        g.rotate(toThe: !p.nSide)
+                    }
+                }
+                else {
+                    // This node's parent is the root so it needs to be black.
+                    p.color = .Black
+                }
+            }
+        }
+        else if isRed {
+            // This node is the root so it needs to be black.
+            color = .Black
+        }
+    }
+
+    /*==========================================================================================================*/
+    /// Re-balance the tree after the removal of a node.
+    ///
+    @usableFromInline func removeRepair() {
+        if let p = parentNode {
+            let pSide = nSide
+            guard siblingNode != nil else { fatalError("Binary Tree Inconsistent.") }
+
+            if (siblingNode?.isRed ?? false) { p.rotate(toThe: pSide) }
+            guard let s = siblingNode else { fatalError("Binary Tree Inconsistent.") }
+
+            if s.isBlack && (s.leftNode?.isBlack ?? true) && (s.rightNode?.isBlack ?? true) {
+                if p.isBlack { p.removeRepair() }
+                else { swap(&p.color, &s.color) }
+            }
+            else {
+                if (s[pSide]?.isRed ?? false) { s.rotate(toThe: !pSide) }
+                p.rotate(toThe: pSide)
+                p.siblingNode?.color = .Black
+            }
+        }
     }
 
     /*==========================================================================================================*/
@@ -314,146 +446,39 @@ extension TreeNode {
     }
 
     /*==========================================================================================================*/
-    /// Make this node an orphan - unlink it from it's parent.
-    ///
-    @inlinable func makeOrphan() {
-        guard let p = parentNode else { return }
-        if self === p.leftNode { p.leftNode = nil }
-        else { p.rightNode = nil }
-        parentNode = nil
-        p.recount()
-    }
-
-    /*==========================================================================================================*/
-    /// `willSet` handler for `TreeNode<Key,Value>.leftNode` and `TreeNode<Key,Value>.rightNode`.
-    /// 
-    /// - Parameters:
-    ///   - oldValue: The old (current) value.
-    ///   - newValue: The new value.
-    ///
-    @inlinable func onWillSet(_ oldValue: TreeNode<Key, Value>?, _ newValue: TreeNode<Key, Value>?) {
-        guard oldValue !== newValue else { return }
-        if let nv = newValue { nv.makeOrphan() }
-    }
-
-    /*==========================================================================================================*/
-    /// `didSet` handler for `TreeNode<Key,Value>.leftNode` and `TreeNode<Key,Value>.rightNode`.
-    /// 
-    /// - Parameters:
-    ///   - oldValue: The old value.
-    ///   - newValue: The new (current) value.
-    ///
-    @inlinable func onDidSet(_ oldValue: TreeNode<Key, Value>?, _ newValue: TreeNode<Key, Value>?) {
-        guard oldValue !== newValue else { return }
-        if let ov = oldValue { ov.parentNode = nil }
-        if let nv = newValue { nv.parentNode = self }
-        recount()
-    }
-
-    /*==========================================================================================================*/
-    /// Execute one of the three given closures depending on the value of `side` - `NodeDirection.Left`,
-    /// `NodeDirection.Right`, or `NodeDirection.Orphan`.
-    /// 
-    /// - Parameters:
-    ///   - side: The side.
-    ///   - l: The closure to execute if `side` is `NodeDirection.Left`.
-    ///   - r: The closure to execute if `side` is `NodeDirection.Right`.
-    ///   - o: The closure to execute if `side` is `NodeDirection.Orphan`.
-    /// - Returns: The results returned from the executed closure.
-    ///
-    @inlinable func forSide<T>(side: NodeDirection, l: () -> T, r: () -> T, o: () -> T) -> T {
-        switch side {
-            case .Left:   return l()
-            case .Right:  return r()
-            case .Orphan: return o()
-        }
-    }
-
-    /*==========================================================================================================*/
-    /// Execute one of the three given closures depending on which side of it's parent its on -
-    /// `NodeDirection.Left`, `NodeDirection.Right`, or `NodeDirection.Orphan` (no parent).
-    /// 
-    /// - Parameters:
-    ///   - l: The closure to execute if this node is on the left side of it's parent.
-    ///   - r: The closure to execute if this node is on the right side of it's parent.
-    ///   - o: The closure to execute if this node has no parent.
-    /// - Returns: The results returned from the executed closure.
-    ///
-    @inlinable func forSide<T>(l: () -> T, r: () -> T, o: () -> T) -> T { forSide(side: parentSide, l: l, r: r, o: o) }
-
-    /*==========================================================================================================*/
     /// With respect to it's parent, swap this node with the given node. This node will become an orphan. Does not
     /// affect the child nodes of this node nor the other node.
     /// 
     /// - Parameter node: The node to take the place of this node.
     ///
-    @inlinable func swap(with node: TreeNode<Key, Value>?) { forSide(l: { parentNode!.leftNode = node }, r: { parentNode!.rightNode = node }, o: {}) }
-
-    /*==========================================================================================================*/
-    /// Rotate this node. If `NodeDirection.Orphan` is given then nothing happens.
-    /// 
-    /// - Parameter dir: The direction to rotate this node - `NodeDirection.Left`, `NodeDirection.Right`.
-    ///
-    @inlinable func rotate(toThe dir: NodeDirection) { forSide(side: dir, l: { rotateLeft() }, r: { rotateRight() }, o: {}) }
-
-    /*==========================================================================================================*/
-    /// Rotate this node to the left. This node must have a right child node or a fatal error is thrown.
-    ///
-    @usableFromInline func rotateLeft() {
-        guard let rn = rightNode else { fatalError("Cannot rotate left because there is no right child node to take this nodes place.") }
-        swap(with: rn)
-        rightNode = rn.leftNode
-        rn.leftNode = self
-        Swift.swap(&color, &rn.color)
+    @inlinable func simpleSwap(with node: TNode?) {
+        guard self !== node else { fatalError("Cannot swap a node with itself.") }
+        if let p = parentNode { p[nSide] = node }
+        else if let n = node, let p = n.parentNode { p[n.nSide] = nil }
     }
 
     /*==========================================================================================================*/
-    /// Rotate this node to the right. This node must have a left child node or a fatal error is thrown.
-    ///
-    @usableFromInline func rotateRight() {
-        guard let ln = leftNode else { fatalError("Cannot rotate right because there is no left child node to take this nodes place.") }
-        swap(with: ln)
-        leftNode = ln.rightNode
-        ln.rightNode = self
-        Swift.swap(&color, &ln.color)
-    }
-
-    /*==========================================================================================================*/
-    /// Returns the first node for which the given predicate returns `true`.
+    /// Get one of this node's children.
     /// 
-    /// - Parameter predicate: The predicate.
-    /// - Returns: The node or nil if the predicate never returns `true`.
-    /// - Throws: Any error thrown by the closure.
+    /// - Parameter side: Which child node to get.
+    /// - Returns: The child node or `nil` if there was no child node on that side or `NodeDirection.Neither` was
+    ///            given.
     ///
-    @inlinable func firstNode(where predicate: (TreeNode<Key, Value>) throws -> Bool) rethrows -> TreeNode<Key, Value>? {
-        if let l = leftNode, let n = try l.firstNode(where: predicate) { return n }
-        if try predicate(self) { return self }
-        if let r = rightNode, let n = try r.firstNode(where: predicate) { return n }
-        return nil
-    }
-}
-
-extension TreeNode: Equatable where Value: Equatable {
-    /*==========================================================================================================*/
-    /// Test two nodes to see if their keys and values are equal.
-    /// 
-    /// - Parameters:
-    ///   - lhs: The left-hand node.
-    ///   - rhs: The right-hand node.
-    /// - Returns: `true` if the two node's keys and values are equal.
-    ///
-    @usableFromInline static func == (lhs: TreeNode<Key, Value>, rhs: TreeNode<Key, Value>) -> Bool { ((lhs === rhs) || ((lhs.key == rhs.key) && (lhs.value == rhs.value))) }
-}
-
-extension TreeNode: Hashable where Key: Hashable, Value: Hashable {
-    /*==========================================================================================================*/
-    /// Gets the hash of this node.
-    /// 
-    /// - Parameter hasher: the hasher.
-    ///
-    @inlinable func hash(into hasher: inout Hasher) {
-        hasher.combine(key)
-        hasher.combine(value)
+    @inlinable subscript(side: NodeDirection) -> TNode? {
+        get {
+            switch side {
+                case .Left:    return leftNode
+                case .Right:   return rightNode
+                case .Neither: return nil
+            }
+        }
+        set {
+            switch side {
+                case .Left:    leftNode = newValue
+                case .Right:   rightNode = newValue
+                case .Neither: fatalError("Cannot put a child node on \(side) side of it's parent.")
+            }
+        }
     }
 }
 
@@ -472,13 +497,23 @@ extension TreeNode.NodeDirection {
     /// 
     /// - Parameter op: The `NodeDirection`.
     /// - Returns: `NodeDirection.Left` if `op` is `NodeDirection.Right`. `NodeDirection.Right` if `op` is
-    ///            `NodeDirection.Left`. `NodeDirection.Orphan` is returned unchanged.
+    ///            `NodeDirection.Left`. `NodeDirection.Neither` is returned unchanged.
     ///
     @inlinable static prefix func ! (op: TreeNode.NodeDirection) -> TreeNode.NodeDirection {
         switch op {
-            case .Left:   return .Right
-            case .Right:  return .Left
-            case .Orphan: return .Orphan
+            case .Left:    return .Right
+            case .Right:   return .Left
+            case .Neither: return .Neither
+        }
+    }
+}
+
+extension TreeNode.NodeDirection: CustomStringConvertible {
+    @inlinable var description: String {
+        switch self {
+            case .Left:    return "left"
+            case .Right:   return "right"
+            case .Neither: return "neither"
         }
     }
 }
@@ -493,19 +528,21 @@ extension TreeNode.NodeColor {
     ///
     @inlinable var isBlack: Bool { self == .Black }
 
-    /*==========================================================================================================*/
-    /// Returns `true` if the given node's color is `NodeColor.Red`.
-    /// 
-    /// - Parameter node: the node to check.
-    /// - Returns: `true` if the node's color is red or `false` if `nil` is passed or the given node is black.
-    ///
-    @inlinable static func isRed<K, V>(_ node: TreeNode<K, V>?) -> Bool { (node?.color.isRed ?? false) }
+    @inlinable var value: UInt {
+        switch self {
+            case .Red:   return (1 << UInt(UInt.bitWidth - 1))
+            case .Black: return 0
+        }
+    }
 
-    /*==========================================================================================================*/
-    /// Returns `true` if the given node's color is NodeColor.Black.
-    /// 
-    /// - Parameter node: the node to check.
-    /// - Returns: `true` if `nil` or the given node's color is black or `false` if the given node is red.
-    ///
-    @inlinable static func isBlack<K, V>(_ node: TreeNode<K, V>?) -> Bool { (node?.color.isBlack ?? true) }
+    @inlinable static func color(_ n: UInt) -> Self { (n == 0 ? .Black : .Red) }
+}
+
+extension TreeNode.NodeColor: CustomStringConvertible {
+    @inlinable var description: String {
+        switch self {
+            case .Red:   return "red"
+            case .Black: return "black"
+        }
+    }
 }

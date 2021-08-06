@@ -25,7 +25,7 @@ extension Dictionary where Key: Comparable {
     /// 
     /// - Returns: A new, empty binary tree dictionary.
     ///
-    @inlinable public static func treeDictionary() -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary() }
+    public static func treeDictionary() -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary() }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with all the elements from this dictionary. It does not create a copy
@@ -34,7 +34,7 @@ extension Dictionary where Key: Comparable {
     /// - Parameter tree: The binary tree dictionary to take the elements from.
     /// - Returns: The binary tree dictionary of elements.
     ///
-    @inlinable public static func treeDictionary(treeDictionary tree: TreeDictionary<Key, Value>) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(treeDictionary: tree) }
+    public static func treeDictionary(treeDictionary tree: TreeDictionary<Key, Value>) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(treeDictionary: tree) }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements given.
@@ -42,7 +42,7 @@ extension Dictionary where Key: Comparable {
     /// - Parameter elements: The list of initial elements to put in the dictionary.
     /// - Returns: The binary tree dictionary of elements.
     ///
-    @inlinable public static func treeDictionary(dictionaryLiteral elements: (Self.Key, Self.Value)...) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(elements: elements) }
+    public static func treeDictionary(dictionaryLiteral elements: (Self.Key, Self.Value)...) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(elements: elements) }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements from the given hashable dictionary.
@@ -50,7 +50,7 @@ extension Dictionary where Key: Comparable {
     /// - Parameter dictionary: The source dictionary.
     /// - Returns: The binary tree dictionary of elements.
     ///
-    @inlinable public static func treeDictionary(dictionary: [Self.Key: Self.Value]) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(dictionary: dictionary) }
+    public static func treeDictionary(dictionary: [Self.Key: Self.Value]) -> TreeDictionary<Self.Key, Self.Value> { TreeDictionary(dictionary: dictionary) }
 
     /*==========================================================================================================*/
     /// Create a Swift Hashable Dictionary from a Binary Tree Dictionary.
@@ -62,14 +62,14 @@ extension Dictionary where Key: Comparable {
         for e in tree { self[e.key] = e.value }
     }
 
-    @inlinable public mutating func merge(_ other: TreeDictionary<Self.Key, Self.Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+    public mutating func merge(_ other: TreeDictionary<Self.Key, Self.Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
         try other.forEach { elem in
             if let v = self[elem.key] { self[elem.key] = try combine(v, elem.value) }
             else { self[elem.key] = elem.value }
         }
     }
 
-    @inlinable public func merging(_ other: TreeDictionary<Self.Key, Self.Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> [Key: Value]  {
+    public func merging(_ other: TreeDictionary<Self.Key, Self.Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> [Key: Value] {
         var out = mapValues { $0 }
         try out.merge(other, uniquingKeysWith: combine)
         return out

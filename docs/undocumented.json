@@ -79,91 +79,91 @@
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 175,
+      "line": 172,
       "symbol": "TreeDictionary.firstIndex(where:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 182,
+      "line": 179,
       "symbol": "TreeDictionary.min(by:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 193,
+      "line": 190,
       "symbol": "TreeDictionary.max(by:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 222,
+      "line": 219,
       "symbol": "TreeDictionary.map(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 228,
+      "line": 225,
       "symbol": "TreeDictionary.reduce(_:_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 234,
+      "line": 231,
       "symbol": "TreeDictionary.reduce(into:_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 240,
+      "line": 237,
       "symbol": "TreeDictionary.compactMap(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 246,
+      "line": 243,
       "symbol": "TreeDictionary.compactMapValues(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 252,
+      "line": 249,
       "symbol": "TreeDictionary.compactMapValues(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 258,
+      "line": 255,
       "symbol": "TreeDictionary.sorted(by:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 264,
+      "line": 261,
       "symbol": "TreeDictionary.shuffled()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 270,
+      "line": 267,
       "symbol": "TreeDictionary.shuffled(using:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/Other.swift",
-      "line": 276,
+      "line": 273,
       "symbol": "TreeDictionary.underestimatedCount",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
@@ -275,16 +275,79 @@
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeDictionary.swift",
-      "line": 370,
+      "line": 364,
       "symbol": "TreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeDictionary.swift",
-      "line": 389,
+      "line": 383,
       "symbol": "TreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 20,
+      "symbol": "TreeNode",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 184,
+      "symbol": "TreeNode",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 189,
+      "symbol": "TreeNode.isRed",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 190,
+      "symbol": "TreeNode.isBlack",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 209,
+      "symbol": "TreeNode.first",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 210,
+      "symbol": "TreeNode.last",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 225,
+      "symbol": "TreeNode.parentNode",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 226,
+      "symbol": "TreeNode.leftNode",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/TreeNode.swift",
+      "line": 240,
+      "symbol": "TreeNode.rightNode",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     }
   ],

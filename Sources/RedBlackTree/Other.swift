@@ -19,23 +19,23 @@ import CoreFoundation
 
 extension TreeDictionary {
 
-    @inlinable public func randomElement<T>(using generator: inout T) -> Element? where T: RandomNumberGenerator { self[Index(index: Int.random(in: 0 ..< count, using: &generator))] }
+    public func randomElement<T>(using generator: inout T) -> Element? where T: RandomNumberGenerator { self[Index(index: Int.random(in: 0 ..< count, using: &generator))] }
 
-    @inlinable public func randomElement() -> Element? { randomElement(using: &random) }
+    public func randomElement() -> Element? { randomElement(using: &random) }
 
-    @inlinable public func merge(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where Key: Hashable {
+    public func merge(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where Key: Hashable {
         try lock.withLock { try other.forEach { try _combine($0, combine: combine) } }
     }
 
-    @inlinable public func merge<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
+    public func merge<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
         try lock.withLock { try other.forEach { try _combine((key: $0.0, value: $0.1), combine: combine) } }
     }
 
-    @inlinable public func merge(_ other: TreeDictionary<Key, Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+    public func merge(_ other: TreeDictionary<Key, Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
         try lock.withLock { try other.forEach { try _combine($0, combine: combine) } }
     }
 
-    @inlinable public func merging(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeDictionary<Key, Value> where Key: Hashable {
+    public func merging(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeDictionary<Key, Value> where Key: Hashable {
         try lock.withLock {
             let tree = TreeDictionary<Key, Value>(treeDictionary: self)
             try tree.merge(other, uniquingKeysWith: combine)
@@ -43,7 +43,7 @@ extension TreeDictionary {
         }
     }
 
-    @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeDictionary<Key, Value> where S: Sequence, S.Element == (Key, Value) {
+    public func merging<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeDictionary<Key, Value> where S: Sequence, S.Element == (Key, Value) {
         try lock.withLock {
             let tree = TreeDictionary<Key, Value>(treeDictionary: self)
             try tree.merge(other, uniquingKeysWith: combine)
@@ -60,7 +60,7 @@ extension TreeDictionary {
     /// - Returns: A tree dictionary of the key-value pairs that isIncluded allows.
     /// - Throws: Any error thrown by the closure.
     ///
-    @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> TreeDictionary<Key, Value> {
+    public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> TreeDictionary<Key, Value> {
         try lock.withLock {
             let tree = TreeDictionary<Key, Value>()
             try _forEach { if try isIncluded($0) { _update($0) } }
@@ -108,9 +108,9 @@ extension TreeDictionary {
     /// - Returns: `true` if the sequence contains an element that satisfies predicate; otherwise, `false`.
     /// - Throws: Any error thrown by the closure.
     ///
-    @inlinable public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
+    public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
         try lock.withLock {
-            guard let _ = try _firstNode(where: { try predicate($0.data)}) else { return false }
+            guard let _ = try _firstNode(where: { try predicate($0.data) }) else { return false }
             return true
         }
     }
@@ -136,12 +136,9 @@ extension TreeDictionary {
     /// - Returns: `true` if the sequence contains only elements that satisfy predicate; otherwise, `false`.
     /// - Throws: Any error thrown by the closure.
     ///
-    @inlinable public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-        try lock.withLock {
-            guard let _ = try _firstNode(where: { try !predicate($0.data) }) else { return true }
-            return false
-        }
-    }
+    public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool { try lock.withLock { try _allSatisfy(predicate) } }
+
+    @usableFromInline func _allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool { ((try _firstNode(where: { !(try predicate($0.data)) })) == nil) }
 
     /*==========================================================================================================*/
     /// Returns the first element of the sequence that satisfies the given predicate.
@@ -165,21 +162,21 @@ extension TreeDictionary {
     ///            satisfies predicate.
     /// - Throws: Any error thrown by the closure.
     ///
-    @inlinable public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
         try lock.withLock {
             guard let n = try _firstNode(where: { node in try predicate(node.data) }) else { return nil }
             return n.data
         }
     }
 
-    @inlinable public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
         try lock.withLock {
             guard let n = try _firstNode(where: { node in try predicate(node.data) }) else { return nil }
             return Index(index: n.index)
         }
     }
 
-    @inlinable @warn_unqualified_access public func min(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Element? {
+    @warn_unqualified_access public func min(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Element? {
         try lock.withLock {
             var minElem: Element? = nil
             try _forEach {
@@ -190,7 +187,7 @@ extension TreeDictionary {
         }
     }
 
-    @inlinable @warn_unqualified_access public func max(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Element? {
+    @warn_unqualified_access public func max(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Element? {
         try lock.withLock {
             var maxElem: Element? = nil
             try _forEach {
@@ -213,67 +210,67 @@ extension TreeDictionary {
     /// - Returns: A dictionary containing the keys and transformed values of this dictionary.
     /// - Throws: Any error thrown by the closure.
     ///
-    @inlinable public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> [Key: T] {
+    public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> [Key: T] {
         var out: [Key: T] = [:]
         try forEach { e in out[e.key] = try transform(e.value) }
         return out
     }
 
-    @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
+    public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
         var out: [T] = []
         try forEach { out.append(try transform($0)) }
         return out
     }
 
-    @inlinable public func reduce<Result>(_ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result) rethrows -> Result {
+    public func reduce<Result>(_ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result) rethrows -> Result {
         var accum: Result = initialResult
         try forEach { accum = try nextPartialResult(accum, $0) }
         return accum
     }
 
-    @inlinable public func reduce<Result>(into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> ()) rethrows -> Result {
+    public func reduce<Result>(into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> ()) rethrows -> Result {
         var accum: Result = initialResult
         try forEach { try updateAccumulatingResult(&accum, $0) }
         return accum
     }
 
-    @inlinable public func compactMap<ElementOfResult>(_ transform: (Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult] {
+    public func compactMap<ElementOfResult>(_ transform: (Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult] {
         var out: [ElementOfResult] = []
         try forEach { if let r = try transform($0) { out.append(r) } }
         return out
     }
 
-    @inlinable public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeDictionary<Key, T> {
+    public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeDictionary<Key, T> {
         let tree = TreeDictionary<Key, T>()
         try forEach { if let v = try transform($0.value) { tree[$0.key] = v } }
         return tree
     }
 
-    @inlinable public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> [Key: T] {
-        var out: [Key:T] = [:]
+    public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> [Key: T] {
+        var out: [Key: T] = [:]
         try forEach { if let v = try transform($0.value) { out[$0.key] = v } }
         return out
     }
 
-    @inlinable public func sorted(by: (Element, Element) throws -> Bool) rethrows -> [Element] {
+    public func sorted(by: (Element, Element) throws -> Bool) rethrows -> [Element] {
         var out: [Element] = map { $0 }
         try out.sort(by: by)
         return out
     }
 
-    @inlinable public func shuffled() -> [Element] {
+    public func shuffled() -> [Element] {
         var out: [Element] = map { $0 }
         out.shuffle()
         return out
     }
 
-    @inlinable public func shuffled<T>(using generator: inout T) -> [Element] where T: RandomNumberGenerator {
+    public func shuffled<T>(using generator: inout T) -> [Element] where T: RandomNumberGenerator {
         var out: [Element] = map { $0 }
         out.shuffle(using: &generator)
         return out
     }
 
-    @inlinable public var underestimatedCount: Int { count }
+    public var underestimatedCount: Int { count }
 
     /*==========================================================================================================*/
     /// Tree dictionaries are not suitable for this method as the nodes are not stored in contiguous memory. As
@@ -283,5 +280,5 @@ extension TreeDictionary {
     /// - Returns: The value returned by the closure.
     /// - Throws: Any error thrown by the closure.
     ///
-    @inlinable public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R? { nil }
+    public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R? { nil }
 }

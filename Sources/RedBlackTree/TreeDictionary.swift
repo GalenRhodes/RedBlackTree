@@ -71,16 +71,16 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// Complexity: O(1).
     ///
     open              var count:      Int                         { lock.withLock { (rootNode?.count ?? 0) } }
-    open              var first:      Element?                    { lock.withLock { _first                 } }
-    open              var last:       Element?                    { lock.withLock { _last                  } }
+    open              var first:      Element?                    { lock.withLock { rootNode?.first.data   } }
+    open              var last:       Element?                    { lock.withLock { rootNode?.last.data    } }
     public lazy       var keys:       Keys                        = { Keys(tree: self)   }()
     public lazy       var values:     Values                      = { Values(tree: self) }()
 
-    @usableFromInline var rootNode:   TreeNode<Key, Value>?       = nil
-    @usableFromInline var descCache:  String?                     = nil
-    @usableFromInline let lock:       NSLocking                   = NSRecursiveLock()
-    @usableFromInline var changed:    Int                         = 0
-    @usableFromInline var random:     SystemRandomNumberGenerator = SystemRandomNumberGenerator()
+    var rootNode:   TreeNode<Key, Value>?       = nil
+    var descCache:  String?                     = nil
+    let lock:       NSLocking                   = NSRecursiveLock()
+    var changed:    Int                         = 0
+    var random:     SystemRandomNumberGenerator = SystemRandomNumberGenerator()
     //@f:1
 
     /*==========================================================================================================*/
@@ -270,15 +270,15 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     ///    ```
     ///
     @frozen public struct Index: Comparable, Hashable {
-        @usableFromInline let index: Int
+        let index: Int
 
-        @inlinable init(index: Int) { self.index = index }
+        init(index: Int) { self.index = index }
 
-        @inlinable public static func < (lhs: Index, rhs: Index) -> Bool { (lhs.index < rhs.index) }
+        public static func < (lhs: Index, rhs: Index) -> Bool { (lhs.index < rhs.index) }
 
-        @inlinable public static func == (lhs: Index, rhs: Index) -> Bool { (lhs.index == rhs.index) }
+        public static func == (lhs: Index, rhs: Index) -> Bool { (lhs.index == rhs.index) }
 
-        @inlinable public func hash(into hasher: inout Hasher) { hasher.combine(index) }
+        public func hash(into hasher: inout Hasher) { hasher.combine(index) }
     }
 
     open func distance(from start: Index, to end: Index) -> Int { (end.index - start.index) }
@@ -313,17 +313,17 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// iteration if the underlying collection mutates. So, that is what we will do here.
     ///
     public struct Iterator: IteratorProtocol {
-        @usableFromInline let tree:     TreeDictionary<Key, Value>
-        @usableFromInline let changed:  Int
-        @usableFromInline var nextNode: TreeNode<Key, Value>?
+        let tree:     TreeDictionary<Key, Value>
+        let changed:  Int
+        var nextNode: TreeNode<Key, Value>?
 
-        @inlinable init(tree: TreeDictionary<Key, Value>) {
+        init(tree: TreeDictionary<Key, Value>) {
             self.tree = tree
             changed = tree.changed
-            nextNode = tree.rootNode?.nextFalling
+            nextNode = tree.rootNode?.first
         }
 
-        @inlinable public mutating func next() -> Element? {
+        public mutating func next() -> Element? {
             tree.lock.withLock {
                 if tree.changed != changed { nextNode = nil }
                 guard let node = nextNode else { return nil }
@@ -354,16 +354,10 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
 
 extension TreeDictionary: Equatable where Key: Equatable, Value: Equatable {
 
-    @inlinable public static func == (lhs: TreeDictionary<Key, Value>, rhs: TreeDictionary<Key, Value>) -> Bool {
-        if lhs === rhs { return true }
-        return lhs.lock.withLock {
-            rhs.lock.withLock {
-                guard lhs.count == rhs.count else { return false }
-                guard lhs.count > 0 else { return true }
-                for (key, value) in lhs { guard let n = rhs[key], value == n else { return false } }
-                return true
-            }
-        }
+    public static func == (lhs: TreeDictionary<Key, Value>, rhs: TreeDictionary<Key, Value>) -> Bool { lhs.lock.withLock { rhs.lock.withLock { areEqual(lhs, rhs) } } }
+
+    @inlinable static func areEqual(_ lhs: TreeDictionary<Key, Value>, _ rhs: TreeDictionary<Key, Value>) -> Bool {
+        ((lhs === rhs) || ((lhs.count == rhs.count) && ((lhs.count == 0) || lhs._allSatisfy({ rhs[$0.key] == $0.value }))))
     }
 }
 
@@ -374,7 +368,7 @@ extension TreeDictionary: Hashable where Key: Hashable, Value: Hashable {
     /// 
     /// - Parameter hasher: The hasher.
     ///
-    @inlinable public func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         lock.withLock {
             hasher.combine(count)
             guard let r = rootNode else { return }
@@ -390,7 +384,7 @@ extension TreeDictionary: CustomStringConvertible, CustomDebugStringConvertible 
     /*==========================================================================================================*/
     /// A string that represents the contents of the dictionary.
     ///
-    @inlinable public var description: String {
+    public var description: String {
         lock.withLock {
             if let d = descCache { return d }
             descCache = _description
@@ -401,9 +395,9 @@ extension TreeDictionary: CustomStringConvertible, CustomDebugStringConvertible 
     /*==========================================================================================================*/
     /// A string that represents the contents of the dictionary, suitable for debugging.
     ///
-    @inlinable public var debugDescription: String { description }
+    public var debugDescription: String { description }
 
-    @usableFromInline var _description: String {
+    var _description: String {
         guard let root = rootNode else { return "[]" }
         var out: String = "[ "
         root.forEach { node in out.append("\"\(node.key)\": \"\(node.value)\", ") }

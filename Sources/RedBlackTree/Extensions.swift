@@ -24,3 +24,16 @@ extension NSLocking {
         return try body()
     }
 }
+
+@inlinable func pow<T: BinaryInteger>(_ base: T, _ power: T) -> T {
+    func expBySq(_ y: T, _ x: T, _ n: T) -> T {
+        precondition(n >= 0)
+        return (n == 0 ? y : (n == 1 ? y * x : (n.isMultiple(of: 2) ? expBySq(y, x * x, n / 2) : expBySq(y * x, x * x, (n - 1) / 2))))
+    }
+
+    return expBySq(1, base, power)
+}
+
+@usableFromInline enum ComparisonResult { case LessThan, GreaterThan, Equal }
+
+@inlinable func compare<T>(_ a: T, _ b: T) -> ComparisonResult where T: Comparable { (a < b ? .LessThan : (a > b ? .GreaterThan : .Equal)) }
