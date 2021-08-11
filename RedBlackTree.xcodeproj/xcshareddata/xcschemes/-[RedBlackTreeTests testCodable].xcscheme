@@ -26,6 +26,11 @@
                BlueprintName = "RedBlackTreeTests"
                ReferencedContainer = "container:RedBlackTree.xcodeproj">
             </BuildableReference>
+            <SelectedTests>
+               <Test
+                  Identifier = "RedBlackTreeTests/testCodable">
+               </Test>
+            </SelectedTests>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -37,5 +42,11 @@
          identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
          referenceType = "1">
       </LocationScenarioReference>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "$(SRCROOT)"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
 </Scheme>
