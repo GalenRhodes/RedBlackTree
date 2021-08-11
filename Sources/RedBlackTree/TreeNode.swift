@@ -46,7 +46,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Creates a new node with the given key, value, and color.
-    ///
+    /// 
     /// - Parameters:
     ///   - key: The key.
     ///   - value: The value.
@@ -57,7 +57,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Creates a new node with the given key, value, and color.
-    ///
+    /// 
     /// - Parameters:
     ///   - key: The key.
     ///   - value: The value.
@@ -75,7 +75,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Get the element associated with the given key.
-    ///
+    /// 
     /// - Parameter key: The key.
     /// - Returns: The value or `nil` if there is no value for that key.
     ///
@@ -89,7 +89,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Insert the given value associated with the given key into this tree branch.
-    ///
+    /// 
     /// - Parameters:
     ///   - key: The key.
     ///   - value: The value.
@@ -109,7 +109,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Remove this node.
-    ///
+    /// 
     /// - Returns: The new root node for the entire tree.
     ///
     public func removeNode() -> TreeNode<Key, Value>? {
@@ -138,7 +138,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Iterate over this branch in-order.
-    ///
+    /// 
     /// - Parameters:
     ///   - backwards: If `true` then the nodes will be iterated in reverse order.
     ///   - body: The closure to execute for each node.
@@ -159,7 +159,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Find the node with the given index. Causes a fatal error if the index is out-of-bounds.
-    ///
+    /// 
     /// - Parameter index: The numeric index.
     /// - Returns: The node with the given index.
     ///
@@ -174,7 +174,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
 
     /*==========================================================================================================*/
     /// Returns the first node for which the given predicate returns `true`.
-    ///
+    /// 
     /// - Parameter predicate: The predicate.
     /// - Returns: The node or nil if the predicate never returns `true`.
     /// - Throws: Any error thrown by the closure.
@@ -326,7 +326,7 @@ extension TreeNode {
 
     /*==========================================================================================================*/
     /// Rotate this node. If `NodeDirection.Neither` is given then nothing happens.
-    ///
+    /// 
     /// - Parameter dir: The direction to rotate this node - `NodeDirection.Left`, `NodeDirection.Right`.
     ///
     @inlinable func rotate(toThe dir: NodeDirection) {
@@ -340,7 +340,7 @@ extension TreeNode {
 
     /*==========================================================================================================*/
     /// Insert a new key/value into the given branch.
-    ///
+    /// 
     /// - Parameters:
     ///   - field: The top node of the branch.
     ///   - key: The key.
@@ -420,7 +420,7 @@ extension TreeNode {
     /*==========================================================================================================*/
     /// With respect to it's parent, swap this node with the given node. This node will become an orphan. Does not
     /// affect the child nodes of this node nor the other node.
-    ///
+    /// 
     /// - Parameter node: The node to take the place of this node.
     ///
     @inlinable func simpleSwap(with node: TNode?) {
@@ -431,7 +431,7 @@ extension TreeNode {
 
     /*==========================================================================================================*/
     /// Get one of this node's children.
-    ///
+    /// 
     /// - Parameter side: Which child node to get.
     /// - Returns: The child node or `nil` if there was no child node on that side or `NodeDirection.Neither` was
     ///            given.
@@ -466,7 +466,7 @@ extension TreeNode.NodeDirection {
 
     /*==========================================================================================================*/
     /// Returns the opposite direction of this node direction.
-    ///
+    /// 
     /// - Parameter op: The `NodeDirection`.
     /// - Returns: `NodeDirection.Left` if `op` is `NodeDirection.Right`. `NodeDirection.Right` if `op` is
     ///            `NodeDirection.Left`. `NodeDirection.Neither` is returned unchanged.

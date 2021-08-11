@@ -31,18 +31,18 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     public      let capacity:   Int      = Int.max
     /*==========================================================================================================*/
     /// The position of the first element in a nonempty collection.
-    ///
+    /// 
     /// If the collection is empty, startIndex is equal to endIndex.
     ///
     public      let startIndex: Index    = Index(index: 0)
     /*==========================================================================================================*/
     /// The collection’s “past the end” position—that is, the position one greater than the last valid subscript
     /// argument.
-    ///
+    /// 
     /// When you need a range that includes the last element of a collection, use the half-open range operator
     /// (..<) with endIndex. The ..< operator creates a range that doesn’t include the upper bound, so it’s always
     /// safe to use with endIndex. For example:
-    ///
+    /// 
     /// ```
     /// let numbers = [10, 20, 30, 40, 50]
     /// if let index = numbers.firstIndex(of: 30) {
@@ -50,13 +50,13 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// }
     /// // Prints "[30, 40, 50]"
     /// ```
-    ///
+    /// 
     /// If the collection is empty, endIndex is equal to startIndex.
     ///
     open        var endIndex:   Index    { lock.withLock { Index(index: count)    } }
     /*==========================================================================================================*/
     /// A Boolean value that indicates whether the dictionary is empty.
-    ///
+    /// 
     /// Dictionaries are empty when created with an initializer or an empty dictionary literal.
     /// ```
     /// var frequencies: TreeDictionary<String, Int> = TreeDictionary()
@@ -67,7 +67,7 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     open        var isEmpty:    Bool     { lock.withLock { (rootNode == nil)      } }
     /*==========================================================================================================*/
     /// The number of key-value pairs in the dictionary.
-    ///
+    /// 
     /// Complexity: O(1).
     ///
     open        var count:      Int      { lock.withLock { (rootNode?.count ?? 0) } }
@@ -102,41 +102,41 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with all the elements from this dictionary. It does not create a copy
     /// of the elements themselves. The original binary tree dictionary is left unchanged.
-    ///
+    /// 
     /// - Parameter tree: The binary tree dictionary to take the elements from.
     ///
     public init(treeDictionary tree: TreeDictionary<Key, Value>) { tree.forEach { self[$0.key] = $0.value } }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements from the given hashable dictionary.
-    ///
+    /// 
     /// - Parameter dictionary: The source dictionary.
     ///
     public init(dictionary: [Key: Value]) where Key: Hashable { for e in dictionary { self[e.key] = e.value } }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements given.
-    ///
+    /// 
     /// - Parameter elements: The list of initial elements to put in the dictionary.
     ///
     public required convenience init(dictionaryLiteral elements: (Key, Value)...) { self.init(elements: elements) }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements given.
-    ///
+    /// 
     /// - Parameter elements: The list of initial elements to put in the dictionary.
     ///
     public init(elements: [(Key, Value)]) { for (key, value) in elements { self[key] = value } }
 
     /*==========================================================================================================*/
     /// Accesses the key-value pair at the specified position.
-    ///
+    /// 
     /// This subscript takes an index into the dictionary, instead of a key, and returns the corresponding
     /// key-value pair as a tuple. When performing collection-based operations that return an index into a
     /// dictionary, use this subscript with the resulting value.
-    ///
+    /// 
     /// For example, to find the key for a particular value in a dictionary, use the firstIndex(where:) method.
-    ///
+    /// 
     /// ```
     /// let countryCodes = ["BR": "Brazil", "GH": "Ghana", "JP": "Japan"]
     /// if let index = countryCodes.firstIndex(where: { $0.value == "Japan" }) {
@@ -148,7 +148,7 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// // Prints "(key: "JP", value: "Japan")"
     /// // Prints "Japan's country code is 'JP'."
     /// ```
-    ///
+    /// 
     /// - Parameter position: The position of the key-value pair to access. position must be a valid index of the
     ///                       dictionary and not equal to `endIndex`.
     /// - Returns: A two-element tuple with the key and value corresponding to position.
@@ -157,13 +157,13 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
 
     /*==========================================================================================================*/
     /// Accesses the value associated with the given key for reading and writing.
-    ///
+    /// 
     /// This key-based subscript returns the value for the given key if the key is found in the dictionary, or nil
     /// if the key is not found.
-    ///
+    /// 
     /// The following example creates a new dictionary and prints the value of a key found in the dictionary
     /// ("Coral") and a key not found in the dictionary ("Cerise").
-    ///
+    /// 
     /// ```
     /// var hues = ["Heliotrope": 296, "Coral": 16, "Aquamarine": 156]
     /// print(hues["Coral"])
@@ -171,34 +171,34 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// print(hues["Cerise"])
     /// // Prints "nil"
     /// ```
-    ///
+    /// 
     /// When you assign a value for a key and that key already exists, the dictionary overwrites the existing
     /// value. If the dictionary doesn’t contain the key, the key and value are added as a new key-value pair.
-    ///
+    /// 
     /// Here, the value for the key "Coral" is updated from 16 to 18 and a new key-value pair is added for the key
     /// "Cerise".
-    ///
+    /// 
     /// ```
     /// hues["Coral"] = 18
     /// print(hues["Coral"])
     /// // Prints "Optional(18)"
-    ///
+    /// 
     /// hues["Cerise"] = 330
     /// print(hues["Cerise"])
     /// // Prints "Optional(330)"
     /// ```
-    ///
+    /// 
     /// If you assign nil as the value for the given key, the dictionary removes that key and its associated value.
-    ///
+    /// 
     /// In the following example, the key-value pair for the key "Aquamarine" is removed from the dictionary by
     /// assigning nil to the key-based subscript.
-    ///
+    /// 
     /// ```
     /// hues["Aquamarine"] = nil
     /// print(hues)
     /// // Prints "["Coral": 18, "Heliotrope": 296, "Cerise": 330]"
     /// ```
-    ///
+    /// 
     /// - Parameter key: The key to find in the dictionary.
     /// - Returns: The value associated with key if key is in the dictionary; otherwise, nil.
     ///
@@ -211,17 +211,17 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
 
     /*==========================================================================================================*/
     /// Accesses the value with the given key, falling back to the given default value if the key isn’t found.
-    ///
+    /// 
     /// Use this subscript when you want either the value for a particular key or, when that key is not present in
     /// the dictionary, a default value. This example uses the subscript with a message to use in case an HTTP
     /// response code isn’t recognized:
-    ///
+    /// 
     /// ```
     /// var responseMessages = [200: "OK",
     ///                         403: "Access forbidden",
     ///                         404: "File not found",
     ///                         500: "Internal server error"]
-    ///
+    /// 
     /// let httpResponseCodes = [200, 403, 301]
     /// for code in httpResponseCodes {
     ///     let message = responseMessages[code, default: "Unknown response"]
@@ -231,11 +231,11 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// // Prints "Response 403: Access forbidden"
     /// // Prints "Response 301: Unknown response"
     /// ```
-    ///
+    /// 
     /// When a dictionary’s Value type has value semantics, you can use this subscript to perform in-place
     /// operations on values in the dictionary. The following example uses this subscript while counting the
     /// occurrences of each letter in a string:
-    ///
+    /// 
     /// ```
     /// let message = "Hello, Elle!"
     /// var letterCounts: [Character: Int] = [:]
@@ -244,14 +244,14 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// }
     /// // letterCounts == ["H": 1, "e": 2, "l": 4, "o": 1, ...]
     /// ```
-    ///
+    /// 
     /// When letterCounts[letter, default: 0] += 1 is executed with a value of letter that isn’t already a key in
     /// letterCounts, the specified default value (0) is returned from the subscript, incremented, and then added
     /// to the dictionary under that key.
-    ///
+    /// 
     /// > Note > Do not use this subscript to modify dictionary values if the dictionary’s Value type is a class.
     /// > In that case, the default value and key are not written back to the dictionary after an operation.
-    ///
+    /// 
     /// - Parameters:
     ///   - key: The key the look up in the dictionary.
     ///   - defaultValue: The default value to use if key doesn’t exist in the dictionary.
@@ -268,9 +268,9 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
 
     /*==========================================================================================================*/
     /// The position of a key-value pair in a dictionary.
-    ///
+    /// 
     /// Dictionary has two subscripting interfaces:
-    ///
+    /// 
     /// 1) Subscripting with a key, yielding an optional value:
     ///    ```
     ///    v = d[k]!
@@ -379,7 +379,7 @@ extension TreeDictionary: Hashable where Key: Hashable, Value: Hashable {
     /*==========================================================================================================*/
     /// Hashes the essential components of this value by feeding them into the given hasher.Hashes the essential
     /// components of this value by feeding them into the given hasher.
-    ///
+    /// 
     /// - Parameter hasher: The hasher.
     ///
     public func hash(into hasher: inout Hasher) {

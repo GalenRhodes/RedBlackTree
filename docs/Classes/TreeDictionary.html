@@ -95,12 +95,13 @@
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TreeDictionary</span><span class="p">:</span> <span class="kt">CustomStringConvertible</span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TreeDictionary</span><span class="p">:</span> <span class="kt">Equatable</span> <span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Value</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TreeDictionary</span><span class="p">:</span> <span class="kt">Hashable</span> <span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">Value</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TreeDictionary</span><span class="p">:</span> <span class="kt">Codable</span> <span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Value</span><span class="p">:</span> <span class="kt">Codable</span></code></pre>
 
                 </div>
               </div>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L21-L353">Show on GitHub</a>
+                <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L21-L367">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -443,7 +444,36 @@ safe to use with endIndex. For example:</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L89">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L90">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Se4fromxs7Decoder_p_tKcfc"></a>
+                    <a class="dashAnchor" name="//apple_ref/swift/Method/init(from:)"></a>
+                    <a class="token" href="#/s:Se4fromxs7Decoder_p_tKcfc">init(from:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">required</span> <span class="nf">init</span><span class="p">(</span><span class="n">from</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">Decoder</span><span class="p">)</span> <span class="k">throws</span> <span class="k">where</span> <span class="kt">Key</span> <span class="p">:</span> <span class="kt">Decodable</span><span class="p">,</span> <span class="kt">Key</span> <span class="p">:</span> <span class="kt">Encodable</span><span class="p">,</span> <span class="kt">Value</span> <span class="p">:</span> <span class="kt">Decodable</span><span class="p">,</span> <span class="kt">Value</span> <span class="p">:</span> <span class="kt">Encodable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L92-L100">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -493,7 +523,7 @@ of the elements themselves. The original binary tree dictionary is left unchange
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L97">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L108">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -542,7 +572,7 @@ of the elements themselves. The original binary tree dictionary is left unchange
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L104">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L115">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -591,7 +621,7 @@ of the elements themselves. The original binary tree dictionary is left unchange
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L111">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L122">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -640,7 +670,7 @@ of the elements themselves. The original binary tree dictionary is left unchange
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L118">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L129">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -710,7 +740,7 @@ dictionary, use this subscript with the resulting value.</p>
                         <p>A two-element tuple with the key and value corresponding to position.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L145">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L156">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -798,7 +828,7 @@ assigning nil to the key-based subscript.</p>
                         <p>The value associated with key if key is in the dictionary; otherwise, nil.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L194-L199">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L205-L210">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -901,7 +931,7 @@ In that case, the default value and key are not written back to the dictionary a
                         <p>The value associated with key in the dictionary; otherwise, <code>defaultValue</code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L249-L254">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L260-L265">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1055,7 +1085,7 @@ In that case, the default value and key are not written back to the dictionary a
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L290-L294">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L301-L305">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1084,7 +1114,7 @@ In that case, the default value and key are not written back to the dictionary a
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L296-L301">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L307-L312">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1113,7 +1143,7 @@ In that case, the default value and key are not written back to the dictionary a
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L303-L308">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L314-L319">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1239,7 +1269,7 @@ In that case, the default value and key are not written back to the dictionary a
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L342-L348">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L353-L362">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -2339,7 +2369,7 @@ such this method simply returns nil without calling the clousre.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L387-L393">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L401-L407">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -2369,7 +2399,7 @@ such this method simply returns nil without calling the clousre.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L398">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L412">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -2474,7 +2504,49 @@ components of this value by feeding them into the given hasher.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L371-L380">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L385-L394">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Key%60%3A%20%60Codable%60%2C%20%60Value%60%3A%20%60Codable%60"></a>
+                <a class="dashAnchor" name="//apple_ref/swift/Section/Available where `Key`: `Codable`, `Value`: `Codable`"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Key%60%3A%20%60Codable%60%2C%20%60Value%60%3A%20%60Codable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Key</code>: <code>Codable</code>, <code>Value</code>: <code>Codable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SE6encode2toys7Encoder_p_tKF"></a>
+                    <a class="dashAnchor" name="//apple_ref/swift/Method/encode(to:)"></a>
+                    <a class="token" href="#/s:SE6encode2toys7Encoder_p_tKF">encode(to:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encode</span><span class="p">(</span><span class="n">to</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">Encoder</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeDictionary.swift#L428-L433">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -2487,7 +2559,7 @@ components of this value by feeding them into the given hasher.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2021 <a class="link" href="https://blog.projectgalen.com" rel="external" target="_blank">Galen Rhodes</a>. All rights reserved. (Last updated: 2021-08-06)</p>
+      <p>&copy; 2021 <a class="link" href="https://blog.projectgalen.com" rel="external" target="_blank">Galen Rhodes</a>. All rights reserved. (Last updated: 2021-08-11)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.7</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
