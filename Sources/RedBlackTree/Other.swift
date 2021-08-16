@@ -63,7 +63,7 @@ extension TreeDictionary {
     public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> TreeDictionary<Key, Value> {
         try lock.withLock {
             let tree = TreeDictionary<Key, Value>()
-            try _forEach { if try isIncluded($0) { _update($0) } }
+            try _forEach(reverse: false) { if try isIncluded($0) { _update($0) } }
             return tree
         }
     }
@@ -169,6 +169,35 @@ extension TreeDictionary {
         }
     }
 
+    /*==========================================================================================================*/
+    /// Returns the last element of the sequence that satisfies the given predicate.
+    /// 
+    /// The following example uses the last(where:) method to find the last negative number in an array of
+    /// integers:
+    /// 
+    /// ```
+    /// let numbers = [3, 7, 4, -2, 9, -6, 10, 1]
+    /// if let lastNegative = numbers.last(where: { $0 < 0 }) {
+    ///     print("The last negative number is \(lastNegative).")
+    /// }
+    /// // Prints "The last negative number is -6."
+    /// ```
+    /// 
+    /// Complexity: O(n), where n is the length of the sequence.
+    /// 
+    /// - Parameter predicate: A closure that takes an element of the sequence as its argument and returns a
+    ///                        Boolean value indicating whether the element is a match.
+    /// - Returns: The last element of the sequence that satisfies predicate, or nil if there is no element that
+    ///            satisfies predicate.
+    /// - Throws: Any error thrown by the closure.
+    ///
+    public func last(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+        try lock.withLock {
+            guard let n = try _lastNode(where: { node in try predicate(node.data) }) else { return nil }
+            return n.data
+        }
+    }
+
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
         try lock.withLock {
             guard let n = try _firstNode(where: { node in try predicate(node.data) }) else { return nil }
@@ -176,10 +205,17 @@ extension TreeDictionary {
         }
     }
 
+    public func lastIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+        try lock.withLock {
+            guard let n = try _lastNode(where: { node in try predicate(node.data) }) else { return nil }
+            return Index(index: n.index)
+        }
+    }
+
     @warn_unqualified_access public func min(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Element? {
         try lock.withLock {
             var minElem: Element? = nil
-            try _forEach {
+            try _forEach(reverse: false) {
                 if let e = minElem { if try areInIncreasingOrder($0, e) { minElem = $0 } }
                 else { minElem = $0 }
             }
@@ -190,7 +226,7 @@ extension TreeDictionary {
     @warn_unqualified_access public func max(by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Element? {
         try lock.withLock {
             var maxElem: Element? = nil
-            try _forEach {
+            try _forEach(reverse: false) {
                 if let e = maxElem { if try areInIncreasingOrder(e, $0) { maxElem = $0 } }
                 else { maxElem = $0 }
             }
@@ -242,7 +278,7 @@ extension TreeDictionary {
 
     public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeDictionary<Key, T> {
         let tree = TreeDictionary<Key, T>()
-        try forEach { if let v = try transform($0.value) { tree[$0.key] = v } }
+        try forEach { if let v = try transform($0.value) { tree.updateValue(v, forKey: $0.key) } }
         return tree
     }
 
@@ -281,4 +317,36 @@ extension TreeDictionary {
     /// - Throws: Any error thrown by the closure.
     ///
     public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R? { nil }
+
+    @inlinable public func forEachInInsertOrder(reverse: Bool = false, _ body: (Element) throws -> Void) rethrows {
+        try _forEachInInsertOrder(reverse: reverse, body)
+    }
+
+    @inlinable func _forEachInInsertOrder(reverse: Bool, _ body: (Element) throws -> Void) rethrows {
+        var node = (reverse ? listLast : listFirst)
+        while let n = node {
+            try body(n.data)
+            node = (reverse ? n.listPrev : n.listNext)
+        }
+    }
+
+    public func firstInInsertOrder(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+        var node = listFirst
+        while let n = node {
+            let e = n.data
+            if try predicate(e) { return e }
+            node = n.listNext
+        }
+        return nil
+    }
+
+    public func lastInInsertOrder(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+        var node = listLast
+        while let n = node {
+            let e = n.data
+            if try predicate(e) { return e }
+            node = n.listPrev
+        }
+        return nil
+    }
 }

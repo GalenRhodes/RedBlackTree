@@ -40,6 +40,47 @@ class RedBlackTreeTests: XCTestCase {
         try decodedTree.rootNode?.drawTree(url: imageAfterURL)
     }
 
+    func testInOrder() throws {
+        let tree:    TreeDictionary<String, NodeTestValue> = TreeDictionary<String, NodeTestValue>(trackOrder: true)
+        let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
+        let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< 10]).shuffled()
+
+        print("Inserting: ", terminator: "")
+        var str1: String = ""
+        for ch in dataIns {
+            let s = String(ch)
+            str1 += s
+            print(s, terminator: "")
+            tree[s] = NodeTestValue()
+        }
+        print("")
+
+        print(" Checking: ", terminator: "")
+        var str2: String = ""
+        tree.forEachInInsertOrder {
+            let s: String = $0.key
+            str2 += s
+            print(s, terminator: "")
+        }
+        print("")
+        print("")
+
+        guard str1 == str2 else { XCTFail("Strings don't match: \"\(str1)\" != \"\(str2)\""); return }
+        print("Strings match: \"\(str1)\" == \"\(str2)\"")
+
+        print("")
+        print("Removing: \"", terminator: "")
+        for ch in dataDel {
+            let s = String(ch)
+            print(s, terminator: "")
+            tree.removeValue(forKey: s)
+        }
+        print("\"")
+        print(" Results: \"", terminator: "")
+        tree.forEachInInsertOrder { print($0.key, terminator: "") }
+        print("\"")
+    }
+
     func testSlow() throws {
         try performTests(rounds: 4, doDraw: true)
     }
@@ -59,7 +100,7 @@ class RedBlackTreeTests: XCTestCase {
             print("Round \(x) of \(rounds)...")
 
             let tree:    TreeDictionary<String, NodeTestValue> = TreeDictionary<String, NodeTestValue>()
-            let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=\"':;>.<,?|`~/\\🤣".shuffled()
+            let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
             let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< (dataIns.count / 2)])
 
             for i in (0 ..< dataIns.count) {

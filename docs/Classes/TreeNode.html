@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           RedBlackTree©
         </a>
-         (60% documented)
+         (58% documented)
       </p>
 
       <p class="header-col--secondary">
@@ -53,6 +53,9 @@
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LinkedListTreeNode.html">LinkedListTreeNode</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/TreeDictionary.html">TreeDictionary</a>
               </li>
@@ -98,7 +101,7 @@
               </div>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L20-L188">Show on GitHub</a>
+                <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L20-L210">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -375,7 +378,7 @@
                         <p>The new root node for the entire tree.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L115-L137">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L115-L118">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -441,7 +444,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L147-L158">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L143-L154">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -494,7 +497,7 @@
                         <p>The node with the given index.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L166-L173">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L162-L169">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -552,7 +555,65 @@
                         <p>The node or nil if the predicate never returns <code>true</code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L182-L187">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L178-L183">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12RedBlackTree0C4NodeC04lastD05whereACyxq_GSgSbAFKXE_tKF"></a>
+                    <a class="dashAnchor" name="//apple_ref/swift/Method/lastNode(where:)"></a>
+                    <a class="token" href="#/s:12RedBlackTree0C4NodeC04lastD05whereACyxq_GSgSbAFKXE_tKF">lastNode(where:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the last node for which the given predicate returns <code>true</code>.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Any error thrown by the closure.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">lastNode</span><span class="p">(</span><span class="k">where</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt">TreeNode</span><span class="o">&lt;</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="kt">TreeNode</span><span class="o">&lt;</span><span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>predicate</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The predicate.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The node or nil if the predicate never returns <code>true</code>.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L192-L197">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -583,7 +644,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L194">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L216">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -674,7 +735,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L200-L206">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L222-L228">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -705,7 +766,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L210">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L232">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -736,7 +797,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L214">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L236">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -856,7 +917,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L232-L245">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L254-L267">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -886,7 +947,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L246-L259">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L268-L281">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -916,7 +977,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L523-L525">Show on GitHub</a>
+                        <a href="https://github.com/GalenRhodes/RedBlackTree/blob/master/Sources/RedBlackTree/TreeNode.swift#L562-L564">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -929,7 +990,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2021 <a class="link" href="https://blog.projectgalen.com" rel="external" target="_blank">Galen Rhodes</a>. All rights reserved. (Last updated: 2021-08-11)</p>
+      <p>&copy; 2021 <a class="link" href="https://blog.projectgalen.com" rel="external" target="_blank">Galen Rhodes</a>. All rights reserved. (Last updated: 2021-08-16)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" rel="external" target="_blank">jazzy ♪♫ v0.13.7</a>, a <a class="link" href="https://realm.io" rel="external" target="_blank">Realm</a> project.</p>
     </section>
   </body>

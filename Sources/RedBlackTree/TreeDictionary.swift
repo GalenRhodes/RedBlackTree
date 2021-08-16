@@ -76,9 +76,12 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     public lazy var keys:       Keys     = { Keys(tree: self)   }()
     public lazy var values:     Values   = { Values(tree: self) }()
 
-    var rootNode:  TreeNode<Key, Value>? = nil
-    var descCache: String?               = nil
-    var changed:   Int                   = 0
+    @usableFromInline let trackOrder: Bool
+    @usableFromInline var listFirst:  LinkedListTreeNode<Key, Value>? = nil
+    @usableFromInline var listLast:   LinkedListTreeNode<Key, Value>? = nil
+    @usableFromInline var rootNode:   TreeNode<Key, Value>?           = nil
+    var                   descCache:  String?                         = nil
+    var                   changed:    Int                             = 0
 
     lazy var lock:     NSLocking                   = NSRecursiveLock()
     lazy var random:   SystemRandomNumberGenerator = SystemRandomNumberGenerator()
@@ -87,15 +90,16 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /*==========================================================================================================*/
     /// Create a new, empty binary tree dictionary.
     ///
-    public init() {}
+    public init(trackOrder: Bool = false) { self.trackOrder = trackOrder }
 
     public required init(from decoder: Decoder) throws where Key: Codable, Value: Codable {
         let values: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
-        var elems:  UnkeyedDecodingContainer           = try values.nestedUnkeyedContainer(forKey: .elements)
+        trackOrder = try values.decode(Bool.self, forKey: .trackOrder)
+        var elems: UnkeyedDecodingContainer = try values.nestedUnkeyedContainer(forKey: .elements)
 
         while !elems.isAtEnd {
             let kv: KVPair = try elems.decode(KVPair.self)
-            self[kv.key] = kv.value
+            updateValue(kv.value, forKey: kv.key)
         }
     }
 
@@ -105,28 +109,51 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
     /// 
     /// - Parameter tree: The binary tree dictionary to take the elements from.
     ///
-    public init(treeDictionary tree: TreeDictionary<Key, Value>) { tree.forEach { self[$0.key] = $0.value } }
+    public init(treeDictionary tree: TreeDictionary<Key, Value>, trackOrder: Bool = false) {
+        self.trackOrder = trackOrder
+        tree.forEach { updateValue($0.value, forKey: $0.key) }
+    }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements from the given hashable dictionary.
     /// 
     /// - Parameter dictionary: The source dictionary.
     ///
-    public init(dictionary: [Key: Value]) where Key: Hashable { for e in dictionary { self[e.key] = e.value } }
+    public init(dictionary: [Key: Value], trackOrder: Bool = false) where Key: Hashable {
+        self.trackOrder = trackOrder
+        for e in dictionary { updateValue(e.value, forKey: e.key) }
+    }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements given.
     /// 
     /// - Parameter elements: The list of initial elements to put in the dictionary.
     ///
-    public required convenience init(dictionaryLiteral elements: (Key, Value)...) { self.init(elements: elements) }
+    public required convenience init(dictionaryLiteral elements: (Key, Value)...) {
+        self.init(elements: elements, trackOrder: false)
+    }
+
+    /*==========================================================================================================*/
+    /// Create a new binary tree dictionary with the elements given.
+    /// 
+    /// - Parameters:
+    ///   - trackOrder: If `true` the tree dictionary will track the order in which the elements where put in the
+    ///                 tree.
+    ///   - elements: The list of initial elements to put in the dictionary.
+    ///
+    public convenience init(trackOrder: Bool, dictionaryLiteral elements: (Key, Value)...) {
+        self.init(elements: elements, trackOrder: trackOrder)
+    }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the elements given.
     /// 
     /// - Parameter elements: The list of initial elements to put in the dictionary.
     ///
-    public init(elements: [(Key, Value)]) { for (key, value) in elements { self[key] = value } }
+    public init(elements: [(Key, Value)], trackOrder: Bool = false) {
+        self.trackOrder = trackOrder
+        for (key, value) in elements { updateValue(value, forKey: key) }
+    }
 
     /*==========================================================================================================*/
     /// Accesses the key-value pair at the specified position.
@@ -264,7 +291,7 @@ open class TreeDictionary<Key, Value>: ExpressibleByDictionaryLiteral, Bidirecti
         }
     }
 
-    open func forEach(_ body: (Element) throws -> Void) rethrows { try lock.withLock { try _forEach(body: body) } }
+    open func forEach(reverse: Bool = false, _ body: (Element) throws -> Void) rethrows { try lock.withLock { try _forEach(reverse: reverse, body: body) } }
 
     /*==========================================================================================================*/
     /// The position of a key-value pair in a dictionary.
@@ -422,14 +449,15 @@ extension TreeDictionary: CustomStringConvertible, CustomDebugStringConvertible 
 extension TreeDictionary: Codable where Key: Codable, Value: Codable {
 
     enum CodingKeys: String, CodingKey {
-        case elements
+        case elements, trackOrder
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        var elems     = container.nestedUnkeyedContainer(forKey: .elements)
-
-        try forEach { e in try elems.encode(KVPair(key: e.key, value: e.value)) }
+        try container.encode(trackOrder, forKey: .trackOrder)
+        var elems = container.nestedUnkeyedContainer(forKey: .elements)
+        if trackOrder { try forEachInInsertOrder { e in try elems.encode(KVPair(key: e.key, value: e.value)) } }
+        else { try forEach { e in try elems.encode(KVPair(key: e.key, value: e.value)) } }
     }
 
     struct KVPair: Codable {

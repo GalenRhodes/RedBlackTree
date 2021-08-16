@@ -28,7 +28,7 @@
             </BuildableReference>
             <SelectedTests>
                <Test
-                  Identifier = "RedBlackTreeTests/testCodable">
+                  Identifier = "RedBlackTreeTests/testInOrder">
                </Test>
             </SelectedTests>
          </TestableReference>

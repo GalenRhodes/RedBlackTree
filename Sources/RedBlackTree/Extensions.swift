@@ -37,3 +37,9 @@ extension NSLocking {
 @usableFromInline enum ComparisonResult { case LessThan, GreaterThan, Equal }
 
 @inlinable func compare<T>(_ a: T, _ b: T) -> ComparisonResult where T: Comparable { (a < b ? .LessThan : (a > b ? .GreaterThan : .Equal)) }
+
+@inlinable func foobar<T>(start: T, getNext: (T) throws -> T?) rethrows -> T {
+    var x = start
+    while let y = try getNext(x) { x = y }
+    return x
+}

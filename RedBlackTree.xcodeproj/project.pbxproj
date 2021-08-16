@@ -15,9 +15,10 @@
 		1117D60E41081134F769CE9E /* TreeDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D4619229FBE49822744B /* TreeDictionary.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117D85677836D8BD80600D2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DE3ED5D06C29C8FB8375 /* Extensions.swift */; };
+		1117DA02120A81949F3D4539 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D702095B5A6E37BD3EF9 /* TreeNode.swift */; };
 		1117DA9C74025D10AEF3CCA6 /* KeysValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D5AF9907CF71EB488512 /* KeysValues.swift */; };
+		1117DAAAD0FE78E78A5A43DF /* LinkedListTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D2CC7573E2B3EFD15511 /* LinkedListTreeNode.swift */; };
 		1117DC7389B58F1FCED12E6E /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9BCE26DC5F66387B945 /* Other.swift */; };
-		1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DE08CD02AE5A97584FC1 /* TreeNode.swift */; };
 		1117DF87D3C8C8EBF4622431 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D66249D5A0BFA534BCEC /* Utils.swift */; };
 		1117DFE49B070BC7654BB538 /* BaseFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DF5194C0AF4E333A576B /* BaseFunctions.swift */; };
 		1117DFFDC61C257EE38F1F4C /* NodeDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBCCB65205961FC30420 /* NodeDrawing.swift */; };
@@ -57,11 +58,13 @@
 /* Begin PBXFileReference section */
 		1117D0B0A96E394937F6886E /* NodeTestValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeTestValue.swift; sourceTree = "<group>"; };
 		1117D2592B5FEFEC531E44E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		1117D2CC7573E2B3EFD15511 /* LinkedListTreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkedListTreeNode.swift; sourceTree = "<group>"; };
 		1117D3452643657570F9AD4B /* RawElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawElements.swift; sourceTree = "<group>"; };
 		1117D4619229FBE49822744B /* TreeDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeDictionary.swift; sourceTree = "<group>"; };
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1117D5AF9907CF71EB488512 /* KeysValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeysValues.swift; sourceTree = "<group>"; };
 		1117D66249D5A0BFA534BCEC /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		1117D702095B5A6E37BD3EF9 /* TreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
 		1117D9BCE26DC5F66387B945 /* Other.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
 		1117D9D907EAA3B3EABFDA0D /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
@@ -73,7 +76,6 @@
 		1117DCC4B505E10107FDCA70 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117DD1A7411CA7754BAECE7 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1117DDDDD8D4C2B552CB7431 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
-		1117DE08CD02AE5A97584FC1 /* TreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
 		1117DE3ED5D06C29C8FB8375 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1117DF5194C0AF4E333A576B /* BaseFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFunctions.swift; sourceTree = "<group>"; };
 		1117DF611A3BE5130735AAF8 /* .jazzy.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .jazzy.yaml; sourceTree = "<group>"; };
@@ -117,6 +119,15 @@
 				1117DCC4B505E10107FDCA70 /* Info.plist */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		1117D602FB13861C79AEB4A8 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				1117D702095B5A6E37BD3EF9 /* TreeNode.swift */,
+				1117D2CC7573E2B3EFD15511 /* LinkedListTreeNode.swift */,
+			);
+			name = Nodes;
 			sourceTree = "<group>";
 		};
 		1117DABA08A5FB9993CAB94C /* Config */ = {
@@ -172,7 +183,6 @@
 			isa = PBXGroup;
 			children = (
 				1117D13A35E13BDFB2F826D1 /* Other */,
-				1117DE08CD02AE5A97584FC1 /* TreeNode.swift */,
 				1117D4619229FBE49822744B /* TreeDictionary.swift */,
 				1117D9D907EAA3B3EABFDA0D /* Dictionary.swift */,
 				1117DE3ED5D06C29C8FB8375 /* Extensions.swift */,
@@ -180,6 +190,7 @@
 				1117D5AF9907CF71EB488512 /* KeysValues.swift */,
 				1117DF5194C0AF4E333A576B /* BaseFunctions.swift */,
 				1117D3452643657570F9AD4B /* RawElements.swift */,
+				1117D602FB13861C79AEB4A8 /* Nodes */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -359,7 +370,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1117DF0797CBC19067BF4A43 /* TreeNode.swift in Sources */,
 				1117D60E41081134F769CE9E /* TreeDictionary.swift in Sources */,
 				1117D3177A4F8D7057637012 /* Dictionary.swift in Sources */,
 				1117D85677836D8BD80600D2 /* Extensions.swift in Sources */,
@@ -367,6 +377,8 @@
 				1117DA9C74025D10AEF3CCA6 /* KeysValues.swift in Sources */,
 				1117DFE49B070BC7654BB538 /* BaseFunctions.swift in Sources */,
 				1117D4934472F1BB114383D7 /* RawElements.swift in Sources */,
+				1117DA02120A81949F3D4539 /* TreeNode.swift in Sources */,
+				1117DAAAD0FE78E78A5A43DF /* LinkedListTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

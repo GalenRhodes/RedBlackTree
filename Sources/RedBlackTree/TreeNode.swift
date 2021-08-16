@@ -103,7 +103,7 @@ public class TreeNode<Key, Value> where Key: Comparable {
                 return insertNode(side: .Right, key: key, value: value)
             case .Equal:
                 self.value = value
-                return rootNode
+                return self
         }
     }
 
@@ -113,28 +113,24 @@ public class TreeNode<Key, Value> where Key: Comparable {
     /// - Returns: The new root node for the entire tree.
     ///
     public func removeNode() -> TreeNode<Key, Value>? {
-        if let l = leftNode, let _ = rightNode {
-            // The node has two children.
-            let n = l.last
-            key = n.key
-            value = n.value
-            return n.removeNode()
-        }
-        else if let c = leftNode ?? rightNode {
-            // The node has one child.
-            if c.isRed { c.color = .Black }
-            simpleSwap(with: c)
-            return c.rootNode
-        }
-        else if let p = parentNode {
-            // The node has no children.
-            if isBlack { removeRepair() }
-            simpleSwap(with: nil)
-            return p.rootNode
-        }
-        // I have no parent and no children so I just go away.
-        return nil
+        if let l = leftNode, let _ = rightNode { return twoChildRemove(l) }
+        return removeConclusion()
     }
+
+    @usableFromInline func twoChildRemove(_ l: TNode) -> TNode? {
+        let other = foobar(start: l) { $0.rightNode }
+        Swift.swap(&key, &other.key)
+        Swift.swap(&value, &other.value)
+        return other.removeConclusion(self)
+    }
+
+    @inlinable func removeConclusion(_ orig: TNode? = nil) -> TreeNode<Key, Value>? {
+        let newRoot = doRemoveNode()
+        postRemove(orig)
+        return newRoot
+    }
+
+    @usableFromInline func postRemove(_ orig: TNode?) {}
 
     /*==========================================================================================================*/
     /// Iterate over this branch in-order.
@@ -184,6 +180,32 @@ public class TreeNode<Key, Value> where Key: Comparable {
         if try predicate(self) { return self }
         if let r = rightNode, let n = try r.firstNode(where: predicate) { return n }
         return nil
+    }
+
+    /*==========================================================================================================*/
+    /// Returns the last node for which the given predicate returns `true`.
+    /// 
+    /// - Parameter predicate: The predicate.
+    /// - Returns: The node or nil if the predicate never returns `true`.
+    /// - Throws: Any error thrown by the closure.
+    ///
+    public func lastNode(where predicate: (TreeNode<Key, Value>) throws -> Bool) rethrows -> TreeNode<Key, Value>? {
+        if let r = rightNode, let n = try r.lastNode(where: predicate) { return n }
+        if try predicate(self) { return self }
+        if let l = leftNode, let n = try l.lastNode(where: predicate) { return n }
+        return nil
+    }
+
+    /*==========================================================================================================*/
+    /// Create a new node for the key and value.
+    /// 
+    /// - Parameters:
+    ///   - key: the Key.
+    ///   - value: the Value.
+    /// - Returns: the new node.
+    ///
+    @usableFromInline func makeNewNode(key: Key, value: Value) -> TreeNode<Key, Value> {
+        TreeNode<Key, Value>(key: key, value: value, color: .Red)
     }
 }
 
@@ -345,14 +367,14 @@ extension TreeNode {
     ///   - field: The top node of the branch.
     ///   - key: The key.
     ///   - value: The value.
-    /// - Returns: The root node.
+    /// - Returns: The newly inserted node.
     ///
     @inlinable func insertNode(side: NodeDirection, key: Key, value: Value) -> TNode {
         if let n = self[side] { return n.insertNode(key: key, value: value) }
-        let n = TreeNode<Key, Value>(key: key, value: value, color: .Red)
+        let n = makeNewNode(key: key, value: value)
         self[side] = n
         n.insertRepair()
-        return rootNode
+        return n
     }
 
     /*==========================================================================================================*/
@@ -451,6 +473,23 @@ extension TreeNode {
                 case .Neither: fatalError("Cannot put a child node on \(side) side of it's parent.")
             }
         }
+    }
+
+    @inlinable func doRemoveNode() -> TreeNode<Key, Value>? {
+        if let c = leftNode ?? rightNode {
+            // The node has one child.
+            if c.isRed { c.color = .Black }
+            simpleSwap(with: c)
+            return c.rootNode
+        }
+        else if let p = parentNode {
+            // The node has no children.
+            if isBlack { removeRepair() }
+            simpleSwap(with: nil)
+            return p.rootNode
+        }
+        // I have no parent and no children so I just go away.
+        return nil
     }
 }
 

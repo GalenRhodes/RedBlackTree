@@ -19,25 +19,42 @@ import CoreFoundation
 
 extension TreeDictionary {
 
-    func _forEach(body: (Element) throws -> Void) rethrows { if let r = rootNode { try r.forEach { node in try body(node.data) } } }
+    func _forEach(reverse: Bool, body: (Element) throws -> Void) rethrows { if let r = rootNode { try r.forEach(backwards: reverse) { node in try body(node.data) } } }
 
     func _firstNode(where predicate: (TreeNode<Key, Value>) throws -> Bool) rethrows -> TreeNode<Key, Value>? {
         guard let r = rootNode else { return nil }
         return try r.firstNode(where: predicate)
     }
 
+    func _lastNode(where predicate: (TreeNode<Key, Value>) throws -> Bool) rethrows -> TreeNode<Key, Value>? {
+        guard let r = rootNode else { return nil }
+        return try r.lastNode(where: predicate)
+    }
+
     @discardableResult func _remove(at index: Index) -> Element {
         let node = _getNode(forIndex: index)
-        defer { __showChange() }
-        rootNode = node.removeNode()
-        return node.data
+        return __removeNode(node).data
     }
 
     @discardableResult func _removeValue(forKey key: Key) -> Value? {
         guard let node = _getNode(forKey: key) else { return nil }
+        return __removeNode(node).value
+    }
+
+    func __removeNode(_ node: TreeNode<Key, Value>) -> TreeNode<Key, Value> {
         defer { __showChange() }
         rootNode = node.removeNode()
-        return node.value
+        if trackOrder {
+            if let rn = rootNode {
+                listLast = foobar(start: rn as! LinkedListTreeNode<Key, Value>) { $0.listNext }
+                listFirst = foobar(start: rn as! LinkedListTreeNode<Key, Value>) { $0.listPrev }
+            }
+            else {
+                listLast = nil
+                listFirst = nil
+            }
+        }
+        return node
     }
 
     @discardableResult func _update(_ elem: Element) -> Value? {
@@ -46,12 +63,27 @@ extension TreeDictionary {
 
     @discardableResult func _update(value: Value, forKey key: Key) -> Value? {
         defer { __showChange() }
+
         guard let r = rootNode else {
-            rootNode = TreeNode<Key, Value>(key: key, value: value)
+            guard trackOrder else {
+                rootNode = TreeNode<Key, Value>(key: key, value: value)
+                return nil
+            }
+            listFirst = LinkedListTreeNode<Key, Value>(key: key, value: value)
+            listLast = listFirst
+            rootNode = listFirst
             return nil
         }
-        let v = r[key]?.value
-        rootNode = r.insertNode(key: key, value: value)
+
+        guard let n = r[key] else {
+            let newNode = r.insertNode(key: key, value: value)
+            if trackOrder { listLast = foobar(start: newNode as! LinkedListTreeNode<Key, Value>) { $0.listNext } }
+            rootNode = foobar(start: newNode) { $0.parentNode }
+            return nil
+        }
+
+        let v = n.value
+        n.value = value
         return v
     }
 
