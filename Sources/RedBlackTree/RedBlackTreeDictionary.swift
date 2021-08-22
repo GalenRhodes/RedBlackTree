@@ -85,7 +85,7 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
     public func removeAll(keepingCapacity keepCapacity: Bool = false) {
         guard let r = rootNode else { return }
         rootNode = nil
-        r.removeAll()
+        DispatchQueue(label: UUID().uuidString).async { r.removeAll() }
     }
 
     public func forEach(reverse: Bool, _ body: (Element) throws -> Void) rethrows {

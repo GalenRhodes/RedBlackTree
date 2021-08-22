@@ -60,6 +60,7 @@ extension TreeNode {
         }
         _parentNode = nil
         _count = 1
+        _color = .Black
     }
 
     public func insert(value: T) -> TreeNode<T> {

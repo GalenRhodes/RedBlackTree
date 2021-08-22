@@ -53,8 +53,8 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
 
     public func removeAll(keepingCapacity: Bool = false) {
         if let r = rootNode {
-            r.removeAll()
             rootNode = nil
+            DispatchQueue(label: UUID().uuidString).async { r.removeAll() }
         }
     }
 
