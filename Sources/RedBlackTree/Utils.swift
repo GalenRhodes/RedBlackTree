@@ -1,9 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *    FILENAME: RawElements.swift
+ *    FILENAME: Utils.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 10, 2021
+ *        DATE: August 17, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -16,3 +16,27 @@
 
 import Foundation
 import CoreFoundation
+
+public enum ComparisonResults {
+    case EqualTo, LessThan, GreaterThan
+}
+
+@inlinable public func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable {
+    ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan))
+}
+
+extension NSLock {
+    @discardableResult @inlinable func withLock<T>(_ body: () throws -> T) rethrows -> T {
+        lock()
+        defer { unlock() }
+        return try body()
+    }
+}
+
+extension NSRecursiveLock {
+    @discardableResult @inlinable func withLock<T>(_ body: () throws -> T) rethrows -> T {
+        lock()
+        defer { unlock() }
+        return try body()
+    }
+}

@@ -1,9 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *    FILENAME: TreeNode.swift
+ *    FILENAME: TreeNode_Color.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 17, 2021
+ *        DATE: August 19, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -17,21 +17,20 @@
 import Foundation
 import CoreFoundation
 
-public class TreeNode<T>: Comparable where T: Comparable & Equatable {
+extension TreeNode {
 
-    public internal(set) var value: T
+    public enum Color: UInt8 {
+        case Black = 0, Red
+        @inlinable var isRed:   Bool { self == .Red }
+        @inlinable var isBlack: Bool { self == .Black }
 
-    @usableFromInline init(value v: T, color c: Color) {
-        value = v
-        _color = c
+        @inlinable static func isRed(_ n: TreeNode?) -> Bool { n?.color.isRed ?? false }
+
+        @inlinable static func isBlack(_ n: TreeNode?) -> Bool { n?.color.isBlack ?? true }
     }
+}
 
-    //@f:0
-    @usableFromInline var _parentNode: TreeNode<T>? = nil
-    @usableFromInline var _rightNode:  TreeNode<T>? = nil
-    @usableFromInline var _leftNode:   TreeNode<T>? = nil
-    @usableFromInline var _color:      Color        = .Black
-    @usableFromInline var _count:      Int          = 1
-    @usableFromInline let _sx:         [Side]       = [ .Left, .Right ]
-    //@f:1
+extension TreeNode.Color: CustomStringConvertible, CustomDebugStringConvertible {
+    @inlinable public var description:      String { ((self == .Red) ? "red" : "black") }
+    @inlinable public var debugDescription: String { description }
 }

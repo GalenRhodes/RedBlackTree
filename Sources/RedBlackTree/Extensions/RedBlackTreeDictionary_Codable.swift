@@ -1,9 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *    FILENAME: TreeNode.swift
+ *    FILENAME: RedBlackTreeDictionary_Codable.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 17, 2021
+ *        DATE: August 19, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -17,21 +17,21 @@
 import Foundation
 import CoreFoundation
 
-public class TreeNode<T>: Comparable where T: Comparable & Equatable {
+extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.unkeyedContainer()
+        for e in self { try c.encode(KV(e)) }
+    }
+}
 
-    public internal(set) var value: T
+extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {}
 
-    @usableFromInline init(value v: T, color c: Color) {
-        value = v
-        _color = c
+extension RedBlackTreeDictionary: Equatable where Value: Equatable {
+    public static func == (lhs: RedBlackTreeDictionary<Key, Value>, rhs: RedBlackTreeDictionary<Key, Value>) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        for e: Element in lhs { guard rhs.contains(e) else { return false } }
+        return true
     }
 
-    //@f:0
-    @usableFromInline var _parentNode: TreeNode<T>? = nil
-    @usableFromInline var _rightNode:  TreeNode<T>? = nil
-    @usableFromInline var _leftNode:   TreeNode<T>? = nil
-    @usableFromInline var _color:      Color        = .Black
-    @usableFromInline var _count:      Int          = 1
-    @usableFromInline let _sx:         [Side]       = [ .Left, .Right ]
-    //@f:1
+    public func contains(_ element: Element) -> Bool { contains { ((element.0 == $0.0) && (element.1 == $0.1)) } }
 }

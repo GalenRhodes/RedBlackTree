@@ -1,9 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *    FILENAME: TreeNode.swift
+ *    FILENAME: TreeNode_Side.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 17, 2021
+ *        DATE: August 19, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -17,21 +17,27 @@
 import Foundation
 import CoreFoundation
 
-public class TreeNode<T>: Comparable where T: Comparable & Equatable {
+extension TreeNode {
+    @usableFromInline enum Side: UInt8, CustomStringConvertible, CustomDebugStringConvertible {
+        case Neither = 0
+        case Left
+        case Right
 
-    public internal(set) var value: T
+        @inlinable var debugDescription: String { description }
+        @inlinable var description:      String {
+            switch self {
+                case .Neither: return "neither"
+                case .Left:    return "left"
+                case .Right:   return "right"
+            }
+        }
 
-    @usableFromInline init(value v: T, color c: Color) {
-        value = v
-        _color = c
+        @inlinable static prefix func ! (s: Self) -> Self {
+            switch s {
+                case .Neither: return .Neither
+                case .Left:    return .Right
+                case .Right:   return .Left
+            }
+        }
     }
-
-    //@f:0
-    @usableFromInline var _parentNode: TreeNode<T>? = nil
-    @usableFromInline var _rightNode:  TreeNode<T>? = nil
-    @usableFromInline var _leftNode:   TreeNode<T>? = nil
-    @usableFromInline var _color:      Color        = .Black
-    @usableFromInline var _count:      Int          = 1
-    @usableFromInline let _sx:         [Side]       = [ .Left, .Right ]
-    //@f:1
 }
