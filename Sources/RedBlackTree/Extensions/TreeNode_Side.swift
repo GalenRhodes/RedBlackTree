@@ -17,27 +17,27 @@
 import Foundation
 import CoreFoundation
 
-extension TreeNode {
-    @usableFromInline enum Side: UInt8, CustomStringConvertible, CustomDebugStringConvertible {
-        case Neither = 0
-        case Left
-        case Right
+@usableFromInline let _sx: [Side] = [ .Left, .Right ]
 
-        @inlinable var debugDescription: String { description }
-        @inlinable var description:      String {
-            switch self {
-                case .Neither: return "neither"
-                case .Left:    return "left"
-                case .Right:   return "right"
-            }
+@usableFromInline enum Side: UInt8, CustomStringConvertible, CustomDebugStringConvertible {
+    case Neither = 0
+    case Left
+    case Right
+
+    @inlinable var debugDescription: String { description }
+    @inlinable var description:      String {
+        switch self {
+            case .Neither: return "neither"
+            case .Left:    return "left"
+            case .Right:   return "right"
         }
+    }
 
-        @inlinable static prefix func ! (s: Self) -> Self {
-            switch s {
-                case .Neither: return .Neither
-                case .Left:    return .Right
-                case .Right:   return .Left
-            }
+    @inlinable static prefix func ! (s: Self) -> Self {
+        switch s {
+            case .Neither: return .Neither
+            case .Left:    return .Right
+            case .Right:   return .Left
         }
     }
 }
