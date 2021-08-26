@@ -1,9 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *    FILENAME: TreeNode.swift
+ *    FILENAME: RedBlackTreeDictionary_Keys.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 17, 2021
+ *        DATE: August 23, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -17,31 +17,25 @@
 import Foundation
 import CoreFoundation
 
-public class TreeNode<T>: Comparable where T: Comparable & Equatable {
-    //@f:0
-    /// The field that holds the value.
-    ///
-    public internal(set) var value: T
-    /// The field that holds the reference to the parent node.
-    ///
-    @usableFromInline var _parentNode: TreeNode<T>? = nil
-    /// The field that holds the reference to the right child node.
-    ///
-    @usableFromInline var _rightNode:  TreeNode<T>? = nil
-    /// The field that holds the reference to the left child node.
-    ///
-    @usableFromInline var _leftNode:   TreeNode<T>? = nil
-    /// To save space this field holds both the color and the count.
-    ///
-    @usableFromInline var _data:       UInt         = 1
-    //@f:1
+extension RedBlackTreeDictionary {
 
-    /// Default public constructor.
-    ///
-    /// - Parameter v: The value.
-    ///
-    public init(value v: T) {
-        value = v
+    @inlinable public var keys: Keys { Keys(tree: self) }
+
+    @frozen public struct Keys: BidirectionalCollection {
+
+        public typealias Index = RedBlackTreeDictionary.Index
+        public typealias Element = Key
+
+        @inlinable public var startIndex: Index { tree.startIndex }
+        @inlinable public var endIndex:   Index { tree.endIndex }
+        @usableFromInline let tree: RedBlackTreeDictionary<Key, Value>
+
+        @inlinable public init(tree: RedBlackTreeDictionary<Key, Value>) { self.tree = tree }
+
+        @inlinable public func index(before i: Index) -> Index { tree.index(before: i) }
+
+        @inlinable public func index(after i: Index) -> Index { tree.index(after: i) }
+
+        @inlinable public subscript(position: Index) -> Element { tree[position].0 }
     }
 }
-

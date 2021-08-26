@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "83D5452E26B47C3D00B136FC"
-               BuildableName = "RedBlackTree.framework"
-               BlueprintName = "RedBlackTree"
+               BlueprintIdentifier = "83D5453726B47C3D00B136FC"
+               BuildableName = "RedBlackTreeTests.xctest"
+               BlueprintName = "RedBlackTreeTests"
                ReferencedContainer = "container:RedBlackTree.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,7 +26,14 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "NO">
+      <AdditionalOptions>
+         <AdditionalOption
+            key = "MallocStackLogging"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+      </AdditionalOptions>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -37,11 +44,14 @@
                BlueprintName = "RedBlackTreeTests"
                ReferencedContainer = "container:RedBlackTree.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
+            <SelectedTests>
                <Test
-                  Identifier = "RedBlackTreeTests/testFast()">
+                  Identifier = "RedBlackTreeTests/testInserts">
                </Test>
-            </SkippedTests>
+               <Test
+                  Identifier = "RedBlackTreeTests/testInserts()">
+               </Test>
+            </SelectedTests>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -51,30 +61,28 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
+      customWorkingDirectory = "$(SRCROOT)"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "$(SRCROOT)"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <LocationScenarioReference
          identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
          referenceType = "1">
       </LocationScenarioReference>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
+      savedToolIdentifier = "Leaks"
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "83D5452E26B47C3D00B136FC"
-            BuildableName = "RedBlackTree.framework"
-            BlueprintName = "RedBlackTree"
-            ReferencedContainer = "container:RedBlackTree.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

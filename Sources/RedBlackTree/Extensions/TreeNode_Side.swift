@@ -17,27 +17,34 @@
 import Foundation
 import CoreFoundation
 
-@usableFromInline let _sx: [Side] = [ .Left, .Right ]
+extension TreeNode {
 
-@usableFromInline enum Side: UInt8, CustomStringConvertible, CustomDebugStringConvertible {
-    case Neither = 0
-    case Left
-    case Right
+    @usableFromInline enum Side {
+        case Neither
+        case Left
+        case Right
 
-    @inlinable var debugDescription: String { description }
-    @inlinable var description:      String {
-        switch self {
-            case .Neither: return "neither"
-            case .Left:    return "left"
-            case .Right:   return "right"
+        @inlinable static prefix func ! (s: Self) -> Self {
+            switch s {
+                case .Neither: return .Neither
+                case .Left:    return .Right
+                case .Right:   return .Left
+            }
         }
     }
 
-    @inlinable static prefix func ! (s: Self) -> Self {
-        switch s {
-            case .Neither: return .Neither
-            case .Left:    return .Right
-            case .Right:   return .Left
-        }
+    @inlinable func _forSide<R>(parent p: TreeNode<T>, ifLeft l: @autoclosure () throws -> R, ifRight r: @autoclosure () throws -> R) rethrows -> R {
+        try _forPSide(parent: p, ifLeft: { _ in try l() }, ifRight: { _ in try r() })
+    }
+
+    @inlinable func _forPSide<R>(ifNeither n: @autoclosure () throws -> R, ifLeft l: (TreeNode<T>) throws -> R, ifRight r: (TreeNode<T>) throws -> R) rethrows -> R {
+        guard let p = _parentNode else { return try n() }
+        return try _forPSide(parent: p, ifLeft: l, ifRight: r)
+    }
+
+    @inlinable func _forPSide<R>(parent p: TreeNode<T>, ifLeft l: (TreeNode<T>) throws -> R, ifRight r: (TreeNode<T>) throws -> R) rethrows -> R {
+        if self === p._leftNode { return try l(p) }
+        if self === p._rightNode { return try r(p) }
+        fatalError(ErrorMsgGhostParent)
     }
 }

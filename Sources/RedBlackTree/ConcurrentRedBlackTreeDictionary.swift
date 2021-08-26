@@ -23,8 +23,6 @@ public class ConcurrentRedBlackTreeDictionary<Key, Value>: RedBlackTreeDictionar
     public override   var count: Int             { lock.withLock { super.count } }
     //@f:1
 
-    public override init() { super.init() }
-
     public override func index(forKey key: Key) -> Index? { lock.withLock { super.index(forKey: key) } }
 
     public override subscript(position: Index) -> (Key, Value) { lock.withLock { super[position] } }

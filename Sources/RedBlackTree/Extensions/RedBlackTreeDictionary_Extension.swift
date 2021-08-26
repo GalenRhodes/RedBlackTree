@@ -26,6 +26,11 @@ extension RedBlackTreeDictionary {
     @inlinable public var isEmpty:  Bool  { (count == 0)           }
     //@f:1
 
+    @inlinable public convenience init<S>(_ other: S) where S: Sequence, S.Element == SequenceElement {
+        self.init()
+        for e: SequenceElement in other { updateValue(e.1, forKey: e.0) }
+    }
+
     @inlinable public func index(after i: Index) -> Index {
         guard i >= startIndex && i < endIndex else { fatalError("Index out of bounds.") }
         return (i + 1)
@@ -46,25 +51,17 @@ extension RedBlackTreeDictionary {
         set { if let v = newValue { updateValue(v, forKey: key) } else { removeValue(forKey: key) } }
     }
 //@f:1
-    @inlinable public convenience init(_ other: RedBlackTreeDictionary<Key, Value>) {
-        self.init()
-        for e in other { updateValue(e.1, forKey: e.0) }
-    }
-
-    @inlinable public convenience init<S>(_ other: S) where S: Sequence, S.Element == SequenceElement {
-        self.init()
-        for e: SequenceElement in other { updateValue(e.1, forKey: e.0) }
-    }
-
-    @inlinable public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> RedBlackTreeDictionary<Key, T> {
+    @inlinable public func mapValues<T>(fast: Bool = false, _ transform: (Value) throws -> T) rethrows -> RedBlackTreeDictionary<Key, T> {
         let copy = RedBlackTreeDictionary<Key, T>()
-        for e in self { copy[e.0] = try transform(e.1) }
+        if fast { let lock = NSLock(); try _forEachFast { (key, value) in try lock.withLock { _ = copy.updateValue(try transform(value), forKey: key) } } }
+        else { try forEach { (key, value) -> Void in copy.updateValue(try transform(value), forKey: key) } }
         return copy
     }
 
-    @inlinable public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> RedBlackTreeDictionary<Key, T> {
+    @inlinable public func compactMapValues<T>(fast: Bool = false, _ transform: (Value) throws -> T?) rethrows -> RedBlackTreeDictionary<Key, T> {
         let copy = RedBlackTreeDictionary<Key, T>()
-        for e in self { if let v = try transform(e.1) { copy[e.0] = v } }
+        if fast { let lock = NSLock(); try _forEachFast { (key, value) in if let v = try transform(value) { lock.withLock { _ = copy.updateValue(v, forKey: key) } } } }
+        else { try forEach { (key, value) in if let v = try transform(value) { copy.updateValue(v, forKey: key) } } }
         return copy
     }
 
@@ -72,8 +69,8 @@ extension RedBlackTreeDictionary {
         try _merge(copy: self, other: other, uniquingKeysWith: combine)
     }
 
-    @inlinable public func merge(_ other: RedBlackTreeDictionary<Key, Value>, uniquingKeysWith combine: CombineLambda) rethrows {
-        try _merge(copy: self, other: other, uniquingKeysWith: combine)
+    @inlinable public func merge(_ other: RedBlackTreeDictionary<Key, Value>, fast: Bool = false, uniquingKeysWith combine: CombineLambda) rethrows {
+        try _merge(copy: self, other: other, fast: fast, uniquingKeysWith: combine)
     }
 
     @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> where S: Sequence, S.Element == SequenceElement {
@@ -82,9 +79,9 @@ extension RedBlackTreeDictionary {
         return copy
     }
 
-    @inlinable public func merging(_ other: RedBlackTreeDictionary<Key, Value>, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> {
+    @inlinable public func merging(_ other: RedBlackTreeDictionary<Key, Value>, fast: Bool = false, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> {
         let copy = RedBlackTreeDictionary<Key, Value>(self)
-        try _merge(copy: copy, other: other, uniquingKeysWith: combine)
+        try _merge(copy: copy, other: other, fast: fast, uniquingKeysWith: combine)
         return copy
     }
 
@@ -95,10 +92,19 @@ extension RedBlackTreeDictionary {
         }
     }
 
-    @inlinable func _merge(copy: RedBlackTreeDictionary<Key, Value>, other: RedBlackTreeDictionary<Key, Value>, uniquingKeysWith combine: CombineLambda) rethrows {
-        for e in other {
-            if let v = copy[e.0] { copy.updateValue(try combine(v, e.1), forKey: e.0) }
-            else { copy.updateValue(e.1, forKey: e.0) }
+    @inlinable func _merge(copy: RedBlackTreeDictionary<Key, Value>, other: RedBlackTreeDictionary<Key, Value>, fast: Bool, uniquingKeysWith combine: CombineLambda) rethrows {
+        if fast {
+            let lock = NSLock()
+            try _forEachFast { (key, value) in
+                if let v = copy[key] { let vv = try combine(v, value); lock.withLock { copy.updateValue(vv, forKey: key) } }
+                else { lock.withLock { copy.updateValue(value, forKey: key) } }
+            }
+        }
+        else {
+            try forEach { (key, value) -> Void in
+                if let v = copy[key] { copy.updateValue(try combine(v, value), forKey: key) }
+                else { copy.updateValue(value, forKey: key) }
+            }
         }
     }
 
@@ -107,4 +113,6 @@ extension RedBlackTreeDictionary {
     @inlinable public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? { try _first(reverse: false, where: predicate) }
 
     @inlinable public func last(where predicate: (Element) throws -> Bool) rethrows -> Element? { try _first(reverse: true, where: predicate) }
+
+    @inlinable public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<(Key, Value)>) throws -> R) rethrows -> R? { nil }
 }

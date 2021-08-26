@@ -33,11 +33,25 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         for e in elements { updateValue(e.1, forKey: e.0) }
     }
 
+    public init(dictionaryLiteral elements: [SequenceElement]) {
+        for e in elements { updateValue(e.1, forKey: e.0) }
+    }
+
     public required init(from decoder: Decoder) throws where Key: Decodable, Value: Decodable {
         var c = try decoder.unkeyedContainer()
         while !c.isAtEnd {
             let e = try c.decode(KV.self)
             updateValue(e.value, forKey: e.key)
+        }
+    }
+
+    public convenience init(_ other: RedBlackTreeDictionary<Key, Value>) {
+        self.init()
+        if let other = (other as? ConcurrentRedBlackTreeDictionary<Key, Value>) {
+            rootNode = other.lock.withLock { other.rootNode?.copyTree() }
+        }
+        else {
+            rootNode = other.rootNode?.copyTree()
         }
     }
 
@@ -102,5 +116,8 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         rootNode?.find(with: { compare(a: key, b: $0.key) })?.value.value
     }
 
-    public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<(Key, Value)>) throws -> R) rethrows -> R? { nil }
+    @usableFromInline func _forEachFast(_ body: (Element) throws -> Void) rethrows {
+        guard let r = rootNode else { return }
+        try r.forEachFast { try body(($0.value.key, $0.value.value)) }
+    }
 }

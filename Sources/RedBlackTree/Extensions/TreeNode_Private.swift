@@ -17,73 +17,100 @@
 import Foundation
 import CoreFoundation
 
+@usableFromInline let ErrorMsgGhostParent    = "Inconsistent state: ghost parent."
+@usableFromInline let ErrorMsgMisColored     = "Inconsistent state: mis-colored node."
+@usableFromInline let ErrorMsgMissingSibling = "Inconsistent state: missing sibling node."
+@usableFromInline let ErrorMsgLeftOrRight    = "Invalid Argument: side must be either left or right."
+@usableFromInline let ErrorMsgNoRotLeft      = "Invalid Argument: Cannot rotate node to the left because there is no right child node."
+@usableFromInline let ErrorMsgNoRotRight     = "Invalid Argument: Cannot rotate node to the right because there is no left child node."
+@usableFromInline let ErrorMsgParentIsChild  = "Invalid Argument: Node cannot be a child of itself."
+
 extension TreeNode {
     //@f:0
-    @inlinable var leftCount:   Int          { (leftNode?.count ?? 0)                }
-    @inlinable var rightCount:  Int          { (rightNode?.count ?? 0)               }
-    @inlinable var nodeSide:    Side         { _bar(default: .Neither) { _, s in s } }
-    @inlinable var siblingNode: TreeNode<T>? { _bar(default: nil)      { $0[!$1]   } }
+    @inlinable var leftCount:  Int { with(node: _leftNode, default: 0)  { $0._count } }
+    @inlinable var rightCount: Int { with(node: _rightNode, default: 0) { $0._count } }
+    @inlinable var _count:     Int {
+        get { Int(bitPattern: Color.maskLo(_data)) }
+        set { _data = (Color.maskHi(_data) | Color.maskLo(newValue)) }
+    }
     //@f:1
+
+    @inlinable convenience init(value v: T, color c: Color) {
+        self.init(value: v)
+        color = c
+    }
 
     @inlinable subscript(side: Side) -> TreeNode<T>? {
         get {
             switch side {
-                case .Neither: fatalError("Invalid Argument: side must be either Left or Right.")
                 case .Left:    return _leftNode
                 case .Right:   return _rightNode
+                case .Neither: fatalError(ErrorMsgLeftOrRight)
             }
         }
         set {
-            let curr: TreeNode<T>? = self[side]
-            guard curr !== newValue else { return }
-            if let n = curr { n._parentNode = nil }
-            if let n = newValue { n._removeFromParent()._parentNode = self }
-            if side == .Left { _leftNode = newValue }
-            else { _rightNode = newValue }
-            _recount()
+            func _setChild(_ oc: TreeNode<T>?, _ nc: TreeNode<T>?, _ side: Side) {
+                guard self !== nc else { fatalError(ErrorMsgParentIsChild) }
+                guard oc !== nc else { return }
+                with(node: oc) { $0._parentNode = nil }
+                with(node: nc) { $0._removeFromParent()._parentNode = self }
+                if side == .Left { _leftNode = nc }
+                else { _rightNode = nc }
+                _recount()
+            }
+
+            switch side {
+                case .Left:    _setChild(_leftNode, newValue, side)
+                case .Right:   _setChild(_rightNode, newValue, side)
+                case .Neither: fatalError(ErrorMsgLeftOrRight)
+            }
         }
     }
 
     @usableFromInline func _recount() {
         _count = (1 + leftCount + rightCount)
-        if let p = parentNode { p._recount() }
+        with(node: _parentNode) { $0._recount() }
     }
 
-    @inlinable func _swapMe(with node: TreeNode<T>) { if !_bar({ $0[$1] = node }) { node._removeFromParent() } }
+    @usableFromInline func _swapMe(with node: TreeNode<T>?) {
+        if let p = _parentNode { _forPSide(parent: p, ifLeft: { pp in pp[.Left] = node }, ifRight: { pp in pp[.Right] = node }) }
+        else if let node = node { node._removeFromParent() }
+    }
 
-    @discardableResult @inlinable func _removeFromParent() -> TreeNode<T> { _bar(default: self) { $0[$1] = nil; return self } }
+    @discardableResult @usableFromInline func _removeFromParent() -> TreeNode<T> {
+        _swapMe(with: nil)
+        return self
+    }
 
     @usableFromInline func _removeRepair() {
         if let p = parentNode {
-            var s    = _mustHave(siblingNode, message: "Inconsistent state: missing sibling node.")
-            let side = nodeSide
+            let side: Side        = _forSide(parent: p, ifLeft: .Left, ifRight: .Right)
+            var sib:  TreeNode<T> = _mustHave(p[!side], message: ErrorMsgMissingSibling)
 
-            if s.color.isRed {
+            if sib.color.isRed {
                 p._rotate(dir: side)
-                s = _mustHave(siblingNode, message: "Inconsistent state: missing sibling node.")
+                sib = _mustHave(p[!side], message: ErrorMsgMissingSibling)
             }
 
-            if s.color.isBlack && Color.isBlack(s.leftNode) && Color.isBlack(s.rightNode) {
-                s._color = .Red
-                if p.color.isRed { p._color = .Black }
+            if sib.color.isBlack && Color.isBlack(sib.leftNode) && Color.isBlack(sib.rightNode) {
+                sib.color = .Red
+                if p.color.isRed { p.color = .Black }
                 else { p._removeRepair() }
             }
             else {
-                if Color.isRed(s[side]) { s._rotate(dir: !side) }
+                if Color.isRed(sib[side]) { sib._rotate(dir: !side) }
                 p._rotate(dir: side)
-                if let ps = p.siblingNode { ps._color = .Black }
+                if let ps = p._forPSide(ifNeither: nil, ifLeft: { $0._rightNode }, ifRight: { $0._leftNode }) { ps.color = .Black }
             }
         }
     }
 
     @inlinable func _rotate(dir: Side) {
-        guard dir != .Neither else { fatalError("Invalid Argument: side must be either Left or Right.") }
-        let c1 = _mustHave(self[!dir], message: "Cannot rotate node to the \(dir) because there is no \(!dir) child node.")
-        let c2 = c1[dir]
+        let c1 = _mustHave(self[!dir], message: ((dir == .Left) ? ErrorMsgNoRotLeft : ErrorMsgNoRotRight))
         _swapMe(with: c1)
+        self[!dir] = c1[dir]
         c1[dir] = self
-        self[!dir] = c2
-        swap(&_color, &c1._color)
+        swap(&color, &c1.color)
     }
 
     @usableFromInline func _insert(value: T, side: Side) -> TreeNode<T> {
@@ -95,25 +122,30 @@ extension TreeNode {
     }
 
     @usableFromInline func _insertRepair() {
-        if let p = parentNode {
+        if let p = _parentNode {
             if p.color.isRed {
-                let g = _mustHave(p.parentNode, message: "Inconsistent state: mis-colored node.")
+                guard let g = p.parentNode, g.color.isBlack else { fatalError(ErrorMsgMisColored) }
+                let nSide = _forSide(parent: p, ifLeft: Side.Left, ifRight: Side.Right)
+                let pSide = p._forSide(parent: g, ifLeft: Side.Left, ifRight: Side.Right)
 
-                if let u = p.siblingNode, u.color.isRed {
-                    u._color = .Black
-                    p._color = .Black
-                    g._color = .Red
+                if let u = g[!pSide], u.color.isRed {
+                    u.color = .Black
+                    p.color = .Black
+                    g.color = .Red
                     g._insertRepair()
                 }
                 else {
-                    let pSide = p.nodeSide
-                    if pSide != nodeSide { p._rotate(dir: pSide) }
+                    let q = !nSide
+                    if pSide == q {
+                        p._rotate(dir: pSide)
+                    }
                     g._rotate(dir: !pSide)
                 }
             }
         }
-        else {
-            _color = .Black
+        else if color.isRed {
+            // This node is the root node so it has to be black.
+            color = .Black
         }
     }
 
@@ -125,20 +157,18 @@ extension TreeNode {
         }
     }
 
-    @inlinable func _bar<R>(default def: R, _ body: (TreeNode<T>, Side) throws -> R) rethrows -> R {
-        guard let p = parentNode else { return def }
-        for s in _sx { if self === p[s] { return try body(p, s) } }
-        fatalError("Inconsistent state: ghost parent.")
-    }
-
-    @inlinable func _bar(_ body: (TreeNode<T>, Side) throws -> Void) rethrows -> Bool {
-        guard let p = parentNode else { return false }
-        for s in _sx { if self === p[s] { try body(p, s); return true } }
-        fatalError("Inconsistent state: ghost parent.")
-    }
-
     @inlinable func _mustHave<P>(_ p: P?, message: String) -> P {
         guard let pp = p else { fatalError(message) }
         return pp
     }
+}
+
+@inlinable func with<T, R>(node: TreeNode<T>?, default def: @autoclosure () throws -> R, _ body: (TreeNode<T>) throws -> R) rethrows -> R where T: Comparable & Equatable {
+    guard let r = try with(node: node, body) else { return try def() }
+    return r
+}
+
+@discardableResult @inlinable func with<T, R>(node: TreeNode<T>?, _ body: (TreeNode<T>) throws -> R) rethrows -> R? where T: Comparable & Equatable {
+    guard let n = node else { return nil }
+    return try body(n)
 }

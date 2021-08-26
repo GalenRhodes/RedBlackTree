@@ -22,7 +22,7 @@ extension RedBlackTreeDictionary {
         @usableFromInline enum CodingKeys: String, CodingKey { case key, value }
 
         public let key:   Key
-        public let value: Value
+        public var value: Value
 
         @usableFromInline init(key: Key, value: Value) { self.key = key; self.value = value }
 

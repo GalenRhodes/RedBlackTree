@@ -20,10 +20,7 @@ import CoreFoundation
 extension TreeNode {
 
     @inlinable var index: Index {
-        guard let p = parentNode else { return Index(index: leftCount) }
-        if self === p.leftNode { return p.index - rightCount - 1 }
-        if self === p.rightNode { return p.index + leftCount + 1 }
-        fatalError("Inconsistent state: ghost parent.")
+        Index(index: _forPSide(ifNeither: leftCount, ifLeft: { $0.index.idx - rightCount - 1 }, ifRight: { $0.index.idx + leftCount + 1 }))
     }
 
     @inlinable subscript(index: Index) -> TreeNode<T> {

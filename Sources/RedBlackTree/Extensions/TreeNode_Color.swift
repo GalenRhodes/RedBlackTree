@@ -17,17 +17,14 @@
 import Foundation
 import CoreFoundation
 
+@usableFromInline let RedMask:   UInt   = (1 << (UInt.bitWidth - 1))
+@usableFromInline let ColorMask: [UInt] = [ 0, RedMask ]
+
 extension TreeNode {
 
-    public enum Color: UInt {
-
+    public enum Color: Int {
         case Black = 0
-
-        #if arch(i386) || arch(wasm32) || arch(arm)
-            case Red = 0x80000000
-        #else
-            case Red = 0x8000000000000000
-        #endif
+        case Red
 
         @inlinable var isRed:   Bool { self == .Red }
         @inlinable var isBlack: Bool { self == .Black }
@@ -36,18 +33,25 @@ extension TreeNode {
 
         @inlinable static func isBlack(_ n: TreeNode?) -> Bool { n?.color.isBlack ?? true }
 
-        @inlinable static func maskLo(_ n: UInt) -> UInt { (n & ~Color.Red.rawValue) }
+        @inlinable static func maskLo(_ n: UInt) -> UInt {
+            let m: UInt = ~RedMask
+            let r: UInt = (n & m)
+            return r
+        }
 
         @inlinable static func maskLo(_ n: Int) -> UInt { maskLo(UInt(bitPattern: n)) }
 
-        @inlinable static func maskHi(_ n: UInt) -> UInt { (n & Color.Red.rawValue) }
+        @inlinable static func maskHi(_ n: UInt) -> UInt {
+            let m: UInt = RedMask
+            let r: UInt = (n & m)
+            return r
+        }
     }
 
-    @inlinable var _color: Color {
+    @inlinable var color: Color {
         get { ((Color.maskHi(_data) == 0) ? Color.Black : Color.Red) }
-        set { _data = (Color.maskLo(_data) | (newValue.rawValue)) }
+        set { _data = (Color.maskLo(_data) | ColorMask[newValue.rawValue]) }
     }
-    @inlinable var color:  Color { _color }
 }
 
 extension TreeNode.Color: CustomStringConvertible, CustomDebugStringConvertible {

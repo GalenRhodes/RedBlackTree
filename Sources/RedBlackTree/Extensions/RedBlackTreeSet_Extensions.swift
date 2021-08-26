@@ -34,11 +34,6 @@ extension RedBlackTreeSet {
         return (i - 1)
     }
 
-    @inlinable public convenience init(tree: RedBlackTreeSet<Element>) {
-        self.init()
-        for e in tree { insert(e) }
-    }
-
     @inlinable public func insert<S>(contentsOf s: S) where S: Sequence, S.Element == Element { for e: Element in s { insert(e) } }
 
     @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> RedBlackTreeSet<Element> {

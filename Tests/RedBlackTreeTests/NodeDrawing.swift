@@ -19,7 +19,11 @@ import CoreFoundation
 import Cocoa
 @testable import RedBlackTree
 
-extension TreeNode where Key == String, Value == NodeTestValue {
+let leftAngle:  CGFloat = 135
+let rightAngle: CGFloat = 45
+let theta:      CGFloat = (CGFloat.pi / 180)
+
+extension TreeNode where T == RedBlackTreeDictionary<String, NodeTestValue>.KV {
 
     @inlinable var colorIndex: Int { ((color == .Red) ? 1 : 0) }
 
@@ -43,10 +47,10 @@ extension TreeNode where Key == String, Value == NodeTestValue {
         try saveImageAsPNG(img: img, url: url)
     }
 
-    private func drawLine(to child: TreeNode<String, NodeTestValue>) {
-        let angle:         CGFloat      = (((child.nSide == .Left) ? 135 : 45) * CGFloat.pi / 180)
-        let parentLoc:     NSPoint      = value.bounds.origin
-        let childLoc:      NSPoint      = child.value.bounds.origin
+    private func drawLine(to child: TreeNode<T>) {
+        let angle:         CGFloat      = (theta * child._forSide(parent: self, ifLeft: leftAngle, ifRight: rightAngle))
+        let parentLoc:     NSPoint      = value.value.bounds.origin
+        let childLoc:      NSPoint      = child.value.value.bounds.origin
         let startPoint:    NSPoint      = NSPoint(x: parentLoc.x + (nodeRadius * cos(angle)), y: parentLoc.y - (nodeRadius * sin(angle)))
         let endPoint:      NSPoint      = NSPoint(x: childLoc.x, y: childLoc.y + nodeRadius)
         let controlPoint1: NSPoint      = NSPoint(x: startPoint.x, y: halfway(p1: startPoint.y, p2: endPoint.y))
@@ -65,31 +69,31 @@ extension TreeNode where Key == String, Value == NodeTestValue {
 
     private func drawNode() {
         let colors = nodeColors[colorIndex]
-        let x      = value.bounds.minX
-        let y      = value.bounds.minY
+        let x      = value.value.bounds.minX
+        let y      = value.value.bounds.minY
         let ly     = (y - nodeRadius - (labelHeight / 2))
 
         if let child = leftNode { drawLine(to: child) }
         if let child = rightNode { drawLine(to: child) }
-        drawOval(centeredAt: value.bounds.origin, size: NSSize(width: nodeDiameter, height: nodeDiameter), lineWidth: lineWidth, lineColor: colors[1], fillColor: colors[0])
-        drawLabel(at: NSPoint(x: x, y: y), text: key, font: nodeFont, color: NSColor.white)
-        drawLabel(at: NSPoint(x: x, y: ly), text: String(index), color: NSColor.blue)
+        drawOval(centeredAt: value.value.bounds.origin, size: NSSize(width: nodeDiameter, height: nodeDiameter), lineWidth: lineWidth, lineColor: colors[1], fillColor: colors[0])
+        drawLabel(at: NSPoint(x: x, y: y), text: value.key, font: nodeFont, color: NSColor.white)
+        drawLabel(at: NSPoint(x: x, y: ly), text: String(index.idx), color: NSColor.blue)
         if parentNode == nil { drawLabel(at: NSPoint(x: x, y: ly - labelHeight), text: String(count), color: NSColor.yellow) }
     }
 
     private func calcSize() -> NSSize {
         let lSz = (leftNode?.calcSize() ?? NSSize.zero)
         let rSz = (rightNode?.calcSize() ?? NSSize.zero)
-        value.bounds.size.width = (max(lSz.width, (nodeRadius + lineWidth)) + max(rSz.width, (nodeRadius + lineWidth)))
-        value.bounds.size.height = (deltaY + max(lSz.height, rSz.height))
-        return value.bounds.size
+        value.value.bounds.size.width = (max(lSz.width, (nodeRadius + lineWidth)) + max(rSz.width, (nodeRadius + lineWidth)))
+        value.value.bounds.size.height = (deltaY + max(lSz.height, rSz.height))
+        return value.value.bounds.size
     }
 
     private func calcPosition(origin: NSPoint) {
         let nextY = (origin.y - deltaY)
-        value.bounds.origin.x = (origin.x + (leftNode?.value.bounds.width ?? (nodeRadius + lineWidth)))
-        value.bounds.origin.y = (origin.y - (nodeRadius + lineWidth))
+        value.value.bounds.origin.x = (origin.x + (leftNode?.value.value.bounds.width ?? (nodeRadius + lineWidth)))
+        value.value.bounds.origin.y = (origin.y - (nodeRadius + lineWidth))
         leftNode?.calcPosition(origin: NSPoint(x: origin.x, y: nextY))
-        rightNode?.calcPosition(origin: NSPoint(x: value.bounds.minX, y: nextY))
+        rightNode?.calcPosition(origin: NSPoint(x: value.value.bounds.minX, y: nextY))
     }
 }

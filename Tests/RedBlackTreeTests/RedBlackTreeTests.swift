@@ -21,13 +21,13 @@ class RedBlackTreeTests: XCTestCase {
 
     func testCodable() throws {
         try clearDirectory(url: codableDir, description: "codable")
-        let tree:           TreeDictionary<String, NodeTestValue> = TreeDictionary<String, NodeTestValue>()
-        let dataIns:        [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=\"':;>.<,?|`~/\\🤣".shuffled()
-        let imageBeforeURL: URL                                   = URL(fileURLWithPath: "Codable-Before.png", relativeTo: codableDir)
-        let imageAfterURL:  URL                                   = URL(fileURLWithPath: "Codable-After.png", relativeTo: codableDir)
-        let jsonURL:        URL                                   = URL(fileURLWithPath: "Codable.json", relativeTo: codableDir)
-        let encoder:        JSONEncoder                           = JSONEncoder()
-        let decoder:        JSONDecoder                           = JSONDecoder()
+        let tree:           RedBlackTreeDictionary<String, NodeTestValue> = RedBlackTreeDictionary<String, NodeTestValue>()
+        let dataIns:        [Character]                                   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=\"':;>.<,?|`~/\\🤣".shuffled()
+        let imageBeforeURL: URL                                           = URL(fileURLWithPath: "Codable-Before.png", relativeTo: codableDir)
+        let imageAfterURL:  URL                                           = URL(fileURLWithPath: "Codable-After.png", relativeTo: codableDir)
+        let jsonURL:        URL                                           = URL(fileURLWithPath: "Codable.json", relativeTo: codableDir)
+        let encoder:        JSONEncoder                                   = JSONEncoder()
+        let decoder:        JSONDecoder                                   = JSONDecoder()
 
         for ch in dataIns { tree[String(ch)] = NodeTestValue() }
         try tree.rootNode?.drawTree(url: imageBeforeURL)
@@ -36,81 +36,93 @@ class RedBlackTreeTests: XCTestCase {
         let data = try encoder.encode(tree)
         try data.write(to: jsonURL)
 
-        let decodedTree = try decoder.decode(TreeDictionary<String, NodeTestValue>.self, from: data)
+        let decodedTree = try decoder.decode(RedBlackTreeDictionary<String, NodeTestValue>.self, from: data)
         try decodedTree.rootNode?.drawTree(url: imageAfterURL)
     }
 
-    func testInOrder() throws {
-        let tree:    TreeDictionary<String, NodeTestValue> = TreeDictionary<String, NodeTestValue>(trackOrder: true)
-        let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
-        let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< 10]).shuffled()
+//    func testInOrder() throws {
+//        let tree:    RedBlackTreeDictionary<String, NodeTestValue> = RedBlackTreeDictionary<String, NodeTestValue>(trackOrder: true)
+//        let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
+//        let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< 10]).shuffled()
+//
+//        print("Inserting: ", terminator: "")
+//        var str1: String = ""
+//        for ch in dataIns {
+//            let s = String(ch)
+//            str1 += s
+//            print(s, terminator: "")
+//            tree[s] = NodeTestValue()
+//        }
+//        print("")
+//
+//        print(" Checking: ", terminator: "")
+//        var str2: String = ""
+//        tree.forEachInInsertOrder {
+//            let s: String = $0.key
+//            str2 += s
+//            print(s, terminator: "")
+//        }
+//        print("")
+//        print("")
+//
+//        guard str1 == str2 else { XCTFail("Strings don't match: \"\(str1)\" != \"\(str2)\""); return }
+//        print("Strings match: \"\(str1)\" == \"\(str2)\"")
+//
+//        print("")
+//        print("Removing: \"", terminator: "")
+//        for ch in dataDel {
+//            let s = String(ch)
+//            print(s, terminator: "")
+//            tree.removeValue(forKey: s)
+//        }
+//        print("\"")
+//        print(" Results: \"", terminator: "")
+//        tree.forEachInInsertOrder { print($0.key, terminator: "") }
+//        print("\"")
+//    }
 
-        print("Inserting: ", terminator: "")
-        var str1: String = ""
-        for ch in dataIns {
-            let s = String(ch)
-            str1 += s
-            print(s, terminator: "")
-            tree[s] = NodeTestValue()
-        }
-        print("")
-
-        print(" Checking: ", terminator: "")
-        var str2: String = ""
-        tree.forEachInInsertOrder {
-            let s: String = $0.key
-            str2 += s
-            print(s, terminator: "")
-        }
-        print("")
-        print("")
-
-        guard str1 == str2 else { XCTFail("Strings don't match: \"\(str1)\" != \"\(str2)\""); return }
-        print("Strings match: \"\(str1)\" == \"\(str2)\"")
-
-        print("")
-        print("Removing: \"", terminator: "")
-        for ch in dataDel {
-            let s = String(ch)
-            print(s, terminator: "")
-            tree.removeValue(forKey: s)
-        }
-        print("\"")
-        print(" Results: \"", terminator: "")
-        tree.forEachInInsertOrder { print($0.key, terminator: "") }
-        print("\"")
+    func testInserts() throws {
+        try performTests(rounds: 1, doDelete: false, doDraw: true)
     }
 
     func testSlow() throws {
-        try performTests(rounds: 4, doDraw: true)
+        try performTests(rounds: 1, doDelete: true, doDraw: true)
     }
 
     func testFast() throws {
-        try performTests(rounds: 1000, doDraw: false)
+        try performTests(rounds: 1000, doDelete: true, doDraw: false)
     }
 
 //    func testPerformanceExample() throws {
 //        self.measure {}
 //    }
 
-    func performTests(rounds: Int, doDraw: Bool) throws {
+    func performTests(rounds: Int, doDelete: Bool, doDraw: Bool) throws {
         if doDraw { try clearDirectory(url: imagesDir, description: "images") }
 
         for x in (1 ... rounds) {
             print("Round \(x) of \(rounds)...")
 
-            let tree:    TreeDictionary<String, NodeTestValue> = TreeDictionary<String, NodeTestValue>()
-            let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
-            let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< (dataIns.count / 2)])
+            let tree:    RedBlackTreeDictionary<String, NodeTestValue> = RedBlackTreeDictionary<String, NodeTestValue>()
+            let dataIns: [Character]                                   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
+            let dataDel: [Character]                                   = Array<Character>(dataIns.shuffled()[0 ..< (dataIns.count / 2)])
 
             for i in (0 ..< dataIns.count) {
-                tree[String(dataIns[i])] = NodeTestValue()
-                if doDraw { try drawTreeImage(action: "insert", round: x, imageNumber: i, tree: tree) }
+                let str = String(dataIns[i])
+                tree[str] = NodeTestValue()
+                if doDraw {
+                    try autoreleasepool {
+                        try drawTreeImage(action: "insert", round: x, imageNumber: i, tree: tree)
+                    }
+                }
+                print(str)
             }
 
-            for j in (0 ..< dataDel.count) {
-                tree[String(dataDel[j])] = nil
-                if doDraw { try drawTreeImage(action: "remove", round: x, imageNumber: j, tree: tree) }
+            if doDelete {
+                for j in (0 ..< dataDel.count) {
+                    tree[String(dataDel[j])] = nil
+                    if doDraw { try drawTreeImage(action: "remove", round: x, imageNumber: j, tree: tree) }
+                }
             }
 
             tree.removeAll()
@@ -124,7 +136,7 @@ class RedBlackTreeTests: XCTestCase {
         try fm.createDirectory(at: url, withIntermediateDirectories: true)
     }
 
-    func drawTreeImage(action a: String, round i: Int, imageNumber j: Int, tree: TreeDictionary<String, NodeTestValue>) throws {
+    func drawTreeImage(action a: String, round i: Int, imageNumber j: Int, tree: RedBlackTreeDictionary<String, NodeTestValue>) throws {
         let url = URL(fileURLWithPath: "Sample_\(a)_\(i)_\(j + 1).png", relativeTo: imagesDir)
         try tree.rootNode?.drawTree(url: url)
     }

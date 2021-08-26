@@ -46,6 +46,16 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
         for e: Element in sequence { insert(e) }
     }
 
+    public convenience init(_ other: RedBlackTreeSet<Element>) {
+        self.init()
+        if let other = (other as? ConcurrentRedBlackTreeSet<Element>) {
+            rootNode = other.lock.withLock { other.rootNode?.copyTree() }
+        }
+        else {
+            rootNode = other.rootNode?.copyTree()
+        }
+    }
+
     public func contains(_ e: Element) -> Bool {
         guard let r = rootNode else { return false }
         return (r[e] != nil)

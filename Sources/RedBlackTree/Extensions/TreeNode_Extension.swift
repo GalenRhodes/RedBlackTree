@@ -19,15 +19,12 @@ import CoreFoundation
 
 extension TreeNode {
     //@f:0
-    @inlinable public var rootNode:   TreeNode<T>? { _foo { $0.parentNode }               }
+    @inlinable public var rootNode:   TreeNode<T>  { _foo { $0.parentNode }               }
     @inlinable public var parentNode: TreeNode<T>? { _parentNode                          }
     @inlinable public var leftNode:   TreeNode<T>? { self[.Left]                          }
     @inlinable public var rightNode:  TreeNode<T>? { self[.Right]                         }
     @inlinable public var count:      Int          { _count                               }
-    @inlinable        var _count:     Int          { get { Int(bitPattern: Color.maskLo(_data)) } set { _data = (Color.maskLo(_data) | Color.maskLo(newValue)) } }
     //@f:1
-
-    @inlinable public convenience init(value v: T) { self.init(value: v, color: .Black) }
 
     @inlinable public static func < (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool { (lhs.value < rhs.value) }
 
@@ -60,7 +57,7 @@ extension TreeNode {
         }
         _parentNode = nil
         _count = 1
-        _color = .Black
+        color = .Black
     }
 
     public func insert(value: T) -> TreeNode<T> {
@@ -82,7 +79,7 @@ extension TreeNode {
             return other.remove()
         }
         else if let c = (leftNode ?? rightNode) {
-            c._color = .Black
+            c.color = .Black
             _swapMe(with: c)
             return c.rootNode
         }
