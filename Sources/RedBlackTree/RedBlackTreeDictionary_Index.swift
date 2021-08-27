@@ -44,4 +44,7 @@ extension RedBlackTreeDictionary {
 
         @inlinable static func - (lhs: Int, rhs: Self) -> Self { Index(index: lhs - rhs.idx) }
     }
+
+    @inlinable public subscript(position: Index) -> (Key, Value) { node(at: position).value.data }
+
 }

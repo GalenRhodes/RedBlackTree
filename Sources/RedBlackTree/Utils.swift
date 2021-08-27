@@ -17,7 +17,7 @@
 import Foundation
 import CoreFoundation
 
-@usableFromInline enum ComparisonResults {
+public enum ComparisonResults {
     case EqualTo, LessThan, GreaterThan
 }
 

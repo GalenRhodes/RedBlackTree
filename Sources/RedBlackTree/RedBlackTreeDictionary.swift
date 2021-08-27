@@ -19,16 +19,18 @@ import CoreFoundation
 
 public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollection, ExpressibleByDictionaryLiteral where Key: Comparable & Equatable {
 
-    private enum CodingKeys: String, CodingKey {
+    @usableFromInline enum CodingKeys: String, CodingKey {
         case trackOrder, elements
     }
 
     public typealias Element = (Key, Value)
 
     //@f:0
-    public            var count:      Int           { (rootNode?.count ?? 0) }
-    public            let startIndex: Index         = Index(index: 0)
-    @usableFromInline var rootNode:   TreeNode<KV>? = nil
+    public            var count:      Int             { (rootNode?.count ?? 0) }
+    public            let startIndex: Index           = Index(index: 0)
+    @usableFromInline var rootNode:   TreeNode<KV>?   = nil
+    @usableFromInline var firstNode:  IOTreeNode<KV>? = nil
+    @usableFromInline var lastNode:   IOTreeNode<KV>? = nil
     @usableFromInline let trackOrder: Bool
     //@f:1
 
@@ -61,25 +63,51 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
 
     deinit { removeAll() }
 
+    /// Encode the tree.
+    ///
+    /// - Parameter encoder: the encoder.
+    /// - Throws: if there was an error during encoding.
+    ///
+    public func encode(to encoder: Encoder) throws where Key: Encodable, Value: Encodable {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(trackOrder, forKey: .trackOrder)
+        var elemList = c.nestedUnkeyedContainer(forKey: .elements)
+
+        if trackOrder {
+            if let n = firstNode { try n.forEachNode(insertOrder: true) { try elemList.encode($0.value) } }
+        }
+        else if let r = rootNode {
+            try r.forEachNode { try elemList.encode($0.value) }
+        }
+    }
+
+    @usableFromInline func node(at index: Index) -> TreeNode<KV> {
+        guard let r = rootNode else { fatalError("Index out of bounds.") }
+        return r[TreeNode<KV>.Index(index: index.idx)]
+    }
+
     public func index(forKey key: Key) -> Index? {
         guard let r = rootNode, let n = r.find(with: { compare(a: key, b: $0.key) }) else { return nil }
         return Index(index: n.index)
     }
 
-    public subscript(position: Index) -> Element {
-        guard let r = rootNode else { fatalError("Index out of bounds.") }
-        let n = r[TreeNode<KV>.Index(index: position.idx)]
-        return (n.value.key, n.value.value)
-    }
-
     @discardableResult public func updateValue(_ value: Value, forKey key: Key) -> Value? {
         let newElement = KV(key: key, value: value)
         guard let r = rootNode else {
-            rootNode = TreeNode<KV>(value: newElement)
+            if trackOrder {
+                firstNode = IOTreeNode<KV>(value: newElement)
+                lastNode = firstNode
+                rootNode = firstNode
+            }
+            else {
+                rootNode = TreeNode<KV>(value: newElement)
+            }
             return nil
         }
         guard let n = r.find(with: { compare(a: key, b: $0.key) }) else {
-            rootNode = r.insert(value: newElement).rootNode
+            let n = r.insert(value: newElement)
+            rootNode = n.rootNode
+            if trackOrder, let n = (n as? IOTreeNode<KV>) { lastNode = n }
             return nil
         }
         let v = n.value.value
@@ -87,11 +115,12 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         return v
     }
 
+    @usableFromInline func removeNode(node n: TreeNode<KV>) { rootNode = n.remove() }
+
     @discardableResult public func remove(at index: Index) -> Element {
-        guard let r = rootNode else { fatalError("Index out of bounds.") }
-        let n = r[TreeNode<KV>.Index(index: index.idx)]
-        let v = (n.value.key, n.value.value)
-        rootNode = n.remove()
+        let n = node(at: index)
+        let v = n.value.data
+        removeNode(node: n)
         return v
     }
 

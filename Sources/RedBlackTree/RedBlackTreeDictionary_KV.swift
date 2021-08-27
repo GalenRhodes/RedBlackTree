@@ -24,14 +24,16 @@ extension RedBlackTreeDictionary {
         public let key:   Key
         public var value: Value
 
-        @usableFromInline init(key: Key, value: Value) { self.key = key; self.value = value }
+        @inlinable init(key: Key, value: Value) { self.key = key; self.value = value }
 
-        @usableFromInline init(_ e: Element) { key = e.0; value = e.1 }
+        @inlinable init(_ e: Element) { key = e.0; value = e.1 }
+
+        @inlinable var data: (Key, Value) { (key, value) }
     }
 }
 
 extension RedBlackTreeDictionary.KV: Decodable where Key: Decodable, Value: Decodable {
-    @usableFromInline init(from decoder: Decoder) throws {
+    @inlinable init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         key = try c.decode(Key.self, forKey: .key)
         value = try c.decode(Value.self, forKey: .value)
@@ -39,7 +41,7 @@ extension RedBlackTreeDictionary.KV: Decodable where Key: Decodable, Value: Deco
 }
 
 extension RedBlackTreeDictionary.KV: Encodable where Key: Encodable, Value: Encodable {
-    @usableFromInline func encode(to encoder: Encoder) throws {
+    @inlinable func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(key, forKey: .key)
         try c.encode(value, forKey: .value)
@@ -47,11 +49,11 @@ extension RedBlackTreeDictionary.KV: Encodable where Key: Encodable, Value: Enco
 }
 
 extension RedBlackTreeDictionary.KV: Comparable, Equatable {
-    @usableFromInline static func < (lhs: Self, rhs: Self) -> Bool { lhs.key < rhs.key }
+    @inlinable static func < (lhs: Self, rhs: Self) -> Bool { lhs.key < rhs.key }
 
-    @usableFromInline static func == (lhs: Self, rhs: Self) -> Bool { lhs.key == rhs.key }
+    @inlinable static func == (lhs: Self, rhs: Self) -> Bool { lhs.key == rhs.key }
 }
 
 extension RedBlackTreeDictionary.KV: Hashable where Key: Hashable {
-    @usableFromInline func hash(into hasher: inout Hasher) { hasher.combine(key) }
+    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(key) }
 }

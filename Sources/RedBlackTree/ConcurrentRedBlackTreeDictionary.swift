@@ -23,9 +23,9 @@ public class ConcurrentRedBlackTreeDictionary<Key, Value>: RedBlackTreeDictionar
     public override   var count: Int             { lock.withLock { super.count } }
     //@f:1
 
-    public override func index(forKey key: Key) -> Index? { lock.withLock { super.index(forKey: key) } }
+    public override func encode(to encoder: Encoder) throws where Key: Encodable, Value: Encodable { try lock.withLock { try super.encode(to: encoder) } }
 
-    public override subscript(position: Index) -> (Key, Value) { lock.withLock { super[position] } }
+    public override func index(forKey key: Key) -> Index? { lock.withLock { super.index(forKey: key) } }
 
     public override func updateValue(_ value: Value, forKey key: Key) -> Value? { lock.withLock { super.updateValue(value, forKey: key) } }
 

@@ -18,11 +18,6 @@ import Foundation
 import CoreFoundation
 
 extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
-    public func encode(to encoder: Encoder) throws {
-        var c = encoder.unkeyedContainer()
-        guard let r = rootNode else { return }
-        try r.forEachNode { try c.encode($0.value) }
-    }
 }
 
 extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {}
