@@ -74,7 +74,7 @@ extension TreeNode {
 
     @usableFromInline func _swapMe(with node: TreeNode<T>?) {
         if let p = _parentNode { _forPSide(parent: p, ifLeft: { pp in pp[.Left] = node }, ifRight: { pp in pp[.Right] = node }) }
-        else if let node = node { node._removeFromParent() }
+        else if let n = node { n._removeFromParent() }
     }
 
     @discardableResult @usableFromInline func _removeFromParent() -> TreeNode<T> {

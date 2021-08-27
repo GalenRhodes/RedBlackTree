@@ -48,8 +48,8 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
 
     public convenience init(_ other: RedBlackTreeSet<Element>) {
         self.init()
-        if let other = (other as? ConcurrentRedBlackTreeSet<Element>) {
-            rootNode = other.lock.withLock { other.rootNode?.copyTree() }
+        if let _other = (other as? ConcurrentRedBlackTreeSet<Element>) {
+            rootNode = _other.lock.withLock { _other.rootNode?.copyTree() }
         }
         else {
             rootNode = other.rootNode?.copyTree()

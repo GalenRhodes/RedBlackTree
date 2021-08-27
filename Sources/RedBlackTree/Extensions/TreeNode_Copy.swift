@@ -36,10 +36,10 @@ extension TreeNode {
 
     @inlinable func _copyTree(limit: Int, queue: DispatchQueue?) -> TreeNode<T> {
         let copy = TreeNode<T>(value: value, data: _data)
-        if let queue = queue, limit > 0 {
+        if let _queue = queue, limit > 0 {
             let group = DispatchGroup()
-            queue.async(group: group) { copy._leftNode = copy._copyChildNode(self._leftNode, limit: limit, queue: queue) }
-            queue.async(group: group) { copy._rightNode = copy._copyChildNode(self._rightNode, limit: limit, queue: queue) }
+            _queue.async(group: group) { copy._leftNode = copy._copyChildNode(self._leftNode, limit: limit, queue: _queue) }
+            _queue.async(group: group) { copy._rightNode = copy._copyChildNode(self._rightNode, limit: limit, queue: _queue) }
             group.wait()
         }
         else {
@@ -50,15 +50,15 @@ extension TreeNode {
     }
 
     @inlinable func _copyChildNode(_ c: TreeNode<T>?, limit: Int, queue: DispatchQueue) -> TreeNode<T>? {
-        guard let c = c else { return nil }
-        let cc = c._copyTree(limit: (limit - 1), queue: queue)
+        guard let _c = c else { return nil }
+        let cc = _c._copyTree(limit: (limit - 1), queue: queue)
         cc._parentNode = self
         return cc
     }
 
     @inlinable func _copyChildNode(_ c: TreeNode<T>?) -> TreeNode<T>? {
-        guard let c = c else { return nil }
-        let cc = c._copyTree(limit: 0, queue: nil)
+        guard let _c = c else { return nil }
+        let cc = _c._copyTree(limit: 0, queue: nil)
         cc._parentNode = self
         return cc
     }

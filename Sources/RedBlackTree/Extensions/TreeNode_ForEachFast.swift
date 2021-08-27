@@ -38,13 +38,13 @@ extension TreeNode {
     @usableFromInline func forEachFastThreaded(_ q: DispatchQueue, _ l: Int, _ b: (TreeNode<T>) throws -> Void) rethrows {
         try b(self)
         try withoutActuallyEscaping(b) { (sBody) -> Void in //@f:0
-            func foo(_ n: TreeNode<T>?) -> Error? { if let n = n { do { try n.forEachFast(q, l, sBody) } catch let e { return e } }; return nil }
+            func foo(_ n: TreeNode<T>?) -> Error? { if let _n = n { do { try _n.forEachFast(q, l, sBody) } catch let e { return e } }; return nil }
             //@f:1
             var _err: Error?        = nil
             let _grp: DispatchGroup = DispatchGroup()
             let _lck: NSLock        = NSLock()
-            q.async(group: _grp) { let e = foo(self._leftNode); if let e = e { _lck.withLock { _err = e } } }
-            q.async(group: _grp) { let e = foo(self._rightNode); if let e = e { _lck.withLock { _err = e } } }
+            q.async(group: _grp) { let e = foo(self._leftNode); if let _e = e { _lck.withLock { _err = _e } } }
+            q.async(group: _grp) { let e = foo(self._rightNode); if let _e = e { _lck.withLock { _err = _e } } }
             _grp.wait()
             if let e = _err { throw e }
         }

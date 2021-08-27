@@ -57,7 +57,7 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
 
     public convenience init(trackOrder: Bool = false, _ other: RedBlackTreeDictionary<Key, Value>) {
         self.init(trackOrder: trackOrder)
-        if let other = (other as? ConcurrentRedBlackTreeDictionary<Key, Value>) { rootNode = other.lock.withLock { other.rootNode?.copyTree() } }
+        if let _other = (other as? ConcurrentRedBlackTreeDictionary<Key, Value>) { rootNode = _other.lock.withLock { _other.rootNode?.copyTree() } }
         else { rootNode = other.rootNode?.copyTree() }
     }
 
@@ -107,7 +107,7 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         guard let n = r.find(with: { compare(a: key, b: $0.key) }) else {
             let n = r.insert(value: newElement)
             rootNode = n.rootNode
-            if trackOrder, let n = (n as? IOTreeNode<KV>) { lastNode = n }
+            if trackOrder, let _n = (n as? IOTreeNode<KV>) { lastNode = _n }
             return nil
         }
         let v = n.value.value

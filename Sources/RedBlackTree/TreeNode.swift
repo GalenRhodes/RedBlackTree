@@ -134,31 +134,31 @@ public class IOTreeNode<T>: TreeNode<T> where T: Comparable & Equatable {
 
     @usableFromInline override func _insert(value: T, side: Side) -> TreeNode<T> {
         let newNode = super._insert(value: value, side: side)
-        guard let newNode = (newNode as? IOTreeNode<T>) else { return newNode }
+        guard let _newNode = (newNode as? IOTreeNode<T>) else { return newNode }
         let n1: IOTreeNode<T> = foo(start: self) { $0.nextNode }
-        n1.nextNode = newNode
-        newNode.prevNode = n1
-        return newNode
+        n1.nextNode = _newNode
+        _newNode.prevNode = n1
+        return _newNode
     }
 
     @usableFromInline override func _makeNewNode(value: T) -> TreeNode<T> { IOTreeNode<T>(value: value, color: .Red) }
 
     @usableFromInline override func _swapNodeBeforeRemove(other: TreeNode<T>) {
         super._swapNodeBeforeRemove(other: other)
-        guard let other = (other as? IOTreeNode<T>) else { return }
+        guard let _other = (other as? IOTreeNode<T>) else { return }
         // We also need to swap our place in the insert order with this node
         let sPrev = prevNode
         let sNext = nextNode
-        let oPrev = other.prevNode
-        let oNext = other.nextNode
+        let oPrev = _other.prevNode
+        let oNext = _other.nextNode
         prevNode = oPrev
         nextNode = oNext
         oPrev?.nextNode = self
         oNext?.prevNode = self
-        other.prevNode = sPrev
-        other.nextNode = sNext
-        sPrev?.nextNode = other
-        sNext?.prevNode = other
+        _other.prevNode = sPrev
+        _other.nextNode = sNext
+        sPrev?.nextNode = _other
+        sNext?.prevNode = _other
     }
 
     @usableFromInline override func _postRemoveHook(root: TreeNode<T>?) -> TreeNode<T>? {
