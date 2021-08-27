@@ -46,10 +46,7 @@
             </BuildableReference>
             <SelectedTests>
                <Test
-                  Identifier = "RedBlackTreeTests/testInserts">
-               </Test>
-               <Test
-                  Identifier = "RedBlackTreeTests/testInserts()">
+                  Identifier = "RedBlackTreeTests/testCodable">
                </Test>
             </SelectedTests>
          </TestableReference>

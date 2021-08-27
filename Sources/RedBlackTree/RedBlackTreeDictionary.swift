@@ -19,40 +19,44 @@ import CoreFoundation
 
 public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollection, ExpressibleByDictionaryLiteral where Key: Comparable & Equatable {
 
+    private enum CodingKeys: String, CodingKey {
+        case trackOrder, elements
+    }
+
     public typealias Element = (Key, Value)
 
     //@f:0
     public            var count:      Int           { (rootNode?.count ?? 0) }
     public            let startIndex: Index         = Index(index: 0)
     @usableFromInline var rootNode:   TreeNode<KV>? = nil
+    @usableFromInline let trackOrder: Bool
     //@f:1
 
-    public init() {}
+    public init() { trackOrder = false }
 
-    public required init(dictionaryLiteral elements: SequenceElement...) {
+    public init(trackOrder: Bool) { self.trackOrder = trackOrder }
+
+    public convenience required init(dictionaryLiteral elements: SequenceElement...) { self.init(trackOrder: false, elements: elements) }
+
+    public convenience init(trackOrder: Bool = false, elements: [SequenceElement]) {
+        self.init(trackOrder: trackOrder)
         for e in elements { updateValue(e.1, forKey: e.0) }
     }
 
-    public init(dictionaryLiteral elements: [SequenceElement]) {
-        for e in elements { updateValue(e.1, forKey: e.0) }
-    }
-
-    public required init(from decoder: Decoder) throws where Key: Decodable, Value: Decodable {
-        var c = try decoder.unkeyedContainer()
-        while !c.isAtEnd {
-            let e = try c.decode(KV.self)
+    public convenience required init(from decoder: Decoder) throws where Key: Decodable, Value: Decodable {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(trackOrder: try container.decode(Bool.self, forKey: .trackOrder))
+        var elemList = try container.nestedUnkeyedContainer(forKey: .elements)
+        while !elemList.isAtEnd {
+            let e = try elemList.decode(KV.self)
             updateValue(e.value, forKey: e.key)
         }
     }
 
-    public convenience init(_ other: RedBlackTreeDictionary<Key, Value>) {
-        self.init()
-        if let other = (other as? ConcurrentRedBlackTreeDictionary<Key, Value>) {
-            rootNode = other.lock.withLock { other.rootNode?.copyTree() }
-        }
-        else {
-            rootNode = other.rootNode?.copyTree()
-        }
+    public convenience init(trackOrder: Bool = false, _ other: RedBlackTreeDictionary<Key, Value>) {
+        self.init(trackOrder: trackOrder)
+        if let other = (other as? ConcurrentRedBlackTreeDictionary<Key, Value>) { rootNode = other.lock.withLock { other.rootNode?.copyTree() } }
+        else { rootNode = other.rootNode?.copyTree() }
     }
 
     deinit { removeAll() }
@@ -93,6 +97,7 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
 
     @discardableResult public func removeValue(forKey key: Key) -> Value? {
         guard let r = rootNode, let n = r.find(with: { compare(a: key, b: $0.key) }) else { return nil }
+        rootNode = n.remove()
         return n.value.value
     }
 

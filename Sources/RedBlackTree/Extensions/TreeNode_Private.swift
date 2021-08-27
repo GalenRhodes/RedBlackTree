@@ -113,14 +113,6 @@ extension TreeNode {
         swap(&color, &c1.color)
     }
 
-    @usableFromInline func _insert(value: T, side: Side) -> TreeNode<T> {
-        if let n = self[side] { return n.insert(value: value) }
-        let n = TreeNode<T>(value: value, color: .Red)
-        self[side] = n
-        n._insertRepair()
-        return n
-    }
-
     @usableFromInline func _insertRepair() {
         if let p = _parentNode {
             if p.color.isRed {
@@ -146,14 +138,6 @@ extension TreeNode {
         else if color.isRed {
             // This node is the root node so it has to be black.
             color = .Black
-        }
-    }
-
-    @inlinable func _foo(_ body: (TreeNode<T>) throws -> TreeNode<T>?) rethrows -> TreeNode<T> {
-        var n = self
-        while true {
-            guard let _n = try body(n) else { return n }
-            n = _n
         }
     }
 

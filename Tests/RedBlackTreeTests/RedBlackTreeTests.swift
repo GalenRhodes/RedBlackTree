@@ -30,14 +30,14 @@ class RedBlackTreeTests: XCTestCase {
         let decoder:        JSONDecoder                                   = JSONDecoder()
 
         for ch in dataIns { tree[String(ch)] = NodeTestValue() }
-        try tree.rootNode?.drawTree(url: imageBeforeURL)
+        try autoreleasepool { try tree.rootNode?.drawTree(url: imageBeforeURL) }
 
         encoder.outputFormatting = [ .sortedKeys, .prettyPrinted ]
         let data = try encoder.encode(tree)
         try data.write(to: jsonURL)
 
         let decodedTree = try decoder.decode(RedBlackTreeDictionary<String, NodeTestValue>.self, from: data)
-        try decodedTree.rootNode?.drawTree(url: imageAfterURL)
+        try autoreleasepool { try decodedTree.rootNode?.drawTree(url: imageAfterURL) }
     }
 
 //    func testInOrder() throws {
@@ -115,13 +115,23 @@ class RedBlackTreeTests: XCTestCase {
                         try drawTreeImage(action: "insert", round: x, imageNumber: i, tree: tree)
                     }
                 }
-                print(str)
+                if rounds == 1 {
+                    print("Inserting: \"\(str == "\"" ? "\\\"" : str)\"")
+                }
             }
 
             if doDelete {
                 for j in (0 ..< dataDel.count) {
-                    tree[String(dataDel[j])] = nil
-                    if doDraw { try drawTreeImage(action: "remove", round: x, imageNumber: j, tree: tree) }
+                    let str = String(dataDel[j])
+                    tree.removeValue(forKey: str)
+                    if doDraw {
+                        try autoreleasepool {
+                            try drawTreeImage(action: "remove", round: x, imageNumber: j, tree: tree)
+                        }
+                    }
+                    if rounds == 1 {
+                        print("Removing: \"\(str == "\"" ? "\\\"" : str)\"")
+                    }
                 }
             }
 

@@ -17,12 +17,16 @@
 import Foundation
 import CoreFoundation
 
-public enum ComparisonResults {
+@usableFromInline enum ComparisonResults {
     case EqualTo, LessThan, GreaterThan
 }
 
-@inlinable public func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable {
-    ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan))
+@inlinable func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable { ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan)) }
+
+@inlinable func foo<T>(start: T, _ body: (T) throws -> T?) rethrows -> T {
+    var o1 = start
+    while let o2 = try body(o1) { o1 = o2 }
+    return o1
 }
 
 extension NSLock {

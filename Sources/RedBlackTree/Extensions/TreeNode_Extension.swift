@@ -19,11 +19,11 @@ import CoreFoundation
 
 extension TreeNode {
     //@f:0
-    @inlinable public var rootNode:   TreeNode<T>  { _foo { $0.parentNode }               }
-    @inlinable public var parentNode: TreeNode<T>? { _parentNode                          }
-    @inlinable public var leftNode:   TreeNode<T>? { self[.Left]                          }
-    @inlinable public var rightNode:  TreeNode<T>? { self[.Right]                         }
-    @inlinable public var count:      Int          { _count                               }
+    @inlinable public var rootNode:   TreeNode<T>  { foo(start: self) { $0.parentNode } }
+    @inlinable public var parentNode: TreeNode<T>? { _parentNode                        }
+    @inlinable public var leftNode:   TreeNode<T>? { self[.Left]                        }
+    @inlinable public var rightNode:  TreeNode<T>? { self[.Right]                       }
+    @inlinable public var count:      Int          { _count                             }
     //@f:1
 
     @inlinable public static func < (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool { (lhs.value < rhs.value) }
@@ -58,39 +58,6 @@ extension TreeNode {
         _parentNode = nil
         _count = 1
         color = .Black
-    }
-
-    public func insert(value: T) -> TreeNode<T> {
-        switch compare(a: value, b: self.value) {
-            case .EqualTo:
-                self.value = value
-                return self
-            case .LessThan:
-                return _insert(value: value, side: .Left)
-            case .GreaterThan:
-                return _insert(value: value, side: .Right)
-        }
-    }
-
-    public func remove() -> TreeNode<T>? {
-        if let l = leftNode, let _ = rightNode {
-            let other = l._foo { $0.rightNode }
-            swap(&value, &other.value)
-            return other.remove()
-        }
-        else if let c = (leftNode ?? rightNode) {
-            c.color = .Black
-            _swapMe(with: c)
-            return c.rootNode
-        }
-        else if let p = parentNode {
-            // There are no child nodes but there is a parent node.
-            if color.isBlack { _removeRepair() }
-            _removeFromParent()
-            return p.rootNode
-        }
-        // This is the only node so it can just go away.
-        return nil
     }
 
     public func forEachNode(reverse f: Bool = false, _ body: (TreeNode<T>) throws -> Void) rethrows {
