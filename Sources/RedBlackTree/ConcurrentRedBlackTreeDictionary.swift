@@ -25,19 +25,19 @@ public class ConcurrentRedBlackTreeDictionary<Key, Value>: RedBlackTreeDictionar
 
     public override func encode(to encoder: Encoder) throws where Key: Encodable, Value: Encodable { try lock.withLock { try super.encode(to: encoder) } }
 
-    public override func index(forKey key: Key) -> Index? { lock.withLock { super.index(forKey: key) } }
+    override func node(forKey key: Key) -> TreeNode<KV>? { lock.withLock { super.node(forKey: key) } }
+
+    override func node(at index: Index) -> TreeNode<KV> { lock.withLock { super.node(at: index) } }
+
+    override func remove(node n: TreeNode<KV>) { lock.withLock { super.remove(node: n) } }
 
     public override func updateValue(_ value: Value, forKey key: Key) -> Value? { lock.withLock { super.updateValue(value, forKey: key) } }
-
-    public override func remove(at index: Index) -> (Key, Value) { lock.withLock { super.remove(at: index) } }
-
-    public override func removeValue(forKey key: Key) -> Value? { lock.withLock { super.removeValue(forKey: key) } }
 
     public override func removeAll(keepingCapacity keepCapacity: Bool) { lock.withLock { super.removeAll(keepingCapacity: keepCapacity) } }
 
     public override func forEach(reverse: Bool, _ body: ((Key, Value)) throws -> Void) rethrows { try lock.withLock { try super.forEach(reverse: reverse, body) } }
 
-    override func _getValue(forKey key: Key) -> Value? { lock.withLock { super._getValue(forKey: key) } }
-
     override func _first(reverse f: Bool, where predicate: ((Key, Value)) throws -> Bool) rethrows -> (Key, Value)? { try lock.withLock { try super._first(reverse: f, where: predicate) } }
+
+    override func _forEachFast(_ body: ((Key, Value)) throws -> Void) rethrows { try lock.withLock { try super._forEachFast(body) } }
 }

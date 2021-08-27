@@ -31,14 +31,16 @@ extension RedBlackTreeDictionary {
         for e: SequenceElement in other { updateValue(e.1, forKey: e.0) }
     }
 
-    @inlinable public func index(after i: Index) -> Index {
-        guard i >= startIndex && i < endIndex else { fatalError("Index out of bounds.") }
-        return (i + 1)
+    @discardableResult @inlinable public func remove(at index: Index) -> Element {
+        let n = node(at: index)
+        remove(node: n)
+        return n.value.data
     }
 
-    @inlinable public func index(before i: Index) -> Index {
-        guard i > startIndex && i <= endIndex else { fatalError("Index out of bounds.") }
-        return (i - 1)
+    @discardableResult @inlinable public func removeValue(forKey key: Key) -> Value? {
+        guard let n = node(forKey: key) else { return nil }
+        remove(node: n)
+        return n.value.value
     }
 
     @inlinable public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
@@ -47,7 +49,7 @@ extension RedBlackTreeDictionary {
     }
 //@f:0
     @inlinable public subscript(key: Key) -> Value? {
-        get { _getValue(forKey: key) }
+        get { node(forKey: key)?.value.value }
         set { if let v = newValue { updateValue(v, forKey: key) } else { removeValue(forKey: key) } }
     }
 //@f:1

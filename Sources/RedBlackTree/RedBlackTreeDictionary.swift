@@ -81,53 +81,42 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         }
     }
 
+    @usableFromInline func node(forKey key: Key) -> TreeNode<KV>? {
+        guard let r = rootNode else { return nil }
+        return r.find(with: { compare(a: key, b: $0.key) })
+    }
+
     @usableFromInline func node(at index: Index) -> TreeNode<KV> {
         guard let r = rootNode else { fatalError("Index out of bounds.") }
         return r[TreeNode<KV>.Index(index: index.idx)]
     }
 
-    public func index(forKey key: Key) -> Index? {
-        guard let r = rootNode, let n = r.find(with: { compare(a: key, b: $0.key) }) else { return nil }
-        return Index(index: n.index)
-    }
+    @usableFromInline func remove(node n: TreeNode<KV>) { rootNode = n.remove() }
 
     @discardableResult public func updateValue(_ value: Value, forKey key: Key) -> Value? {
-        let newElement = KV(key: key, value: value)
-        guard let r = rootNode else {
-            if trackOrder {
-                firstNode = IOTreeNode<KV>(value: newElement)
-                lastNode = firstNode
-                rootNode = firstNode
-            }
-            else {
-                rootNode = TreeNode<KV>(value: newElement)
-            }
-            return nil
+        let elem = KV(key: key, value: value)
+
+        if let n = node(forKey: key) {
+            let v = n.value.value
+            n.value.value = value
+            return v
         }
-        guard let n = r.find(with: { compare(a: key, b: $0.key) }) else {
-            let n = r.insert(value: newElement)
+
+        if let r = rootNode {
+            let n = r.insert(value: elem)
             rootNode = n.rootNode
             if trackOrder, let _n = (n as? IOTreeNode<KV>) { lastNode = _n }
-            return nil
         }
-        let v = n.value.value
-        rootNode = r.insert(value: newElement).rootNode
-        return v
-    }
+        else if trackOrder {
+            firstNode = IOTreeNode<KV>(value: elem)
+            lastNode = firstNode
+            rootNode = firstNode
+        }
+        else {
+            rootNode = TreeNode<KV>(value: elem)
+        }
 
-    @usableFromInline func removeNode(node n: TreeNode<KV>) { rootNode = n.remove() }
-
-    @discardableResult public func remove(at index: Index) -> Element {
-        let n = node(at: index)
-        let v = n.value.data
-        removeNode(node: n)
-        return v
-    }
-
-    @discardableResult public func removeValue(forKey key: Key) -> Value? {
-        guard let r = rootNode, let n = r.find(with: { compare(a: key, b: $0.key) }) else { return nil }
-        rootNode = n.remove()
-        return n.value.value
+        return nil
     }
 
     public func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -138,20 +127,16 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
 
     public func forEach(reverse: Bool, _ body: (Element) throws -> Void) rethrows {
         guard let r = rootNode else { return }
-        try r.forEachNode(reverse: reverse) { try body(($0.value.key, $0.value.value)) }
+        try r.forEachNode(reverse: reverse) { try body($0.value.data) }
     }
 
     @usableFromInline func _first(reverse f: Bool, where predicate: (Element) throws -> Bool) rethrows -> Element? {
-        guard let r = rootNode, let e = try r.firstNode(reverse: f, where: { try predicate(($0.value.key, $0.value.value)) }) else { return nil }
-        return (e.value.key, e.value.value)
-    }
-
-    @usableFromInline func _getValue(forKey key: Key) -> Value? {
-        rootNode?.find(with: { compare(a: key, b: $0.key) })?.value.value
+        guard let r = rootNode, let e = try r.firstNode(reverse: f, where: { try predicate($0.value.data) }) else { return nil }
+        return e.value.data
     }
 
     @usableFromInline func _forEachFast(_ body: (Element) throws -> Void) rethrows {
         guard let r = rootNode else { return }
-        try r.forEachFast { try body(($0.value.key, $0.value.value)) }
+        try r.forEachFast { try body($0.value.data) }
     }
 }

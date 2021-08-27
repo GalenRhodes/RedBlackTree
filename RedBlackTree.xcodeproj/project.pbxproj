@@ -22,6 +22,7 @@
 		1117D4AB1EF72CA10DAD7419 /* RedBlackTreeDictionary_Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D0C9AD3BEA6A6B3B0401 /* RedBlackTreeDictionary_Extension.swift */; };
 		1117D4C023DE2C7189225BD8 /* RedBlackTreeDictionary_KV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D94700C979377392ECC1 /* RedBlackTreeDictionary_KV.swift */; };
 		1117D57BAB85083FE836EDE4 /* RedBlackTreeDictionary_Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D3F5C3BED922D69213FE /* RedBlackTreeDictionary_Index.swift */; };
+		1117D6376FD141A376D00432 /* RedBlackTreeSet_Iterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D75500D0CF9880E88510 /* RedBlackTreeSet_Iterator.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117D6DA31E9C0EB3F40BCA5 /* TreeNode_Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9E0445A7FAB0A580707 /* TreeNode_Color.swift */; };
 		1117D874D77440FBCBA381B5 /* RedBlackTreeDictionary_Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D5D542F2E449570B19F4 /* RedBlackTreeDictionary_Values.swift */; };
@@ -88,6 +89,7 @@
 		1117D5D542F2E449570B19F4 /* RedBlackTreeDictionary_Values.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeDictionary_Values.swift; sourceTree = "<group>"; };
 		1117D66249D5A0BFA534BCEC /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		1117D748F1E9D22870655D72 /* RedBlackTreeDictionary_Keys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeDictionary_Keys.swift; sourceTree = "<group>"; };
+		1117D75500D0CF9880E88510 /* RedBlackTreeSet_Iterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeSet_Iterator.swift; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
 		1117D8D55490F3161E578522 /* TreeNode_ForEachFast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode_ForEachFast.swift; sourceTree = "<group>"; };
 		1117D94700C979377392ECC1 /* RedBlackTreeDictionary_KV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RedBlackTreeDictionary_KV.swift; path = Sources/RedBlackTree/RedBlackTreeDictionary_KV.swift; sourceTree = SOURCE_ROOT; };
@@ -198,6 +200,7 @@
 				1117D748F1E9D22870655D72 /* RedBlackTreeDictionary_Keys.swift */,
 				1117D5D542F2E449570B19F4 /* RedBlackTreeDictionary_Values.swift */,
 				1117D8D55490F3161E578522 /* TreeNode_ForEachFast.swift */,
+				1117D75500D0CF9880E88510 /* RedBlackTreeSet_Iterator.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 				1117D18DAF1A99CB7C7FAECC /* RedBlackTreeDictionary_Keys.swift in Sources */,
 				1117D874D77440FBCBA381B5 /* RedBlackTreeDictionary_Values.swift in Sources */,
 				1117DE084E08CEEE3E617447 /* TreeNode_ForEachFast.swift in Sources */,
+				1117D6376FD141A376D00432 /* RedBlackTreeSet_Iterator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

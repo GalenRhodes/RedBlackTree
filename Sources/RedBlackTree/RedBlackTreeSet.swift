@@ -26,18 +26,28 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
     public let startIndex: Index = Index(index: 0)
     public var count:      Int { (rootNode?.count ?? 0) }
 
-    private var rootNode: TreeNode<Element>? = nil
+    @usableFromInline var rootNode:   TreeNode<Element>? = nil
+    @usableFromInline let trackOrder: Bool
 
-    public required init() {}
+    public required init() { trackOrder = false }
 
-    public convenience required init(from decoder: Decoder) throws where Element: Decodable {
-        self.init()
+    public init(trackOrder: Bool) { self.trackOrder = trackOrder }
+
+    public convenience init(from decoder: Decoder, trackOrder: Bool) throws where Element: Decodable {
+        self.init(trackOrder: trackOrder)
         var c = try decoder.unkeyedContainer()
         while !c.isAtEnd { insert(try c.decode(Element.self)) }
     }
 
+    public convenience required init(from decoder: Decoder) throws where Element: Decodable { try self.init(from: decoder, trackOrder: false) }
+
     public convenience required init(arrayLiteral elements: Element...) {
         self.init()
+        for e in elements { insert(e) }
+    }
+
+    public convenience init(elements: [Element], trackOrder: Bool = false) {
+        self.init(trackOrder: trackOrder)
         for e in elements { insert(e) }
     }
 
@@ -46,95 +56,35 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
         for e: Element in sequence { insert(e) }
     }
 
-    public convenience init(_ other: RedBlackTreeSet<Element>) {
-        self.init()
-        if let _other = (other as? ConcurrentRedBlackTreeSet<Element>) {
-            rootNode = _other.lock.withLock { _other.rootNode?.copyTree() }
-        }
-        else {
-            rootNode = other.rootNode?.copyTree()
-        }
-    }
-
-    public func contains(_ e: Element) -> Bool {
-        guard let r = rootNode else { return false }
-        return (r[e] != nil)
-    }
-
     public func removeAll(keepingCapacity: Bool = false) {
-        if let r = rootNode {
-            rootNode = nil
-            DispatchQueue(label: UUID().uuidString).async { r.removeAll() }
-        }
+        guard let r = rootNode else { return }
+        rootNode = nil
+        DispatchQueue(label: UUID().uuidString).async { r.removeAll() }
     }
 
-    public func remove(at position: Index) -> Element {
+    @usableFromInline func node(forElement e: Element) -> TreeNode<Element>? {
+        guard let r = rootNode else { return nil }
+        return r[e]
+    }
+
+    @usableFromInline func node(at index: Index) -> TreeNode<Element> {
         guard let r = rootNode else { fatalError("Index out of bounds.") }
-        let n = r[position]
-        let v = n.value
-        rootNode = n.remove()
-        return v
+        return r[index]
     }
 
-    public subscript(position: Index) -> Element {
-        guard position >= startIndex && position < endIndex else { fatalError("Index out of bounds.") }
-        return rootNode![position].value
-    }
+    @usableFromInline func remove(node: TreeNode<Element>) { rootNode = node.remove() }
 
-    @discardableResult public func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) {
-        if let r = rootNode {
-            if let o = r[newMember] { return (inserted: false, memberAfterInsert: o.value) }
-            rootNode = r.insert(value: newMember).rootNode
-        }
-        else {
-            rootNode = TreeNode<Element>(value: newMember)
-        }
-        return (inserted: true, memberAfterInsert: newMember)
-    }
-
-    @discardableResult public func remove(_ member: Element) -> Element? {
-        guard let r = rootNode, let n = r[member] else { return nil }
-        rootNode = n.remove()
-        return member
-    }
-
-    @discardableResult public func update(with newMember: Element) -> Element? {
+    @usableFromInline func insert(_ newElement: Element, force: Bool) -> (inserted: Bool, oldElement: Element?) {
         guard let r = rootNode else {
-            rootNode = TreeNode<Element>(value: newMember)
-            return nil
+            rootNode = TreeNode<Element>(value: newElement)
+            return (inserted: true, oldElement: nil)
         }
-        guard let n = r[newMember] else {
-            rootNode = r.insert(value: newMember).rootNode
-            return nil
+        guard let n = r[newElement] else {
+            rootNode = r.insert(value: newElement).rootNode
+            return (inserted: true, oldElement: nil)
         }
-        let v = n.value
-        rootNode = r.insert(value: newMember).rootNode
-        return v
-    }
-
-    public func makeIterator() -> Iterator { Iterator(tree: self) }
-
-    public struct Iterator: IteratorProtocol {
-        @usableFromInline let tree:  RedBlackTreeSet<Element>
-        @usableFromInline var stack: [TreeNode<Element>] = []
-
-        init(tree: RedBlackTreeSet<Element>) {
-            self.tree = tree
-            drop(start: tree.rootNode)
-        }
-
-        @inlinable mutating func drop(start: TreeNode<Element>?) {
-            var n = start
-            while let _n = n {
-                stack.append(_n)
-                n = _n.leftNode
-            }
-        }
-
-        @inlinable public mutating func next() -> Element? {
-            guard let n = stack.popLast() else { return nil }
-            drop(start: n.rightNode)
-            return n.value
-        }
+        guard force else { return (inserted: false, oldElement: n.value) }
+        rootNode = n.remove()
+        return insert(newElement, force: force)
     }
 }

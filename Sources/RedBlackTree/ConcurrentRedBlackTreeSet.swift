@@ -21,19 +21,15 @@ public class ConcurrentRedBlackTreeSet<Element>: RedBlackTreeSet<Element> where 
 
     @usableFromInline let lock: NSRecursiveLock = NSRecursiveLock()
 
-    public override func contains(_ e: Element) -> Bool { lock.withLock { super.contains(e) } }
+    public override var count: Int { lock.withLock { super.count } }
 
     public override func removeAll(keepingCapacity: Bool) { lock.withLock { super.removeAll(keepingCapacity: keepingCapacity) } }
 
-    public override func remove(at position: Index) -> Element { lock.withLock { super.remove(at: position) } }
+    override func node(forElement e: Element) -> TreeNode<Element>? { lock.withLock { super.node(forElement: e) } }
 
-    public override subscript(position: Index) -> Element { lock.withLock { super[position] } }
+    override func node(at index: TreeNode<Element>.Index) -> TreeNode<Element> { lock.withLock { super.node(at: index) } }
 
-    public override func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) { lock.withLock { super.insert(newMember) } }
+    override func remove(node: TreeNode<Element>) { lock.withLock { super.remove(node: node) } }
 
-    public override func remove(_ member: Element) -> Element? { lock.withLock { super.remove(member) } }
-
-    public override func update(with newMember: Element) -> Element? { lock.withLock { super.update(with: newMember) } }
-
-    public override func makeIterator() -> Iterator { lock.withLock { super.makeIterator() } }
+    override func insert(_ newElement: Element, force: Bool) -> (inserted: Bool, oldElement: Element?) { lock.withLock { super.insert(newElement, force: force) } }
 }

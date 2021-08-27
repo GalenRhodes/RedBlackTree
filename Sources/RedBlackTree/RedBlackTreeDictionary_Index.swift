@@ -45,6 +45,20 @@ extension RedBlackTreeDictionary {
         @inlinable static func - (lhs: Int, rhs: Self) -> Self { Index(index: lhs - rhs.idx) }
     }
 
-    @inlinable public subscript(position: Index) -> (Key, Value) { node(at: position).value.data }
+    @inlinable public subscript(position: Index) -> Element { node(at: position).value.data }
 
+    @inlinable public func index(after i: Index) -> Index {
+        guard i >= startIndex && i < endIndex else { fatalError("Index out of bounds.") }
+        return (i + 1)
+    }
+
+    @inlinable public func index(before i: Index) -> Index {
+        guard i > startIndex && i <= endIndex else { fatalError("Index out of bounds.") }
+        return (i - 1)
+    }
+
+    @inlinable public func index(forKey key: Key) -> Index? {
+        guard let n = node(forKey: key) else { return nil }
+        return Index(index: n.index)
+    }
 }

@@ -24,6 +24,12 @@ extension RedBlackTreeSet {
     @inlinable public var endIndex: Index { Index(index: count)    }
     //@f:1
 
+    @inlinable public convenience init(_ other: RedBlackTreeSet<Element>) {
+        self.init()
+        if let _other = (other as? ConcurrentRedBlackTreeSet<Element>) { rootNode = _other.lock.withLock { _other.rootNode?.copyTree() } }
+        else { rootNode = other.rootNode?.copyTree() }
+    }
+
     @inlinable public func index(after i: Index) -> Index {
         guard i >= startIndex && i < endIndex else { fatalError("Index out of bounds.") }
         return (i + 1)
@@ -42,8 +48,24 @@ extension RedBlackTreeSet {
         return tree
     }
 
+    @inlinable public func contains(_ e: Element) -> Bool { (node(forElement: e) != nil) }
+
     @inlinable public func removeFirst() -> Element {
         remove(at: startIndex)
+    }
+
+    @inlinable public subscript(position: Index) -> Element { node(at: position).value }
+
+    @inlinable @discardableResult public func remove(_ member: Element) -> Element? {
+        guard let n = node(forElement: member) else { return nil }
+        remove(node: n)
+        return n.value
+    }
+
+    @inlinable public func remove(at position: Index) -> Element {
+        let n = node(at: position)
+        remove(node: n)
+        return n.value
     }
 
     @inlinable public static func == (lhs: RedBlackTreeSet<Element>, rhs: RedBlackTreeSet<Element>) -> Bool {
@@ -54,5 +76,14 @@ extension RedBlackTreeSet {
             lhs.formIndex(after: &index)
         }
         return true
+    }
+
+    @inlinable @discardableResult public func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) {
+        let (i, o) = insert(newMember, force: false)
+        return (i, o ?? newMember)
+    }
+
+    @inlinable @discardableResult public func update(with newMember: Element) -> Element? {
+        insert(newMember, force: true).oldElement
     }
 }

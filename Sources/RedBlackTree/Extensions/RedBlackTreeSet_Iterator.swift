@@ -1,9 +1,9 @@
 /*****************************************************************************************************************************//**
  *     PROJECT: RedBlackTree
- *    FILENAME: RedBlackTreeDictionary_Iterator.swift
+ *    FILENAME: RedBlackTreeSet_Iterator.swift
  *         IDE: AppCode
  *      AUTHOR: Galen Rhodes
- *        DATE: August 19, 2021
+ *        DATE: August 27, 2021
  *
   * Permission to use, copy, modify, and distribute this software for any purpose with or without fee is hereby granted, provided
  * that the above copyright notice and this permission notice appear in all copies.
@@ -17,16 +17,19 @@
 import Foundation
 import CoreFoundation
 
-extension RedBlackTreeDictionary {
-    public struct Iterator: IteratorProtocol {
-        @usableFromInline let tree:  RedBlackTreeDictionary<Key, Value>
-        @usableFromInline var stack: [TreeNode<KV>] = []
+extension RedBlackTreeSet {
+    @inlinable public func makeIterator() -> Iterator { Iterator(tree: self) }
 
-        @inlinable init(_ tree: RedBlackTreeDictionary<Key, Value>) {
+    public struct Iterator: IteratorProtocol {
+        @usableFromInline let tree:  RedBlackTreeSet<Element>
+        @usableFromInline var stack: [TreeNode<Element>] = []
+
+        @inlinable init(tree: RedBlackTreeSet<Element>) {
             self.tree = tree
+            drop(start: tree.rootNode)
         }
 
-        private mutating func drop(start: TreeNode<KV>?) {
+        @inlinable mutating func drop(start: TreeNode<Element>?) {
             var n = start
             while let _n = n {
                 stack.append(_n)
@@ -36,9 +39,8 @@ extension RedBlackTreeDictionary {
 
         @inlinable public mutating func next() -> Element? {
             guard let n = stack.popLast() else { return nil }
-            return n.value.data
+            drop(start: n.rightNode)
+            return n.value
         }
     }
-
-    @inlinable public func makeIterator() -> Iterator { Iterator(self) }
 }
