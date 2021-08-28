@@ -21,23 +21,23 @@ extension RedBlackTreeSet: SetAlgebra where Element: Hashable {}
 
 extension RedBlackTreeSet {
 
-    @inlinable public func union(_ other: RedBlackTreeSet<Element>) -> Self { _dNc(self, other, { f, e, a, b in true }) as! Self }
+    public func union(_ other: RedBlackTreeSet<Element>) -> Self { _dNc(self, other, { f, e, a, b in true }) as! Self }
 
-    @inlinable public func union<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence { _dNc(self, other, { f, e, a, b in true }) }
+    public func union<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence { _dNc(self, other, { f, e, a, b in true }) }
 
-    @inlinable public func intersection(_ other: RedBlackTreeSet<Element>) -> Self { _intersection(other: other) as! Self }
+    public func intersection(_ other: RedBlackTreeSet<Element>) -> Self { _intersection(other: other) as! Self }
 
-    @inlinable public func intersection<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence { _intersection(other: other) }
+    public func intersection<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence { _intersection(other: other) }
 
-    @inlinable public func symmetricDifference(_ other: RedBlackTreeSet<Element>) -> Self { _dNc(self, other, { !($0 ? $3.contains($1) : $2.contains($1)) }) as! Self }
+    public func symmetricDifference(_ other: RedBlackTreeSet<Element>) -> Self { _dNc(self, other, { !($0 ? $3.contains($1) : $2.contains($1)) }) as! Self }
 
-    @inlinable public func symmetricDifference<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence {
+    public func symmetricDifference<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence {
         _dNc(self, other, { !($0 ? $3.contains($1) : $2.contains($1)) }) as! Self
     }
 
-    @inlinable public func formUnion(_ other: RedBlackTreeSet<Element>) { insert(contentsOf: other) }
+    public func formUnion(_ other: RedBlackTreeSet<Element>) { insert(contentsOf: other) }
 
-    @inlinable public func formIntersection(_ other: RedBlackTreeSet<Element>) {
+    public func formIntersection(_ other: RedBlackTreeSet<Element>) {
         var common: [Element] = []
         for e in other { if contains(e) { common.append(e) } }
         removeAll()
@@ -45,17 +45,17 @@ extension RedBlackTreeSet {
         common.removeAll()
     }//@f:0
 
-    @inlinable public func formSymmetricDifference(_ other: RedBlackTreeSet<Element>) { for e in other { if contains(e) { remove(e) } else { insert(e) } } }
+    public func formSymmetricDifference(_ other: RedBlackTreeSet<Element>) { for e in other { if contains(e) { remove(e) } else { insert(e) } } }
     //@f:1
-    @inlinable public func subtract(_ other: RedBlackTreeSet<Element>) { for e in other { remove(e) } }
+    public func subtract(_ other: RedBlackTreeSet<Element>) { for e in other { remove(e) } }
 
-    @inlinable public func subtract<S>(_ other: S) where Element == S.Element, S: Sequence { for e: Element in other { remove(e) } }
+    public func subtract<S>(_ other: S) where Element == S.Element, S: Sequence { for e: Element in other { remove(e) } }
 
-    @inlinable public func subtracting(_ other: RedBlackTreeSet<Element>) -> Self { _dNc(self, other, { f, e, _, b in (f && !b.contains(e)) }) as! Self }
+    public func subtracting(_ other: RedBlackTreeSet<Element>) -> Self { _dNc(self, other, { f, e, _, b in (f && !b.contains(e)) }) as! Self }
 
-    @inlinable public func subtracting<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence { _dNc(self, other, { f, e, _, b in (f && !b.contains(e)) }) }
+    public func subtracting<S>(_ other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence { _dNc(self, other, { f, e, _, b in (f && !b.contains(e)) }) }
 
-    @inlinable func _intersection<S>(other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence {
+    func _intersection<S>(other: S) -> RedBlackTreeSet<Element> where Element == S.Element, S: Sequence {
         let copy = RedBlackTreeSet<Element>()
         for e in self { if other.contains(e) { copy.insert(e) } }
         return copy
@@ -72,7 +72,7 @@ extension RedBlackTreeSet {
     ///        tree.
     /// - Returns: The resulting tree.
     ///
-    @inlinable func _dNc<A, B, E>(_ a: A, _ b: B, _ t: (Bool, E, A, B) -> Bool) -> RedBlackTreeSet<E> where A: Sequence, B: Sequence, E: Comparable & Equatable, A.Element == E, B.Element == E {
+    func _dNc<A, B, E>(_ a: A, _ b: B, _ t: (Bool, E, A, B) -> Bool) -> RedBlackTreeSet<E> where A: Sequence, B: Sequence, E: Comparable & Equatable, A.Element == E, B.Element == E {
         withoutActuallyEscaping(t) { _t in
             let g = DispatchGroup()
             let q = DispatchQueue(label: UUID().uuidString, attributes: .concurrent)

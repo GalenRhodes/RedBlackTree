@@ -21,7 +21,7 @@ public class IOTreeNode<T>: TreeNode<T> where T: Comparable & Equatable {
     public internal(set) var prevNode: IOTreeNode<T>? = nil
     public internal(set) var nextNode: IOTreeNode<T>? = nil
 
-    @usableFromInline func forEachNode(insertOrder io: Bool, reverse: Bool = false, _ body: (TreeNode<T>) throws -> Void) rethrows {
+    func forEachNode(insertOrder io: Bool, reverse: Bool = false, _ body: (TreeNode<T>) throws -> Void) rethrows {
         if io {
             if reverse {
                 let n = foo(start: self) { $0.nextNode }
@@ -43,7 +43,7 @@ public class IOTreeNode<T>: TreeNode<T> where T: Comparable & Equatable {
         }
     }
 
-    @usableFromInline override func _insert(value: T, side: Side) -> TreeNode<T> {
+    override func _insert(value: T, side: Side) -> TreeNode<T> {
         let newNode = super._insert(value: value, side: side)
         guard let _newNode = (newNode as? IOTreeNode<T>) else { return newNode }
         let n1: IOTreeNode<T> = foo(start: self) { $0.nextNode }
@@ -52,9 +52,9 @@ public class IOTreeNode<T>: TreeNode<T> where T: Comparable & Equatable {
         return _newNode
     }
 
-    @usableFromInline override func _makeNewNode(value: T) -> TreeNode<T> { IOTreeNode<T>(value: value, color: .Red) }
+    override func _makeNewNode(value: T) -> TreeNode<T> { IOTreeNode<T>(value: value, color: .Red) }
 
-    @usableFromInline override func _swapNodeBeforeRemove(other: TreeNode<T>) {
+    override func _swapNodeBeforeRemove(other: TreeNode<T>) {
         super._swapNodeBeforeRemove(other: other)
         guard let _other = (other as? IOTreeNode<T>) else { return }
         // We also need to swap our place in the insert order with this node
@@ -72,7 +72,7 @@ public class IOTreeNode<T>: TreeNode<T> where T: Comparable & Equatable {
         sNext?.prevNode = _other
     }
 
-    @usableFromInline override func _postRemoveHook(root: TreeNode<T>?) -> TreeNode<T>? {
+    override func _postRemoveHook(root: TreeNode<T>?) -> TreeNode<T>? {
         let sPrev = prevNode
         let sNext = nextNode
         prevNode = nil

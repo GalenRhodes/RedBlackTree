@@ -19,7 +19,7 @@ import CoreFoundation
 
 public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollection, ExpressibleByDictionaryLiteral where Key: Comparable & Equatable {
 
-    @usableFromInline enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case trackOrder, elements
     }
 
@@ -28,10 +28,10 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
     //@f:0
     public            var count:      Int             { (rootNode?.count ?? 0) }
     public            let startIndex: Index           = Index(index: 0)
-    @usableFromInline var rootNode:   TreeNode<KV>?   = nil
-    @usableFromInline var firstNode:  IOTreeNode<KV>? = nil
-    @usableFromInline var lastNode:   IOTreeNode<KV>? = nil
-    @usableFromInline let trackOrder: Bool
+    var rootNode:   TreeNode<KV>?   = nil
+    var firstNode:  IOTreeNode<KV>? = nil
+    var lastNode:   IOTreeNode<KV>? = nil
+    let trackOrder: Bool
     //@f:1
 
     public init() { trackOrder = false }
@@ -81,17 +81,17 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         }
     }
 
-    @usableFromInline func node(forKey key: Key) -> TreeNode<KV>? {
+    func node(forKey key: Key) -> TreeNode<KV>? {
         guard let r = rootNode else { return nil }
         return r.find(with: { compare(a: key, b: $0.key) })
     }
 
-    @usableFromInline func node(at index: Index) -> TreeNode<KV> {
+    func node(at index: Index) -> TreeNode<KV> {
         guard let r = rootNode else { fatalError("Index out of bounds.") }
         return r[TreeNode<KV>.Index(index: index.idx)]
     }
 
-    @usableFromInline func remove(node n: TreeNode<KV>) { rootNode = n.remove() }
+    func remove(node n: TreeNode<KV>) { rootNode = n.remove() }
 
     @discardableResult public func updateValue(_ value: Value, forKey key: Key) -> Value? {
         let elem = KV(key: key, value: value)
@@ -130,13 +130,27 @@ public class RedBlackTreeDictionary<Key, Value>: Collection, BidirectionalCollec
         try r.forEachNode(reverse: reverse) { try body($0.value.data) }
     }
 
-    @usableFromInline func _first(reverse f: Bool, where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    func _first(reverse f: Bool, where predicate: (Element) throws -> Bool) rethrows -> Element? {
         guard let r = rootNode, let e = try r.firstNode(reverse: f, where: { try predicate($0.value.data) }) else { return nil }
         return e.value.data
     }
 
-    @usableFromInline func _forEachFast(_ body: (Element) throws -> Void) rethrows {
+    func _forEachFast(_ body: (Element) throws -> Void) rethrows {
         guard let r = rootNode else { return }
         try r.forEachFast { try body($0.value.data) }
     }
+}
+
+extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {}
+
+extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {}
+
+extension RedBlackTreeDictionary: Equatable where Value: Equatable {
+    public static func == (lhs: RedBlackTreeDictionary<Key, Value>, rhs: RedBlackTreeDictionary<Key, Value>) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        for e: Element in lhs { guard rhs.contains(e) else { return false } }
+        return true
+    }
+
+    public func contains(_ element: Element) -> Bool { contains { ((element.0 == $0.0) && (element.1 == $0.1)) } }
 }

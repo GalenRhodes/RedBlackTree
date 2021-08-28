@@ -18,7 +18,7 @@ import Foundation
 import CoreFoundation
 
 extension RedBlackTreeSet: Hashable where Element: Hashable {
-    @inlinable public func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(count)
         for e in self { hasher.combine(e) }
     }

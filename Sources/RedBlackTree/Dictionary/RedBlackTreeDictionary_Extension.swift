@@ -22,79 +22,79 @@ extension RedBlackTreeDictionary {
     public typealias SequenceElement = (Key, Value)
 
     //@f:0
-    @inlinable public var endIndex: Index { Index(index: count)    }
-    @inlinable public var isEmpty:  Bool  { (count == 0)           }
+    public var endIndex: Index { Index(index: count)    }
+    public var isEmpty:  Bool  { (count == 0)           }
     //@f:1
 
-    @inlinable public convenience init<S>(_ other: S) where S: Sequence, S.Element == SequenceElement {
+    public convenience init<S>(_ other: S) where S: Sequence, S.Element == SequenceElement {
         self.init()
         for e: SequenceElement in other { updateValue(e.1, forKey: e.0) }
     }
 
-    @discardableResult @inlinable public func remove(at index: Index) -> Element {
+    @discardableResult public func remove(at index: Index) -> Element {
         let n = node(at: index)
         remove(node: n)
         return n.value.data
     }
 
-    @discardableResult @inlinable public func removeValue(forKey key: Key) -> Value? {
+    @discardableResult public func removeValue(forKey key: Key) -> Value? {
         guard let n = node(forKey: key) else { return nil }
         remove(node: n)
         return n.value.value
     }
 
-    @inlinable public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
+    public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
         guard let v = self[key] else { return defaultValue() }
         return v
     }
 //@f:0
-    @inlinable public subscript(key: Key) -> Value? {
+    public subscript(key: Key) -> Value? {
         get { node(forKey: key)?.value.value }
         set { if let v = newValue { updateValue(v, forKey: key) } else { removeValue(forKey: key) } }
     }
 //@f:1
-    @inlinable public func mapValues<T>(fast: Bool = false, _ transform: (Value) throws -> T) rethrows -> RedBlackTreeDictionary<Key, T> {
+    public func mapValues<T>(fast: Bool = false, _ transform: (Value) throws -> T) rethrows -> RedBlackTreeDictionary<Key, T> {
         let copy = RedBlackTreeDictionary<Key, T>()
         if fast { let lock = NSLock(); try _forEachFast { (key, value) in try lock.withLock { _ = copy.updateValue(try transform(value), forKey: key) } } }
         else { try forEach { (key, value) -> Void in copy.updateValue(try transform(value), forKey: key) } }
         return copy
     }
 
-    @inlinable public func compactMapValues<T>(fast: Bool = false, _ transform: (Value) throws -> T?) rethrows -> RedBlackTreeDictionary<Key, T> {
+    public func compactMapValues<T>(fast: Bool = false, _ transform: (Value) throws -> T?) rethrows -> RedBlackTreeDictionary<Key, T> {
         let copy = RedBlackTreeDictionary<Key, T>()
         if fast { let lock = NSLock(); try _forEachFast { (key, value) in if let v = try transform(value) { lock.withLock { _ = copy.updateValue(v, forKey: key) } } } }
         else { try forEach { (key, value) in if let v = try transform(value) { copy.updateValue(v, forKey: key) } } }
         return copy
     }
 
-    @inlinable public func merge<S>(_ other: S, uniquingKeysWith combine: CombineLambda) rethrows where S: Sequence, S.Element == SequenceElement {
+    public func merge<S>(_ other: S, uniquingKeysWith combine: CombineLambda) rethrows where S: Sequence, S.Element == SequenceElement {
         try _merge(copy: self, other: other, uniquingKeysWith: combine)
     }
 
-    @inlinable public func merge(_ other: RedBlackTreeDictionary<Key, Value>, fast: Bool = false, uniquingKeysWith combine: CombineLambda) rethrows {
+    public func merge(_ other: RedBlackTreeDictionary<Key, Value>, fast: Bool = false, uniquingKeysWith combine: CombineLambda) rethrows {
         try _merge(copy: self, other: other, fast: fast, uniquingKeysWith: combine)
     }
 
-    @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> where S: Sequence, S.Element == SequenceElement {
+    public func merging<S>(_ other: S, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> where S: Sequence, S.Element == SequenceElement {
         let copy = RedBlackTreeDictionary<Key, Value>(self)
         try _merge(copy: copy, other: other, uniquingKeysWith: combine)
         return copy
     }
 
-    @inlinable public func merging(_ other: RedBlackTreeDictionary<Key, Value>, fast: Bool = false, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> {
+    public func merging(_ other: RedBlackTreeDictionary<Key, Value>, fast: Bool = false, uniquingKeysWith combine: CombineLambda) rethrows -> RedBlackTreeDictionary<Key, Value> {
         let copy = RedBlackTreeDictionary<Key, Value>(self)
         try _merge(copy: copy, other: other, fast: fast, uniquingKeysWith: combine)
         return copy
     }
 
-    @inlinable func _merge<S>(copy: RedBlackTreeDictionary<Key, Value>, other: S, uniquingKeysWith combine: CombineLambda) rethrows where S: Sequence, S.Element == SequenceElement {
+    func _merge<S>(copy: RedBlackTreeDictionary<Key, Value>, other: S, uniquingKeysWith combine: CombineLambda) rethrows where S: Sequence, S.Element == SequenceElement {
         for e: SequenceElement in other {
             if let v = copy[e.0] { copy.updateValue(try combine(v, e.1), forKey: e.0) }
             else { copy.updateValue(e.1, forKey: e.0) }
         }
     }
 
-    @inlinable func _merge(copy: RedBlackTreeDictionary<Key, Value>, other: RedBlackTreeDictionary<Key, Value>, fast: Bool, uniquingKeysWith combine: CombineLambda) rethrows {
+    func _merge(copy: RedBlackTreeDictionary<Key, Value>, other: RedBlackTreeDictionary<Key, Value>, fast: Bool, uniquingKeysWith combine: CombineLambda) rethrows {
         if fast {
             let lock = NSLock()
             try _forEachFast { (key, value) in
@@ -110,11 +110,11 @@ extension RedBlackTreeDictionary {
         }
     }
 
-    @inlinable public func forEach(_ body: (Element) throws -> Void) rethrows { try forEach(reverse: false, body) }
+    public func forEach(_ body: (Element) throws -> Void) rethrows { try forEach(reverse: false, body) }
 
-    @inlinable public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? { try _first(reverse: false, where: predicate) }
+    public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? { try _first(reverse: false, where: predicate) }
 
-    @inlinable public func last(where predicate: (Element) throws -> Bool) rethrows -> Element? { try _first(reverse: true, where: predicate) }
+    public func last(where predicate: (Element) throws -> Bool) rethrows -> Element? { try _first(reverse: true, where: predicate) }
 
-    @inlinable public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<(Key, Value)>) throws -> R) rethrows -> R? { nil }
+    public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<(Key, Value)>) throws -> R) rethrows -> R? { nil }
 }

@@ -19,10 +19,10 @@ import CoreFoundation
 
 extension RedBlackTreeDictionary {
     public struct Iterator: IteratorProtocol {
-        @usableFromInline let tree:  RedBlackTreeDictionary<Key, Value>
-        @usableFromInline var stack: [TreeNode<KV>] = []
+        let tree:  RedBlackTreeDictionary<Key, Value>
+        var stack: [TreeNode<KV>] = []
 
-        @inlinable init(_ tree: RedBlackTreeDictionary<Key, Value>) {
+        init(_ tree: RedBlackTreeDictionary<Key, Value>) {
             self.tree = tree
         }
 
@@ -34,11 +34,11 @@ extension RedBlackTreeDictionary {
             }
         }
 
-        @inlinable public mutating func next() -> Element? {
+        public mutating func next() -> Element? {
             guard let n = stack.popLast() else { return nil }
             return n.value.data
         }
     }
 
-    @inlinable public func makeIterator() -> Iterator { Iterator(self) }
+    public func makeIterator() -> Iterator { Iterator(self) }
 }

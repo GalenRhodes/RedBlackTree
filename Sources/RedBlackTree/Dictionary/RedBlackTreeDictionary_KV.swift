@@ -18,22 +18,22 @@ import Foundation
 import CoreFoundation
 
 extension RedBlackTreeDictionary {
-    @usableFromInline struct KV {
-        @usableFromInline enum CodingKeys: String, CodingKey { case key, value }
+    struct KV {
+        enum CodingKeys: String, CodingKey { case key, value }
 
         public let key:   Key
         public var value: Value
 
-        @inlinable init(key: Key, value: Value) { self.key = key; self.value = value }
+        init(key: Key, value: Value) { self.key = key; self.value = value }
 
-        @inlinable init(_ e: Element) { key = e.0; value = e.1 }
+        init(_ e: Element) { key = e.0; value = e.1 }
 
-        @inlinable var data: (Key, Value) { (key, value) }
+        var data: (Key, Value) { (key, value) }
     }
 }
 
 extension RedBlackTreeDictionary.KV: Decodable where Key: Decodable, Value: Decodable {
-    @inlinable init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         key = try c.decode(Key.self, forKey: .key)
         value = try c.decode(Value.self, forKey: .value)
@@ -41,7 +41,7 @@ extension RedBlackTreeDictionary.KV: Decodable where Key: Decodable, Value: Deco
 }
 
 extension RedBlackTreeDictionary.KV: Encodable where Key: Encodable, Value: Encodable {
-    @inlinable func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(key, forKey: .key)
         try c.encode(value, forKey: .value)
@@ -49,11 +49,11 @@ extension RedBlackTreeDictionary.KV: Encodable where Key: Encodable, Value: Enco
 }
 
 extension RedBlackTreeDictionary.KV: Comparable, Equatable {
-    @inlinable static func < (lhs: Self, rhs: Self) -> Bool { lhs.key < rhs.key }
+    static func < (lhs: Self, rhs: Self) -> Bool { lhs.key < rhs.key }
 
-    @inlinable static func == (lhs: Self, rhs: Self) -> Bool { lhs.key == rhs.key }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.key == rhs.key }
 }
 
 extension RedBlackTreeDictionary.KV: Hashable where Key: Hashable {
-    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(key) }
+    func hash(into hasher: inout Hasher) { hasher.combine(key) }
 }

@@ -20,55 +20,55 @@ import CoreFoundation
 extension RedBlackTreeSet {
 
     //@f:0
-    @inlinable public var isEmpty:  Bool  { (count == 0)           }
-    @inlinable public var endIndex: Index { Index(index: count)    }
+    public var isEmpty:  Bool  { (count == 0)           }
+    public var endIndex: Index { Index(index: count)    }
     //@f:1
 
-    @inlinable public convenience init(_ other: RedBlackTreeSet<Element>) {
+    public convenience init(_ other: RedBlackTreeSet<Element>) {
         self.init()
         if let _other = (other as? ConcurrentRedBlackTreeSet<Element>) { rootNode = _other.lock.withLock { _other.rootNode?.copyTree() } }
         else { rootNode = other.rootNode?.copyTree() }
     }
 
-    @inlinable public func index(after i: Index) -> Index {
+    public func index(after i: Index) -> Index {
         guard i >= startIndex && i < endIndex else { fatalError("Index out of bounds.") }
         return (i + 1)
     }
 
-    @inlinable public func index(before i: Index) -> Index {
+    public func index(before i: Index) -> Index {
         guard i > startIndex && i <= endIndex else { fatalError("Index out of bounds.") }
         return (i - 1)
     }
 
-    @inlinable public func insert<S>(contentsOf s: S) where S: Sequence, S.Element == Element { for e: Element in s { insert(e) } }
+    public func insert<S>(contentsOf s: S) where S: Sequence, S.Element == Element { for e: Element in s { insert(e) } }
 
-    @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> RedBlackTreeSet<Element> {
+    public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> RedBlackTreeSet<Element> {
         let tree = RedBlackTreeSet<Element>()
         for e in self { if try isIncluded(e) { tree.insert(e) } }
         return tree
     }
 
-    @inlinable public func contains(_ e: Element) -> Bool { (node(forElement: e) != nil) }
+    public func contains(_ e: Element) -> Bool { (node(forElement: e) != nil) }
 
-    @inlinable public func removeFirst() -> Element {
+    public func removeFirst() -> Element {
         remove(at: startIndex)
     }
 
-    @inlinable public subscript(position: Index) -> Element { node(at: position).value }
+    public subscript(position: Index) -> Element { node(at: position).value }
 
-    @inlinable @discardableResult public func remove(_ member: Element) -> Element? {
+    @discardableResult public func remove(_ member: Element) -> Element? {
         guard let n = node(forElement: member) else { return nil }
         remove(node: n)
         return n.value
     }
 
-    @inlinable public func remove(at position: Index) -> Element {
+    public func remove(at position: Index) -> Element {
         let n = node(at: position)
         remove(node: n)
         return n.value
     }
 
-    @inlinable public static func == (lhs: RedBlackTreeSet<Element>, rhs: RedBlackTreeSet<Element>) -> Bool {
+    public static func == (lhs: RedBlackTreeSet<Element>, rhs: RedBlackTreeSet<Element>) -> Bool {
         guard lhs.count == rhs.count else { return false }
         var index: Index = lhs.startIndex
         while index < lhs.endIndex {
@@ -78,12 +78,12 @@ extension RedBlackTreeSet {
         return true
     }
 
-    @inlinable @discardableResult public func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) {
+    @discardableResult public func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) {
         let (i, o) = insert(newMember, force: false)
         return (i, o ?? newMember)
     }
 
-    @inlinable @discardableResult public func update(with newMember: Element) -> Element? {
+    @discardableResult public func update(with newMember: Element) -> Element? {
         insert(newMember, force: true).oldElement
     }
 }

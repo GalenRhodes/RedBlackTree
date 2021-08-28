@@ -19,7 +19,7 @@ import CoreFoundation
 
 public class ConcurrentRedBlackTreeDictionary<Key, Value>: RedBlackTreeDictionary<Key, Value> where Key: Comparable {
     //@f:0
-    @usableFromInline let lock:  NSRecursiveLock = NSRecursiveLock()
+    let lock:  NSRecursiveLock = NSRecursiveLock()
     public override   var count: Int             { lock.withLock { super.count } }
     //@f:1
 

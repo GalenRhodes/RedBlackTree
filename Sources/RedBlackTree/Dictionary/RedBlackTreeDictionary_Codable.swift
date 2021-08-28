@@ -17,17 +17,3 @@
 import Foundation
 import CoreFoundation
 
-extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
-}
-
-extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {}
-
-extension RedBlackTreeDictionary: Equatable where Value: Equatable {
-    public static func == (lhs: RedBlackTreeDictionary<Key, Value>, rhs: RedBlackTreeDictionary<Key, Value>) -> Bool {
-        guard lhs.count == rhs.count else { return false }
-        for e: Element in lhs { guard rhs.contains(e) else { return false } }
-        return true
-    }
-
-    public func contains(_ element: Element) -> Bool { contains { ((element.0 == $0.0) && (element.1 == $0.1)) } }
-}

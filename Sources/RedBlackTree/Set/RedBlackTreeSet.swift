@@ -26,8 +26,8 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
     public let startIndex: Index = Index(index: 0)
     public var count:      Int { (rootNode?.count ?? 0) }
 
-    @usableFromInline var rootNode:   TreeNode<Element>? = nil
-    @usableFromInline let trackOrder: Bool
+    var rootNode:   TreeNode<Element>? = nil
+    let trackOrder: Bool
 
     public required init() { trackOrder = false }
 
@@ -62,19 +62,19 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
         DispatchQueue(label: UUID().uuidString).async { r.removeAll() }
     }
 
-    @usableFromInline func node(forElement e: Element) -> TreeNode<Element>? {
+    func node(forElement e: Element) -> TreeNode<Element>? {
         guard let r = rootNode else { return nil }
         return r[e]
     }
 
-    @usableFromInline func node(at index: Index) -> TreeNode<Element> {
+    func node(at index: Index) -> TreeNode<Element> {
         guard let r = rootNode else { fatalError("Index out of bounds.") }
         return r[index]
     }
 
-    @usableFromInline func remove(node: TreeNode<Element>) { rootNode = node.remove() }
+    func remove(node: TreeNode<Element>) { rootNode = node.remove() }
 
-    @usableFromInline func insert(_ newElement: Element, force: Bool) -> (inserted: Bool, oldElement: Element?) {
+    func insert(_ newElement: Element, force: Bool) -> (inserted: Bool, oldElement: Element?) {
         guard let r = rootNode else {
             rootNode = TreeNode<Element>(value: newElement)
             return (inserted: true, oldElement: nil)
@@ -88,18 +88,18 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
         return insert(newElement, force: force)
     }
 
-    @inlinable public func makeIterator() -> Iterator { Iterator(tree: self) }
+    public func makeIterator() -> Iterator { Iterator(tree: self) }
 
     public struct Iterator: IteratorProtocol {
-        @usableFromInline let tree:  RedBlackTreeSet<Element>
-        @usableFromInline var stack: [TreeNode<Element>] = []
+        let tree:  RedBlackTreeSet<Element>
+        var stack: [TreeNode<Element>] = []
 
-        @inlinable init(tree: RedBlackTreeSet<Element>) {
+        init(tree: RedBlackTreeSet<Element>) {
             self.tree = tree
             drop(start: tree.rootNode)
         }
 
-        @inlinable mutating func drop(start: TreeNode<Element>?) {
+        mutating func drop(start: TreeNode<Element>?) {
             var n = start
             while let _n = n {
                 stack.append(_n)
@@ -107,7 +107,7 @@ public class RedBlackTreeSet<Element>: BidirectionalCollection, ExpressibleByArr
             }
         }
 
-        @inlinable public mutating func next() -> Element? {
+        public mutating func next() -> Element? {
             guard let n = stack.popLast() else { return nil }
             drop(start: n.rightNode)
             return n.value

@@ -19,23 +19,23 @@ import CoreFoundation
 
 extension RedBlackTreeDictionary {
 
-    @inlinable public var values: Values { Values(tree: self) }
+    public var values: Values { Values(tree: self) }
 
     @frozen public struct Values: BidirectionalCollection {
 
         public typealias Index = RedBlackTreeDictionary.Index
         public typealias Element = Value
 
-        @inlinable public var startIndex: Index { tree.startIndex }
-        @inlinable public var endIndex:   Index { tree.endIndex }
-        @usableFromInline let tree: RedBlackTreeDictionary<Key, Value>
+        public var startIndex: Index { tree.startIndex }
+        public var endIndex:   Index { tree.endIndex }
+        let tree: RedBlackTreeDictionary<Key, Value>
 
-        @inlinable public init(tree: RedBlackTreeDictionary<Key, Value>) { self.tree = tree }
+        public init(tree: RedBlackTreeDictionary<Key, Value>) { self.tree = tree }
 
-        @inlinable public func index(before i: Index) -> Index { tree.index(before: i) }
+        public func index(before i: Index) -> Index { tree.index(before: i) }
 
-        @inlinable public func index(after i: Index) -> Index { tree.index(after: i) }
+        public func index(after i: Index) -> Index { tree.index(after: i) }
 
-        @inlinable public subscript(position: Index) -> Element { tree[position].1 }
+        public subscript(position: Index) -> Element { tree[position].1 }
     }
 }

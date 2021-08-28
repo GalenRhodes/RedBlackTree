@@ -19,7 +19,7 @@ import CoreFoundation
 
 extension RedBlackTreeSet: Encodable where Element: Encodable {
 
-    @inlinable public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var c = encoder.unkeyedContainer()
         for e in self { try c.encode(e) }
     }
