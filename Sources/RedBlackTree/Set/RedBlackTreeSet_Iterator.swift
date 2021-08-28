@@ -17,30 +17,3 @@
 import Foundation
 import CoreFoundation
 
-extension RedBlackTreeSet {
-    @inlinable public func makeIterator() -> Iterator { Iterator(tree: self) }
-
-    public struct Iterator: IteratorProtocol {
-        @usableFromInline let tree:  RedBlackTreeSet<Element>
-        @usableFromInline var stack: [TreeNode<Element>] = []
-
-        @inlinable init(tree: RedBlackTreeSet<Element>) {
-            self.tree = tree
-            drop(start: tree.rootNode)
-        }
-
-        @inlinable mutating func drop(start: TreeNode<Element>?) {
-            var n = start
-            while let _n = n {
-                stack.append(_n)
-                n = _n.leftNode
-            }
-        }
-
-        @inlinable public mutating func next() -> Element? {
-            guard let n = stack.popLast() else { return nil }
-            drop(start: n.rightNode)
-            return n.value
-        }
-    }
-}
