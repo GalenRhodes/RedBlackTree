@@ -120,6 +120,8 @@ import CoreFoundation
     @inlinable mutating func removeAll(fast: Bool) {
         guard let r = rootNode else { return }
         rootNode = nil
+        firstNode = nil
+        lastNode = nil
         if fast { queue.async { r.removeAll() } }
         else { r.removeAll() }
     }

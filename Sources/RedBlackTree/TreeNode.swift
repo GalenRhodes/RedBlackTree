@@ -61,6 +61,20 @@ import CoreFoundation
     @usableFromInline func postRemoveHook(root: TreeNode<T>?) -> TreeNode<T>? { root }
 
     @usableFromInline func swapNodeBeforeRemove(other: TreeNode<T>) { swap(&value, &other.value) }
+
+    @usableFromInline func removeAll() {
+        if let l = _leftNode {
+            l.removeAll()
+            _leftNode = nil
+        }
+        if let r = _rightNode {
+            r.removeAll()
+            _rightNode = nil
+        }
+        parentNode = nil
+        count = 1
+        color = .Black
+    }
 }
 
 extension TreeNode {
@@ -275,20 +289,6 @@ extension TreeNode {
             case .LessThan: return try leftNode?.search(compareWith: comp)
             case .GreaterThan: return try rightNode?.search(compareWith: comp)
         }
-    }
-
-    @usableFromInline func removeAll() {
-        if let l = _leftNode {
-            l.removeAll()
-            _leftNode = nil
-        }
-        if let r = _rightNode {
-            r.removeAll()
-            _rightNode = nil
-        }
-        parentNode = nil
-        count = 1
-        color = .Black
     }
 
     @usableFromInline func forEachNode(reverse f: Bool = false, _ body: (TreeNode<T>) throws -> Void) rethrows {

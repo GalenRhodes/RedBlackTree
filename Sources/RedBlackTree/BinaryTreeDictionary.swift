@@ -82,6 +82,11 @@ extension BinaryTreeDictionary {
         return base.remove(node: n).value
     }
 
+    @inlinable @discardableResult public func remove(at index: Index) -> Element {
+        guard let n = base.rootNode?[index] else { fatalError("Index out of bounds.") }
+        return base.remove(node: n).element
+    }
+
     @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) {
         base.removeAll(fast: true)
     }
@@ -170,6 +175,11 @@ extension BinaryTreeDictionary: BidirectionalCollection {
     @inlinable public var endIndex:   Index { base.endIndex }
     @inlinable public var count:      Int { base.count }
 
+    @inlinable public func index(forKey key: Key) -> Index? {
+        guard let n = base.searchNode(compareWith: { compare(a: key, b: $0.key) }) else { return nil }
+        return n.index
+    }
+
     @inlinable public func index(after i: Index) -> Index { base.index(after: i) }
 
     @inlinable public func index(before i: Index) -> Index { base.index(before: i) }
@@ -178,6 +188,8 @@ extension BinaryTreeDictionary: BidirectionalCollection {
 
     @inlinable public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<(Key, Value)>) throws -> R) rethrows -> R? { nil }
 
+    @inlinable public func makeIterator() -> Iterator { Iterator(base.makeIterator()) }
+
     @frozen public struct Iterator: IteratorProtocol {
         @usableFromInline var baseIterator: TreeBase<KV>.Iterator
 
@@ -185,8 +197,6 @@ extension BinaryTreeDictionary: BidirectionalCollection {
 
         @inlinable public mutating func next() -> Element? { baseIterator.next()?.element }
     }
-
-    @inlinable public func makeIterator() -> Iterator { Iterator(base.makeIterator()) }
 }
 
 extension BinaryTreeDictionary: Equatable where Value: Equatable {

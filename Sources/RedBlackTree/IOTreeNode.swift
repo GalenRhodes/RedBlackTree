@@ -56,6 +56,12 @@ import CoreFoundation
         sNext?.prevNode = sPrev
         return super.postRemoveHook(root: root)
     }
+
+    override func removeAll() {
+        nextNode = nil
+        prevNode = nil
+        super.removeAll()
+    }
 }
 
 extension IOTreeNode {
