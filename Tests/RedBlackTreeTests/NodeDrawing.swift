@@ -48,7 +48,7 @@ extension TreeNode where T == RedBlackTreeDictionary<String, NodeTestValue>.KV {
     }
 
     private func drawLine(to child: TreeNode<T>) {
-        let angle:         CGFloat      = (theta * child._forSide(parent: self, ifLeft: leftAngle, ifRight: rightAngle))
+        let angle:         CGFloat      = (theta * child.forSide(parent: self, ifLeft: leftAngle, ifRight: rightAngle))
         let parentLoc:     NSPoint      = value.value.bounds.origin
         let childLoc:      NSPoint      = child.value.value.bounds.origin
         let startPoint:    NSPoint      = NSPoint(x: parentLoc.x + (nodeRadius * cos(angle)), y: parentLoc.y - (nodeRadius * sin(angle)))

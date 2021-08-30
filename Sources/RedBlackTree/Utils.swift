@@ -21,26 +21,26 @@ public enum ComparisonResults {
     case EqualTo, LessThan, GreaterThan
 }
 
-func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable { ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan)) }
+@inlinable func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable { ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan)) }
 
-func foo<T>(start: T, _ body: (T) throws -> T?) rethrows -> T {
+@inlinable func foo<T>(start: T, _ body: (T) throws -> T?) rethrows -> T {
     var o1 = start
     while let o2 = try body(o1) { o1 = o2 }
     return o1
 }
 
-func with<T, R>(node: TreeNode<T>?, default def: @autoclosure () throws -> R, _ body: (TreeNode<T>) throws -> R) rethrows -> R where T: Comparable & Equatable {
+@inlinable func with<T, R>(node: TreeNode<T>?, default def: @autoclosure () throws -> R, _ body: (TreeNode<T>) throws -> R) rethrows -> R where T: Comparable & Equatable {
     guard let r = try with(node: node, body) else { return try def() }
     return r
 }
 
-@discardableResult func with<T, R>(node: TreeNode<T>?, _ body: (TreeNode<T>) throws -> R) rethrows -> R? where T: Comparable & Equatable {
+@inlinable @discardableResult func with<T, R>(node: TreeNode<T>?, _ body: (TreeNode<T>) throws -> R) rethrows -> R? where T: Comparable & Equatable {
     guard let n = node else { return nil }
     return try body(n)
 }
 
 extension NSLock {
-    @discardableResult func withLock<T>(_ body: () throws -> T) rethrows -> T {
+    @inlinable @discardableResult func withLock<T>(_ body: () throws -> T) rethrows -> T {
         lock()
         defer { unlock() }
         return try body()
@@ -48,7 +48,7 @@ extension NSLock {
 }
 
 extension NSRecursiveLock {
-    @discardableResult func withLock<T>(_ body: () throws -> T) rethrows -> T {
+    @inlinable @discardableResult func withLock<T>(_ body: () throws -> T) rethrows -> T {
         lock()
         defer { unlock() }
         return try body()
