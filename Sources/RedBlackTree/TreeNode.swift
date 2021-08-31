@@ -29,25 +29,31 @@ import CoreFoundation
 
 @usableFromInline class TreeNode<T> where T: Comparable {
     //@f:0
+    /*==========================================================================================================*/
     /// The field that holds the value.
     ///
     @usableFromInline var value:      T
+    /*==========================================================================================================*/
     /// The field that holds the reference to the parent node.
     ///
     @usableFromInline var parentNode: TreeNode<T>? = nil
+    /*==========================================================================================================*/
     /// The field that holds the reference to the right child node.
     ///
     @usableFromInline var _rightNode: TreeNode<T>? = nil
+    /*==========================================================================================================*/
     /// The field that holds the reference to the left child node.
     ///
     @usableFromInline var _leftNode:  TreeNode<T>? = nil
+    /*==========================================================================================================*/
     /// To save space this field holds both the color and the count.
     ///
     @usableFromInline var _data:      UInt         = 1
     //@f:1
 
+    /*==========================================================================================================*/
     /// Default constructor.
-    ///
+    /// 
     /// - Parameter v: The value.
     ///
     @usableFromInline init(value v: T) {
@@ -244,8 +250,9 @@ extension TreeNode {
         return postRemoveHook(root: nil)
     }
 
+    /*==========================================================================================================*/
     /// Copy this tree.  If this node is not the root then this call is transferred to the root.
-    ///
+    /// 
     /// - Returns: The root node of the copy.
     ///
     @usableFromInline func copyTree() -> TreeNode<T> {
