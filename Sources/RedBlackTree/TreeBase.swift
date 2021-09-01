@@ -21,7 +21,7 @@ import CoreFoundation
     public typealias Index = TreeIndex
 
     //@f:0
-    @usableFromInline      let trackOrder: Bool
+    @usableFromInline      let trackInsertOrder: Bool
     @usableFromInline      var firstNode:  IOTreeNode<Element>? = nil
     @usableFromInline      var lastNode:   IOTreeNode<Element>? = nil
     @usableFromInline      var rootNode:   TreeNode<Element>?   = nil
@@ -29,18 +29,26 @@ import CoreFoundation
     @usableFromInline      let startIndex: Index                = Index(index: 0)
     @inlinable             var endIndex:   Index                { Index(index: count) }
     @inlinable             var count:      Int                  { (rootNode?.count ?? 0) }
+    @inlinable             var min:        Element?   {
+        guard let r = rootNode else { return nil }
+        return foo(start: r, { $0.leftNode }).value
+    }
+    @inlinable             var max:        Element?   {
+        guard let r = rootNode else { return nil }
+        return foo(start: r, { $0.rightNode }).value
+    }
     //@f:1
 
-    @inlinable init(trackOrder: Bool) { self.trackOrder = trackOrder }
+    @inlinable init(trackInsertOrder: Bool) { self.trackInsertOrder = trackInsertOrder }
 
     @inlinable init(_ other: TreeBase<Element>) {
-        self.init(trackOrder: other.trackOrder)
+        self.init(trackInsertOrder: other.trackInsertOrder)
         rootNode = other.rootNode?.copyTree()
     }
 
-    @inlinable init<S>(trackOrder: Bool, elements: S) where S: Sequence, S.Element == Element {
-        self.init(trackOrder: trackOrder)
-        for e in elements { insert(element: e) }
+    @inlinable init<S>(trackInsertOrder: Bool, _ sequence: S) where S: Sequence, S.Element == Element {
+        self.init(trackInsertOrder: trackInsertOrder)
+        for e in sequence { insert(element: e) }
     }
 
     @inlinable func first(reverse: Bool, where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -62,12 +70,14 @@ import CoreFoundation
 
     @inlinable func node(forElement e: Element) -> TreeNode<Element>? { rootNode?[e] }
 
+    @inlinable func contains(_ element: Element) -> Bool { self[element] != nil }
+
     @inlinable func search(compareWith comp: (Element) throws -> ComparisonResults) rethrows -> Element? { try searchNode(compareWith: comp)?.value }
 
     @inlinable func searchNode(compareWith comp: (Element) throws -> ComparisonResults) rethrows -> TreeNode<Element>? { try rootNode?.search(compareWith: comp) }
 
     @inlinable @discardableResult mutating func insert(element: Element) -> Element? {
-        guard trackOrder else { return insertNonIONode(element: element) }
+        guard trackInsertOrder else { return insertNonIONode(element: element) }
         guard let r = rootNode else { insertFirstIONode(element: element); return nil }
         guard let n = r[element] else { insertNewIONode(root: r, element: element); return nil }
         return replace(node: n, with: element)
@@ -101,7 +111,7 @@ import CoreFoundation
 
     @inlinable mutating func remove(node n: TreeNode<Element>) -> Element {
         rootNode = n.remove()
-        guard trackOrder, let r = rootNode, let ior = (r as? IOTreeNode<Element>) else { return n.value }
+        guard trackInsertOrder, let r = rootNode, let ior = (r as? IOTreeNode<Element>) else { return n.value }
         lastNode = foo(start: ior) { $0.nextNode }
         if firstNode == nil { firstNode = foo(start: ior) { $0.prevNode } } // Repair just in case.
         return n.value
@@ -152,15 +162,15 @@ import CoreFoundation
         return true
     }
 
-    @usableFromInline enum CodingKeys: String, CodingKey { case trackOrder, elements }
+    @usableFromInline enum CodingKeys: String, CodingKey { case trackInsertOrder, elements }
 }
 
 extension TreeBase: Encodable where Element: Encodable {
     @inlinable func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(trackOrder, forKey: .trackOrder)
+        try container.encode(trackInsertOrder, forKey: .trackInsertOrder)
         var elemList = container.nestedUnkeyedContainer(forKey: .elements)
-        if trackOrder { try forEachInOrder(reverse: false) { try elemList.encode($0) } }
+        if trackInsertOrder { try forEachInOrder(reverse: false) { try elemList.encode($0) } }
         else { try forEach(fast: false, reverse: false) { try elemList.encode($0) } }
     }
 }
@@ -168,7 +178,7 @@ extension TreeBase: Encodable where Element: Encodable {
 extension TreeBase: Decodable where Element: Decodable {
     @inlinable init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.init(trackOrder: try container.decode(Bool.self, forKey: .trackOrder))
+        self.init(trackInsertOrder: try container.decode(Bool.self, forKey: .trackInsertOrder))
         var elemList = try container.nestedUnkeyedContainer(forKey: .elements)
         while !elemList.isAtEnd { insert(element: try elemList.decode(Element.self)) }
     }
