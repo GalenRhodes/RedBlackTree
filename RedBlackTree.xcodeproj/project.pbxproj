@@ -13,6 +13,7 @@
 		1117D33D0819EC368507B05C /* NodeTestValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D0B0A96E394937F6886E /* NodeTestValue.swift */; };
 		1117D35AFA97B6795163D9A9 /* IOTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D989065455362B578DD6 /* IOTreeNode.swift */; };
 		1117D35D0DF312D0A4ACCD01 /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D3E55542C0F829DC5EE0 /* Set.swift */; };
+		1117D62681ADAD497C513847 /* ConcurrentTreeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DAA33B7E83445DD21AEF /* ConcurrentTreeBase.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117D8485509945C911A15D0 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DAFA0332DD57221B41E3 /* Dictionary.swift */; };
 		1117DA0D4C718A8F715ECF9B /* BinaryTreeDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DFF5D3709537FCC5EF93 /* BinaryTreeDictionary.swift */; };
@@ -67,6 +68,7 @@
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
 		1117D989065455362B578DD6 /* IOTreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOTreeNode.swift; sourceTree = "<group>"; };
 		1117DA48540485F84963B2F1 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		1117DAA33B7E83445DD21AEF /* ConcurrentTreeBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentTreeBase.swift; sourceTree = "<group>"; };
 		1117DAC5BB6B9403026DC25E /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		1117DAFA0332DD57221B41E3 /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
 		1117DB0005FABC039DC8381F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				1117DAFA0332DD57221B41E3 /* Dictionary.swift */,
 				1117D0092337E35E1630102B /* BinaryTreeSet.swift */,
 				1117D3E55542C0F829DC5EE0 /* Set.swift */,
+				1117DAA33B7E83445DD21AEF /* ConcurrentTreeBase.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				1117D8485509945C911A15D0 /* Dictionary.swift in Sources */,
 				1117DF224AF1CF1A962B831C /* BinaryTreeSet.swift in Sources */,
 				1117D35D0DF312D0A4ACCD01 /* Set.swift in Sources */,
+				1117D62681ADAD497C513847 /* ConcurrentTreeBase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

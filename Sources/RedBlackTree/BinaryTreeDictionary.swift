@@ -21,23 +21,23 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
     public typealias Element = (key: Key, value: Value)
     public typealias Index = TreeIndex
 
-    @usableFromInline var base: TreeBase<KV>
+    @usableFromInline let base: TreeBase<KV>
+
+    /// Designated Initializer.
+    ///
+    /// - Parameters:
+    ///   - c: If true then the dictionary will be thread safe.
+    ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
+    ///   - a: The array of instances of KV to populate the tree with.
+    ///
+    @usableFromInline init(concurrent c: Bool, trackInsertOrder o: Bool, _ a: [KV]) { base = (c ? ConcurrentTreeBase<KV>(trackInsertOrder: o, a) : TreeBase<KV>(trackInsertOrder: o, a)) }
 
     /*==========================================================================================================*/
-    /// Create a new empty binary tree dictionary.
+    /// Create a new binary tree dictionary with the data from the provided binary tree dictionary.
     ///
-    public init() {
-        base = TreeBase<KV>(trackInsertOrder: false)
-    }
-
-    /*==========================================================================================================*/
-    /// Create a new empty binary tree dictionary.
+    /// - Parameter other: the binary tree dictionary to copy the data from.
     ///
-    /// - Parameter trackInsertOrder: if `true` the the order the items are inserted into the tree will be remembered.
-    ///
-    public init(trackInsertOrder: Bool) {
-        base = TreeBase<KV>(trackInsertOrder: false)
-    }
+    public init(_ other: BinaryTreeDictionary<Key, Value>) { base = other.base.copy() }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the data decoded from the decoder.
@@ -46,7 +46,9 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
     /// - Throws: if a decoding error occurs.
     ///
     public required init(from decoder: Decoder) throws where Key: Decodable, Value: Decodable {
-        base = try TreeBase<KV>(from: decoder)
+        let container  = try decoder.container(keyedBy: TreeBase<KV>.CodingKeys.self)
+        let concurrent = try container.decode(Bool.self, forKey: .concurrent)
+        base = (concurrent ? try ConcurrentTreeBase<KV>(from: container) : try TreeBase<KV>(from: container))
     }
 
     /*==========================================================================================================*/
@@ -54,44 +56,65 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
     ///
     /// - Parameter elements: the elements.
     ///
-    public required init(dictionaryLiteral elements: (Key, Value)...) {
-        base = TreeBase<KV>(trackInsertOrder: false, elements.map { KV(key: $0.0, value: $0.1) })
+    public convenience required init(dictionaryLiteral elements: (Key, Value)...) {
+        self.init(concurrent: false, trackInsertOrder: false, elements.map { KV(key: $0.0, value: $0.1) })
     }
+}
+
+extension BinaryTreeDictionary {
+    //@f:0
+    @inlinable public var firstInInsertOrder: Element? { base.startNode?.element }
+    @inlinable public var lastInInsertOrder:  Element? { base.endNode?.element   }
+    @inlinable public var insertOrder:        InOrder  { InOrder(base: base)     }
+    @inlinable public var first:              Element? { base.startNode?.element }
+    @inlinable public var last:               Element? { base.endNode?.element   }
+    @inlinable public var startIndex:         Index    { base.startIndex         }
+    @inlinable public var endIndex:           Index    { base.endIndex           }
+    @inlinable public var count:              Int      { base.count              }
+    //@f:1
+
+    /*==========================================================================================================*/
+    /// Create a new empty binary tree dictionary.
+    ///
+    @inlinable public convenience init() { self.init(concurrent: false, trackInsertOrder: false, []) }
+
+    /// Create a new empty binary tree dictionary.
+    ///
+    /// - Parameter c: If true then the dictionary will be thread safe.
+    ///
+    @inlinable public convenience init(concurrent c: Bool) { self.init(concurrent: c, trackInsertOrder: false, []) }
+
+    /*==========================================================================================================*/
+    /// Create a new empty binary tree dictionary.
+    ///
+    /// - Parameters:
+    ///   - c: If true then the dictionary will be thread safe.
+    ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
+    ///
+    @inlinable public convenience init(concurrent c: Bool = false, trackInsertOrder o: Bool) { self.init(concurrent: c, trackInsertOrder: o, []) }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary from the given sequence of elements.
     ///
     /// - Parameters:
-    ///   - trackInsertOrder:  if `true` the the order the items are inserted into the tree will be remembered.
-    ///   - sequence: The sequence of elements.
+    ///   - c: If true then the dictionary will be thread safe.
+    ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
+    ///   - s: The sequence of elements.
     ///
-    public init<S>(trackInsertOrder: Bool = false, _ sequence: S) where S: Sequence, S.Element == Element {
-        base = TreeBase<KV>(trackInsertOrder: trackInsertOrder, sequence.map { KV(key: $0.key, value: $0.value) })
+    @inlinable public convenience init<S>(concurrent c: Bool = false, trackInsertOrder o: Bool = false, _ s: S) where S: Sequence, S.Element == Element {
+        self.init(concurrent: c, trackInsertOrder: o, s.map { KV(key: $0.key, value: $0.value) })
     }
 
-    /*==========================================================================================================*/
-    /// Create a new binary tree dictionary with the data from the provided binary tree dictionary.
+    /// Create a new binary tree dictionary from the elements in the given {@link0 Dictionary}.
     ///
-    /// - Parameter other: the binary tree dictionary to copy the data from.
+    /// - Parameters:
+    ///   - c: If true then the dictionary will be thread safe.
+    ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
+    ///   - d: The dictionary containing the keys and values to be put into this tree.
     ///
-    public init(_ other: BinaryTreeDictionary<Key, Value>) {
-        base = TreeBase<KV>(other.base)
+    @inlinable public convenience init(concurrent c: Bool = false, trackInsertOrder o: Bool = false, _ d: [Key: Value]) where Key: Hashable {
+        self.init(concurrent: c, trackInsertOrder: o, d.map { KV(key: $0.key, value: $0.value) })
     }
-
-    public init(trackInsertOrder: Bool = false, _ other: [Key: Value]) where Key: Hashable {
-        base = TreeBase<KV>(trackInsertOrder: trackInsertOrder)
-        other.forEach { e in base.insert(element: KV(key: e.key, value: e.value)) }
-    }
-
-    deinit { base.removeAll(fast: false) }
-}
-
-extension BinaryTreeDictionary {
-    @inlinable public var first:      Element? { base.min?.element }
-    @inlinable public var last:       Element? { base.max?.element }
-    @inlinable public var startIndex: Index { base.startIndex }
-    @inlinable public var endIndex:   Index { base.endIndex }
-    @inlinable public var count:      Int { base.count }
 
     /// A collection containing just the keys of the dictionary.
     ///
@@ -210,6 +233,8 @@ extension BinaryTreeDictionary {
     /// - Returns: An iterator over the dictionary with elements of type (key: Key, value: Value).
     ///
     @inlinable public func makeIterator() -> Iterator { Iterator(base.makeIterator()) }
+
+    @inlinable public func makeInsertOrderIterator() -> InsertOrderIterator { InsertOrderIterator(base.makeInsertOrderIterator()) }
 
     @inlinable public func randomElement() -> Element? { self[Index(index: Int.random(in: startIndex.idx ..< endIndex.idx))] }
 
@@ -519,10 +544,7 @@ extension BinaryTreeDictionary {
     /// - Returns: The key-value pair that correspond to index.
     /// - Complexity: O(log n), where n is the number of key-value pairs in the dictionary.
     ///
-    @inlinable @discardableResult public func remove(at index: Index) -> Element {
-        guard let r = base.rootNode else { fatalError("Index out of bounds.") }
-        return base.remove(node: r[index]).element
-    }
+    @inlinable @discardableResult public func remove(at index: Index) -> Element { base.remove(node: base.node(forIndex: index)).element }
 
     /*==========================================================================================================*/
     /// Removes all key-value pairs from the dictionary.
@@ -532,8 +554,21 @@ extension BinaryTreeDictionary {
     ///                           Not applicable to a binary tree.
     /// - Complexity: O, the deallocation of the nodes happens on a background thread.
     ///
-    @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) {
-        base.removeAll(fast: true)
+    @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) { base.removeAll(fast: true) }
+
+    @frozen public struct InsertOrderIterator: IteratorProtocol {
+        @usableFromInline var baseIterator: TreeBase<KV>.InsertOrderIterator
+
+        @inlinable init(_ baseIterator: TreeBase<KV>.InsertOrderIterator) { self.baseIterator = baseIterator }
+
+        /*======================================================================================================*/
+        /// Advances to the next element and returns it, or nil if no next element exists.
+        ///
+        /// Once nil has been returned, all subsequent calls return nil.
+        ///
+        /// - Returns: the next element or nil if there are no more elements.
+        ///
+        @inlinable public mutating func next() -> Element? { baseIterator.next()?.element }
     }
 
     /*==========================================================================================================*/
@@ -552,6 +587,22 @@ extension BinaryTreeDictionary {
         /// - Returns: the next element or nil if there are no more elements.
         ///
         @inlinable public mutating func next() -> Element? { baseIterator.next()?.element }
+    }
+
+    @frozen public struct InOrder: Sequence {
+        @usableFromInline let _base: TreeBase<KV>
+
+        @inlinable init(base: TreeBase<KV>) { self._base = base }
+
+        @inlinable public func makeIterator() -> Iterator { Iterator(_base.makeInsertOrderIterator()) }
+
+        @frozen public struct Iterator: IteratorProtocol {
+            @usableFromInline var baseIterator: TreeBase<KV>.InsertOrderIterator
+
+            @inlinable init(_ baseIterator: TreeBase<KV>.InsertOrderIterator) { self.baseIterator = baseIterator }
+
+            @inlinable public mutating func next() -> Element? { baseIterator.next()?.element }
+        }
     }
 
     @usableFromInline struct KV: Comparable {
