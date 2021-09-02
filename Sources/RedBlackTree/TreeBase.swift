@@ -27,7 +27,7 @@ import CoreFoundation
     @usableFromInline      var updateCount:      Int                  = 0
     fileprivate            var firstNode:        IOTreeNode<Element>? = nil
     fileprivate            var lastNode:         IOTreeNode<Element>? = nil
-    fileprivate            var rootNode:         TreeNode<Element>?   = nil
+    fileprivate(set)       var rootNode:         TreeNode<Element>?   = nil
     @usableFromInline lazy var queue:            DispatchQueue        = DispatchQueue(label: UUID().uuidString, attributes: .concurrent)
     @usableFromInline      let startIndex:       Index                = Index(index: 0)
     //@f:1
@@ -39,7 +39,7 @@ import CoreFoundation
     }
 
     @usableFromInline init(from container: KeyedDecodingContainer<CodingKeys>) throws where Element: Decodable {
-        trackInsertOrder = try container.decode(Bool.self, forKey: .trackInsertOrder)
+        trackInsertOrder = (try container.decodeIfPresent(Bool.self, forKey: .trackInsertOrder) ?? false)
         var elemList = try container.nestedUnkeyedContainer(forKey: .elements)
         while !elemList.isAtEnd { insert(element: try elemList.decode(Element.self)) }
     }
@@ -258,6 +258,7 @@ extension TreeBase: Encodable where Element: Encodable {
     @inlinable func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(trackInsertOrder, forKey: .trackInsertOrder)
+        try container.encode(((self as? ConcurrentTreeBase<Element>) != nil), forKey: .concurrent)
         var elemList = container.nestedUnkeyedContainer(forKey: .elements)
         if trackInsertOrder { try forEachInOrder(reverse: false) { try elemList.encode($0) } }
         else { try forEach(fast: false, reverse: false) { try elemList.encode($0) } }

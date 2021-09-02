@@ -47,7 +47,7 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
     ///
     public required init(from decoder: Decoder) throws where Key: Decodable, Value: Decodable {
         let container  = try decoder.container(keyedBy: TreeBase<KV>.CodingKeys.self)
-        let concurrent = try container.decode(Bool.self, forKey: .concurrent)
+        let concurrent = (try container.decodeIfPresent(Bool.self, forKey: .concurrent) ?? false)
         base = (concurrent ? try ConcurrentTreeBase<KV>(from: container) : try TreeBase<KV>(from: container))
     }
 

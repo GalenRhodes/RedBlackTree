@@ -21,7 +21,7 @@ class RedBlackTreeTests: XCTestCase {
 
     func testCodable() throws {
         try clearDirectory(url: codableDir, description: "codable")
-        let tree:           RedBlackTreeDictionary<String, NodeTestValue> = RedBlackTreeDictionary<String, NodeTestValue>()
+        let tree:           BinaryTreeDictionary<String, NodeTestValue> = BinaryTreeDictionary<String, NodeTestValue>()
         let dataIns:        [Character]                                   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=\"':;>.<,?|`~/\\🤣".shuffled()
         let imageBeforeURL: URL                                           = URL(fileURLWithPath: "Codable-Before.png", relativeTo: codableDir)
         let imageAfterURL:  URL                                           = URL(fileURLWithPath: "Codable-After.png", relativeTo: codableDir)
@@ -30,18 +30,18 @@ class RedBlackTreeTests: XCTestCase {
         let decoder:        JSONDecoder                                   = JSONDecoder()
 
         for ch in dataIns { tree[String(ch)] = NodeTestValue() }
-        try autoreleasepool { try tree.rootNode?.drawTree(url: imageBeforeURL) }
+        try autoreleasepool { try tree.base.rootNode?.drawTree(url: imageBeforeURL) }
 
         encoder.outputFormatting = [ .sortedKeys, .prettyPrinted ]
         let data = try encoder.encode(tree)
         try data.write(to: jsonURL)
 
-        let decodedTree = try decoder.decode(RedBlackTreeDictionary<String, NodeTestValue>.self, from: data)
-        try autoreleasepool { try decodedTree.rootNode?.drawTree(url: imageAfterURL) }
+        let decodedTree = try decoder.decode(BinaryTreeDictionary<String, NodeTestValue>.self, from: data)
+        try autoreleasepool { try decodedTree.base.rootNode?.drawTree(url: imageAfterURL) }
     }
 
 //    func testInOrder() throws {
-//        let tree:    RedBlackTreeDictionary<String, NodeTestValue> = RedBlackTreeDictionary<String, NodeTestValue>(trackOrder: true)
+//        let tree:    BinaryTreeDictionary<String, NodeTestValue> = BinaryTreeDictionary<String, NodeTestValue>(trackOrder: true)
 //        let dataIns: [Character]                           = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
 //        let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< 10]).shuffled()
 //
@@ -103,7 +103,7 @@ class RedBlackTreeTests: XCTestCase {
         for x in (1 ... rounds) {
             print("Round \(x) of \(rounds)...")
 
-            let tree:    RedBlackTreeDictionary<String, NodeTestValue> = RedBlackTreeDictionary<String, NodeTestValue>()
+            let tree:    BinaryTreeDictionary<String, NodeTestValue> = BinaryTreeDictionary<String, NodeTestValue>()
             let dataIns: [Character]                                   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=':;>.<,?|`~/\\🤣".shuffled()
             let dataDel: [Character]                                   = Array<Character>(dataIns.shuffled()[0 ..< (dataIns.count / 2)])
 
@@ -146,9 +146,9 @@ class RedBlackTreeTests: XCTestCase {
         try fm.createDirectory(at: url, withIntermediateDirectories: true)
     }
 
-    func drawTreeImage(action a: String, round i: Int, imageNumber j: Int, tree: RedBlackTreeDictionary<String, NodeTestValue>) throws {
+    func drawTreeImage(action a: String, round i: Int, imageNumber j: Int, tree: BinaryTreeDictionary<String, NodeTestValue>) throws {
         let url = URL(fileURLWithPath: "Sample_\(a)_\(i)_\(j + 1).png", relativeTo: imagesDir)
-        try tree.rootNode?.drawTree(url: url)
+        try tree.base.rootNode?.drawTree(url: url)
     }
 
     #if !(os(macOS) || os(tvOS) || os(iOS) || os(watchOS))

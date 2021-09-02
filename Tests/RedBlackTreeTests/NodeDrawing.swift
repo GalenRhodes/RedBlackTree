@@ -23,7 +23,7 @@ let leftAngle:  CGFloat = 135
 let rightAngle: CGFloat = 45
 let theta:      CGFloat = (CGFloat.pi / 180)
 
-extension TreeNode where T == RedBlackTreeDictionary<String, NodeTestValue>.KV {
+extension TreeNode where T == BinaryTreeDictionary<String, NodeTestValue>.KV {
 
     @inlinable var colorIndex: Int { ((color == .Red) ? 1 : 0) }
 
