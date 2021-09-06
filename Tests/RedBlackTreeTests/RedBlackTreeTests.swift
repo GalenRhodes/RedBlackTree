@@ -114,7 +114,7 @@ class RedBlackTreeTests: XCTestCase {
         print("Creating data set...")
         var cc = tree.count
         while cc < 100000 {
-            var str = String(Int.random(in: 0 ..< Int.max))
+            let str = String(Int.random(in: 0 ..< Int.max))
             tree[str] = NodeTestValue()
             cc = tree.count
             if ((cc % 10000) == 0) { print("\(cc)") }
