@@ -17,130 +17,96 @@
 import Foundation
 import CoreFoundation
 
-@usableFromInline let RedMask:                UInt   = (1 << (UInt.bitWidth - 1))
-@usableFromInline let ColorMask:              [UInt] = [ 0, RedMask ]
-@usableFromInline let ErrorMsgGhostParent:    String = "Inconsistent state: ghost parent."
-@usableFromInline let ErrorMsgMisColored:     String = "Inconsistent state: mis-colored node."
-@usableFromInline let ErrorMsgMissingSibling: String = "Inconsistent state: missing sibling node."
-@usableFromInline let ErrorMsgLeftOrRight:    String = "Invalid Argument: side must be either left or right."
-@usableFromInline let ErrorMsgNoRotLeft:      String = "Invalid Argument: Cannot rotate node to the left because there is no right child node."
-@usableFromInline let ErrorMsgNoRotRight:     String = "Invalid Argument: Cannot rotate node to the right because there is no left child node."
-@usableFromInline let ErrorMsgParentIsChild:  String = "Invalid Argument: Node cannot be a child of itself."
+@usableFromInline let RedMask:                  UInt   = (1 << (UInt.bitWidth - 1))
+@usableFromInline let CountMask:                UInt   = ~RedMask
+@usableFromInline let ColorMask:                [UInt] = [ 0, RedMask ]
+@usableFromInline let ErrorMsgGhostParent:      String = "Inconsistent state: ghost parent."
+@usableFromInline let ErrorMsgMisColored:       String = "Inconsistent state: mis-colored node."
+@usableFromInline let ErrorMsgMissingSibling:   String = "Inconsistent state: missing sibling node."
+@usableFromInline let ErrorMsgMissingParent:    String = "Inconsistent state: missing parent node."
+@usableFromInline let ErrorMsgLeftOrRight:      String = "Invalid Argument: side must be either left or right."
+@usableFromInline let ErrorMsgNoRotLeft:        String = "Invalid Argument: Cannot rotate node to the left because there is no right child node."
+@usableFromInline let ErrorMsgNoRotRight:       String = "Invalid Argument: Cannot rotate node to the right because there is no left child node."
+@usableFromInline let ErrorMsgParentIsChild:    String = "Invalid Argument: Node cannot be a child of itself."
+@usableFromInline let ErrorMsgIndexOutOfBounds: String = "Index out of bounds."
 
 @usableFromInline class TreeNode<T> where T: Comparable {
+    @usableFromInline typealias TNode = TreeNode<T>
+    @usableFromInline typealias Index = TreeIndex
+    @usableFromInline typealias InsertResults = (node: TNode, inserted: Bool, existed: Bool, oldValue: T)
+
     //@f:0
     /*==========================================================================================================*/
     /// The field that holds the value.
     ///
-    @usableFromInline var value:      T
+    @usableFromInline                  var value:      T
     /*==========================================================================================================*/
     /// The field that holds the reference to the parent node.
     ///
-    @usableFromInline var parentNode: TreeNode<T>? = nil
+    @usableFromInline fileprivate(set) var parentNode: TNode? = nil
     /*==========================================================================================================*/
     /// The field that holds the reference to the right child node.
     ///
-    @usableFromInline var _rightNode: TreeNode<T>? = nil
+    @usableFromInline fileprivate(set) var rightNode:  TNode? = nil
     /*==========================================================================================================*/
     /// The field that holds the reference to the left child node.
     ///
-    @usableFromInline var _leftNode:  TreeNode<T>? = nil
+    @usableFromInline fileprivate(set) var leftNode:   TNode? = nil
     /*==========================================================================================================*/
     /// To save space this field holds both the color and the count.
     ///
-    @usableFromInline var _data:      UInt         = 1
+    @usableFromInline fileprivate(set) var data:       UInt         = 1
     //@f:1
 
     /*==========================================================================================================*/
     /// Default constructor.
-    /// 
+    ///
     /// - Parameter v: The value.
     ///
-    @usableFromInline init(value v: T) {
-        value = v
+    @usableFromInline init(value v: T) { value = v }
+
+    @usableFromInline func makeNewNode(value: T) -> TNode { TNode(value: value, color: .Red) }
+
+    @usableFromInline func makeNewNode(value: T, data: UInt) -> TNode { TNode(value: value, data: data) }
+
+    @usableFromInline func postRemoveHook(root: TNode?) -> TNode? { root }
+
+    @usableFromInline func swapNodeBeforeRemove(other: TNode) {
+        let v = value
+        value = other.value
+        other.value = v
     }
-
-    @usableFromInline func makeNewNode(value: T) -> TreeNode<T> { TreeNode<T>(value: value, color: .Red) }
-
-    @usableFromInline func makeNewNode(value: T, data: UInt) -> TreeNode<T> { TreeNode<T>(value: value, data: data) }
-
-    @usableFromInline func postRemoveHook(root: TreeNode<T>?) -> TreeNode<T>? { root }
-
-    @usableFromInline func swapNodeBeforeRemove(other: TreeNode<T>) { swap(&value, &other.value) }
 
     @usableFromInline func removeAll() {
-        if let l = _leftNode {
-            l.removeAll()
-            _leftNode = nil
-        }
-        if let r = _rightNode {
-            r.removeAll()
-            _rightNode = nil
-        }
+        with(leftNode) { $0.removeAll() }
+        with(rightNode) { $0.removeAll() }
         parentNode = nil
-        count = 1
-        color = .Black
+        rightNode = nil
+        leftNode = nil
     }
-}
-
-extension TreeNode {
 
     @usableFromInline enum Color: Int {
-        case Black = 0
-        case Red
-
-        @inlinable var isRed:   Bool { self == .Red }
-        @inlinable var isBlack: Bool { self == .Black }
-
-        @inlinable static func isRed(_ n: TreeNode?) -> Bool { n?.color.isRed ?? false }
-
-        @inlinable static func isBlack(_ n: TreeNode?) -> Bool { n?.color.isBlack ?? true }
-
-        @inlinable static func maskLo(_ n: UInt) -> UInt {
-            let m: UInt = ~RedMask
-            let r: UInt = (n & m)
-            return r
-        }
-
-        @inlinable static func maskLo(_ n: Int) -> UInt { maskLo(UInt(bitPattern: n)) }
-
-        @inlinable static func maskHi(_ n: UInt) -> UInt {
-            let m: UInt = RedMask
-            let r: UInt = (n & m)
-            return r
-        }
+        case Black = 0, Red = 1
     }
 
     @usableFromInline enum Side {
-        case Neither
-        case Left
-        case Right
-
-        @inlinable static prefix func ! (s: Self) -> Self {
-            switch s {
-                case .Neither: return .Neither
-                case .Left:    return .Right
-                case .Right:   return .Left
-            }
-        }
+        case Neither, Left, Right
     }
 }
 
 extension TreeNode {
     //@f:0
-    @inlinable var rootNode:   TreeNode<T>  { foo(start: self) { $0.parentNode } }
-    @inlinable var leftNode:   TreeNode<T>? { self[.Left] }
-    @inlinable var rightNode:  TreeNode<T>? { self[.Right] }
-    @inlinable var index:      Index        { forPSide(ifNeither: Index(index: leftCount), ifLeft: { $0.index - rightCount - 1 }, ifRight: { $0.index + leftCount + 1 }) }
-    @inlinable var leftCount:  Int          { with(node: _leftNode, default: 0) { $0.count } }
-    @inlinable var rightCount: Int          { with(node: _rightNode, default: 0) { $0.count } }
-    @inlinable var count:      Int          { get { Int(bitPattern: Color.maskLo(_data)) } set { _data = (Color.maskHi(_data) | Color.maskLo(newValue)) } }
-    @inlinable var color:      Color        { get { ((Color.maskHi(_data) == 0) ? Color.Black : Color.Red) } set { _data = (Color.maskLo(_data) | ColorMask[newValue.rawValue]) } }
+    @inlinable                  var lc:         Int    { nilTest(rightNode,  whenNil: 0)    { (n: TNode) in n.count    }                                                                     }
+    @inlinable                  var rc:         Int    { nilTest(leftNode,   whenNil: 0)    { (n: TNode) in n.count    }                                                                     }
+    @inlinable                  var rootNode:   TNode  { nilTest(parentNode, whenNil: self) { (n: TNode) in n.rootNode }                                                                     }
+    @inlinable                  var index:      Index  { Index(nilTest(parentNode, whenNil: rc) { (n: TNode) in ((self === n.leftNode) ? (n.index.idx - lc - 1) : (n.index.idx + rc + 1)) }) }
+    @inlinable fileprivate(set) var count:      Int    { get { Int(bitPattern: data & CountMask)         } set { data = ((data & RedMask) | (UInt(bitPattern: newValue) & CountMask)) }      }
+    @inlinable fileprivate(set) var color:      Color  { get { (((data & RedMask) == 0) ? .Black : .Red) } set { data = ((data & CountMask) | ColorMask[newValue.rawValue])           }      }
     //@f:1
 
     @inlinable convenience init(value v: T, data: UInt) {
         self.init(value: v)
-        _data = data
+        self.data = data
     }
 
     @inlinable convenience init(value v: T, color c: Color) {
@@ -148,85 +114,56 @@ extension TreeNode {
         color = c
     }
 
-    @inlinable subscript(value: T) -> TreeNode<T>? {
+    @inlinable subscript(value: T) -> TNode? {
         switch compare(a: value, b: self.value) {
             case .EqualTo:     return self
-            case .LessThan:    return leftNode?[value]
-            case .GreaterThan: return rightNode?[value]
+            case .LessThan:    return nilTest(leftNode, whenNil: nil) { (n: TNode) in n[value] }
+            case .GreaterThan: return nilTest(rightNode, whenNil: nil) { (n: TNode) in n[value] }
         }
     }
 
-    @usableFromInline typealias Index = TreeIndex
-
-    @inlinable subscript(index: Index) -> TreeNode<T> {
-        guard index.idx >= 0 else { fatalError("Index out of bounds.") }
+    @inlinable subscript(index: Index) -> TNode {
+        guard index.idx >= 0 else { fatalError(ErrorMsgIndexOutOfBounds) }
         switch compare(a: index, b: self.index) {
             case .EqualTo:     return self
-            case .LessThan:    if let n = leftNode { return n[index] }
-            case .GreaterThan: if let n = rightNode { return n[index] }
-        }
-        fatalError("Index out of bounds.")
-    }
-
-    @inlinable subscript(side: Side) -> TreeNode<T>? {
-        get {
-            switch side {
-                case .Left:    return _leftNode
-                case .Right:   return _rightNode
-                case .Neither: fatalError(ErrorMsgLeftOrRight)
-            }
-        }
-        set {
-            func _setChild(_ oc: TreeNode<T>?, _ nc: TreeNode<T>?, _ side: Side) {
-                guard self !== nc else { fatalError(ErrorMsgParentIsChild) }
-                guard oc !== nc else { return }
-                with(node: oc) { $0.parentNode = nil }
-                with(node: nc) { $0.removeFromParent().parentNode = self }
-                if side == .Left { _leftNode = nc }
-                else { _rightNode = nc }
-                recount()
-            }
-
-            switch side {
-                case .Left:    _setChild(_leftNode, newValue, side)
-                case .Right:   _setChild(_rightNode, newValue, side)
-                case .Neither: fatalError(ErrorMsgLeftOrRight)
-            }
+            case .LessThan:    return nilTest(leftNode, whenNil: ErrorMsgIndexOutOfBounds) { (n: TNode) in n[index] }
+            case .GreaterThan: return nilTest(rightNode, whenNil: ErrorMsgIndexOutOfBounds) { (n: TNode) in n[index] }
         }
     }
 
-    @usableFromInline func insert(value: T) -> TreeNode<T> {
-        switch compare(a: value, b: self.value) {
+    @usableFromInline func insert(update f: Bool, value v: T) -> InsertResults {
+        switch compare(a: v, b: value) {
             case .EqualTo:
-                self.value = value
-                return self
+                guard f else { return (self, false, true, value) }
+                let ov = value
+                value = v
+                return (self, true, true, ov)
             case .LessThan:
-                return insert(value: value, side: .Left)
+                return nilTest(leftNode, whenNil: add(value: v, toSide: .Left)) { (n: TNode) in n.insert(update: f, value: v) }
             case .GreaterThan:
-                return insert(value: value, side: .Right)
+                return nilTest(rightNode, whenNil: add(value: v, toSide: .Right)) { (n: TNode) in n.insert(update: f, value: v) }
         }
     }
 
-    @usableFromInline func insert(value: T, side: Side) -> TreeNode<T> {
-        if let n = self[side] { return n.insert(value: value) }
-        let n = makeNewNode(value: value)
+    @inlinable func add(value v: T, toSide side: Side) -> InsertResults {
+        let n = makeNewNode(value: v)
         self[side] = n
         n.insertRepair()
-        return n
+        return (n, true, false, v)
     }
 
-    @usableFromInline func remove() -> TreeNode<T>? {
-        if let l = _leftNode, let r = _rightNode {
+    @usableFromInline func remove() -> TNode? {
+        if let l = leftNode, let r = rightNode {
             // There are two child nodes so we need
             // to swap the value of this node with either
             // the child node that is just before this one
             // or just after this one (we'll randomly pick)
             // and then remove that child node instead.
-            let other = (Bool.random() ? foo(start: l) { $0._rightNode } : foo(start: r) { $0._leftNode })
+            let other = (Bool.random() ? foo(start: l) { $0.rightNode } : foo(start: r) { $0.leftNode })
             swapNodeBeforeRemove(other: other)
             return other.remove()
         }
-        else if let c = (_leftNode ?? _rightNode) {
+        else if let c = (leftNode ?? rightNode) {
             // There is one child node. This means that this node is
             // black and the child node is red. That's the only way
             // it can be. So we'll just paint the child node black
@@ -252,192 +189,172 @@ extension TreeNode {
 
     /*==========================================================================================================*/
     /// Copy this tree.  If this node is not the root then this call is transferred to the root.
-    /// 
+    ///
     /// - Returns: The root node of the copy.
     ///
-    @usableFromInline func copyTree() -> TreeNode<T> {
-        if let p = parentNode { return p.copyTree() }
-        let queue = DispatchQueue(label: UUID().uuidString, attributes: .concurrent)
-        return copyTree(limit: 2, queue: queue)
+    @inlinable func copyTree(fast: Bool) -> TNode {
+        if let p = parentNode { return p.copyTree(fast: fast) }
+        guard fast && count > 100 else { return copyTreeSlow() }
+        let queue = DispatchQueue(label: UUID.new, attributes: .concurrent)
+        return copyTree(limit: 1, queue: queue)
     }
 
-    @usableFromInline func copyTree(limit: Int, queue: DispatchQueue?) -> TreeNode<T> {
-        let copy = makeNewNode(value: value, data: _data)
-        if let _queue = queue, limit > 0 {
-            let group = DispatchGroup()
-            _queue.async(group: group) { copy._leftNode = copy.copyChildNode(self._leftNode, limit: limit, queue: _queue) }
-            _queue.async(group: group) { copy._rightNode = copy.copyChildNode(self._rightNode, limit: limit, queue: _queue) }
-            group.wait()
-        }
-        else {
-            copy._leftNode = copy.copyChildNode(_leftNode)
-            copy._rightNode = copy.copyChildNode(_rightNode)
-        }
+    /*==========================================================================================================*/
+    /// Copy this tree slowly.  If this node is not the root then this call is transferred to the root.
+    ///
+    /// - Returns: The root node of the copy.
+    ///
+    @usableFromInline func copyTreeSlow() -> TNode {
+        let copy = makeNewNode(value: value, data: data)
+        copy.leftNode = copy.copyChild(child: leftNode)
+        copy.rightNode = copy.copyChild(child: rightNode)
         return copy
     }
 
-    @usableFromInline func copyChildNode(_ c: TreeNode<T>?, limit: Int, queue: DispatchQueue) -> TreeNode<T>? {
-        guard let _c = c else { return nil }
-        let cc = _c.copyTree(limit: (limit - 1), queue: queue)
+    @inlinable func copyTree(limit: Int, queue: DispatchQueue) -> TNode {
+        let group = DispatchGroup()
+        let copy  = makeNewNode(value: value, data: data)
+        queue.async(group: group) { copy.leftNode = copy.copyChild(child: self.leftNode) }
+        queue.async(group: group) { copy.rightNode = copy.copyChild(child: self.rightNode) }
+        group.wait()
+        return copy
+    }
+
+    @inlinable func copyChild(child: TNode?) -> TNode? {
+        guard let c = child else { return nil }
+        let cc = c.copyTreeSlow()
         cc.parentNode = self
         return cc
     }
 
-    @usableFromInline func copyChildNode(_ c: TreeNode<T>?) -> TreeNode<T>? {
-        guard let _c = c else { return nil }
-        let cc = _c.copyTree(limit: 0, queue: nil)
-        cc.parentNode = self
-        return cc
-    }
-
-    @usableFromInline func search(compareWith comp: (T) throws -> ComparisonResults) rethrows -> TreeNode<T>? {
+    @usableFromInline func search(using comp: (T) throws -> ComparisonResults) rethrows -> TNode? {
         switch try comp(value) {
             case .EqualTo: return self
-            case .LessThan: return try leftNode?.search(compareWith: comp)
-            case .GreaterThan: return try rightNode?.search(compareWith: comp)
+            case .LessThan: return try leftNode?.search(using: comp)
+            case .GreaterThan: return try rightNode?.search(using: comp)
         }
     }
 
-    @usableFromInline func forEachNode(reverse f: Bool = false, _ body: (TreeNode<T>) throws -> Void) rethrows {
-        if let n = (f ? _rightNode : _leftNode) { try n.forEachNode(reverse: f, body) }
+    @usableFromInline func forEachNode(reverse f: Bool = false, _ body: (TNode) throws -> Void) rethrows {
+        try (f ? rightNode : leftNode)?.forEachNode(reverse: f, body)
         try body(self)
-        if let n = (f ? _leftNode : _rightNode) { try n.forEachNode(reverse: f, body) }
+        try (f ? leftNode : rightNode)?.forEachNode(reverse: f, body)
     }
 
-    @usableFromInline func firstNode(reverse f: Bool = false, where predicate: (TreeNode<T>) throws -> Bool) rethrows -> TreeNode<T>? {
-        if let n = (f ? _rightNode : _leftNode), let m = try n.firstNode(reverse: f, where: predicate) { return m }
+    @usableFromInline func firstNode(reverse f: Bool = false, where predicate: (TNode) throws -> Bool) rethrows -> TNode? {
+        if let m = try (f ? rightNode : leftNode)?.firstNode(reverse: f, where: predicate) { return m }
         if try predicate(self) { return self }
-        if let n = (f ? _leftNode : _rightNode), let m = try n.firstNode(reverse: f, where: predicate) { return m }
+        if let m = try (f ? leftNode : rightNode)?.firstNode(reverse: f, where: predicate) { return m }
         return nil
     }
 
-    @usableFromInline func forEachFast(_ body: (TreeNode<T>) throws -> Void) rethrows {
-        if let p = parentNode { try p.forEachFast(body) }
-        else { try forEachFast(DispatchQueue(label: UUID().uuidString, attributes: .concurrent), 2, body) }
-    }
-
-    @usableFromInline func forEachFast(_ queue: DispatchQueue, _ limit: Int, _ body: (TreeNode<T>) throws -> Void) rethrows {
-        if limit > 0 { try forEachFastThreaded(queue, limit - 1, body) }
-        else { try forEachNode(reverse: false, body) }
-    }
-
-    @usableFromInline func forEachFastThreaded(_ q: DispatchQueue, _ l: Int, _ b: (TreeNode<T>) throws -> Void) rethrows {
-        try withoutActuallyEscaping(b) { (c) -> Void in
-            var _err: Error?        = nil
-            let _grp: DispatchGroup = DispatchGroup()
-            let _lck: NSLock        = NSLock()
-            q.async(group: _grp) { let e = bar(q, l, self, c); if let _e = e { _lck.withLock { _err = _e } } }
-            q.async(group: _grp) { let e = foo(q, l, self._leftNode, c); if let _e = e { _lck.withLock { _err = _e } } }
-            q.async(group: _grp) { let e = foo(q, l, self._rightNode, c); if let _e = e { _lck.withLock { _err = _e } } }
-            _grp.wait()
-            if let e = _err { throw e }
+    @usableFromInline func forEachFast(_ body: (TNode) -> Void) {
+        if let p = parentNode { return p.forEachFast(body) }
+        withoutActuallyEscaping(body) { (b: @escaping (TNode) -> Void) -> Void in
+            let q = DispatchQueue(label: UUID.new, attributes: .concurrent)
+            let g = DispatchGroup()
+            q.async(group: g) { b(self) }
+            q.async(group: g) { self.leftNode?.forEachNode(b) }
+            q.async(group: g) { self.rightNode?.forEachNode(b) }
+            g.wait()
         }
     }
 
     @usableFromInline func recount() {
-        count = (1 + leftCount + rightCount)
-        with(node: parentNode) { $0.recount() }
+        count = (1 + rc + lc)
+        with(parentNode) { $0.recount() }
     }
 
-    @inlinable func swapMe(with node: TreeNode<T>?) {
-        if let p = parentNode { forPSide(parent: p, ifLeft: { pp in pp[.Left] = node }, ifRight: { pp in pp[.Right] = node }) }
-        else if let n = node { n.removeFromParent() }
-    }
+    @inlinable func swapMe(with node: TNode?) { nilTest(parentNode, whenNil: with(node) { $0.removeFromParent() }) { (p: TNode) in p[Side.side(self)] = node } }
 
-    @inlinable @discardableResult func removeFromParent() -> TreeNode<T> {
-        swapMe(with: nil)
-        return self
-    }
+    @inlinable @discardableResult func removeFromParent() -> TNode { swapMe(with: nil); return self }
 
-    @usableFromInline func removeRepair() {
-        if let p = parentNode {
-            let side: Side        = forSide(parent: p, ifLeft: .Left, ifRight: .Right)
-            var sib:  TreeNode<T> = mustHave(p[!side], message: ErrorMsgMissingSibling)
-
-            if sib.color.isRed {
-                p.rotate(dir: side)
-                sib = mustHave(p[!side], message: ErrorMsgMissingSibling)
-            }
-
-            if sib.color.isBlack && Color.isBlack(sib.leftNode) && Color.isBlack(sib.rightNode) {
-                sib.color = .Red
-                if p.color.isRed { p.color = .Black }
-                else { p.removeRepair() }
-            }
-            else {
-                if Color.isRed(sib[side]) { sib.rotate(dir: !side) }
-                p.rotate(dir: side)
-                if let ps = p.forPSide(ifNeither: nil, ifLeft: { $0._rightNode }, ifRight: { $0._leftNode }) { ps.color = .Black }
+    @inlinable subscript(side: Side) -> TNode? {
+        get {
+            guard !side.isNeither else { fatalError(ErrorMsgLeftOrRight) }
+            return (side.isLeft ? leftNode : rightNode)
+        }
+        set {
+            guard self !== newValue else { fatalError(ErrorMsgParentIsChild) }
+            let c = self[side]
+            if newValue !== c {
+                with(c) { $0.parentNode = nil }
+                with(newValue) { $0.removeFromParent().parentNode = self }
+                condExec(side.isLeft, yes: { leftNode = newValue }, no: { rightNode = newValue })
+                recount()
             }
         }
     }
 
     @inlinable func rotate(dir: Side) {
-        let c1 = mustHave(self[!dir], message: ((dir == .Left) ? ErrorMsgNoRotLeft : ErrorMsgNoRotRight))
+        let c1 = mustHave(self[!dir], message: ((dir.isLeft) ? ErrorMsgNoRotLeft : ErrorMsgNoRotRight))
         swapMe(with: c1)
         self[!dir] = c1[dir]
         c1[dir] = self
-        swap(&color, &c1.color)
+        let c = color
+        color = c1.color
+        c1.color = c
+    }
+
+    @usableFromInline func removeRepair() {
+        guard let p = parentNode else { return }
+        let side = Side.side(self)
+        if mustHave(p[!side], message: ErrorMsgMissingSibling).color.isRed { p.rotate(dir: side) }
+
+        let sib = mustHave(p[!side], message: ErrorMsgMissingSibling)
+        if sib.color.isBlack && Color.isBlack(sib.leftNode) && Color.isBlack(sib.rightNode) {
+            sib.color = .Red
+            condExec(p.color.isRed, yes: { p.color = .Black }, no: { p.removeRepair() })
+        }
+        else {
+            if Color.isRed(sib[side]) { sib.rotate(dir: !side) }
+            p.rotate(dir: side)
+            p.parentNode![!side]!.color = .Black
+        }
     }
 
     @usableFromInline func insertRepair() {
-        if let p = parentNode {
-            if p.color.isRed {
-                guard let g = p.parentNode, g.color.isBlack else { fatalError(ErrorMsgMisColored) }
-                let nSide = forSide(parent: p, ifLeft: Side.Left, ifRight: Side.Right)
-                let pSide = p.forSide(parent: g, ifLeft: Side.Left, ifRight: Side.Right)
+        guard let p = parentNode else { color = .Black; return }
+        guard p.color.isRed else { return }
+        guard let g = p.parentNode, g.color.isBlack else { fatalError(ErrorMsgMisColored) }
 
-                if let u = g[!pSide], u.color.isRed {
-                    u.color = .Black
-                    p.color = .Black
-                    g.color = .Red
-                    g.insertRepair()
-                }
-                else {
-                    let q = !nSide
-                    if pSide == q {
-                        p.rotate(dir: pSide)
-                    }
-                    g.rotate(dir: !pSide)
-                }
-            }
+        let pSide = Side.side(p)
+        guard let u = g[!pSide], u.color.isRed else {
+            if pSide == !Side.side(self) { p.rotate(dir: pSide) }
+            return g.rotate(dir: !pSide)
         }
-        else if color.isRed {
-            // This node is the root node so it has to be black.
-            color = .Black
-        }
+
+        u.color = .Black
+        p.color = .Black
+        g.color = .Red
+        g.insertRepair()
     }
 
     @inlinable func mustHave<P>(_ p: P?, message: String) -> P {
-        guard let pp = p else { fatalError(message) }
-        return pp
-    }
-
-    @inlinable func forSide<R>(parent p: TreeNode<T>, ifLeft l: @autoclosure () throws -> R, ifRight r: @autoclosure () throws -> R) rethrows -> R {
-        try forPSide(parent: p, ifLeft: { _ in try l() }, ifRight: { _ in try r() })
-    }
-
-    @inlinable func forPSide<R>(ifNeither n: @autoclosure () throws -> R, ifLeft l: (TreeNode<T>) throws -> R, ifRight r: (TreeNode<T>) throws -> R) rethrows -> R {
-        guard let p = parentNode else { return try n() }
-        return try forPSide(parent: p, ifLeft: l, ifRight: r)
-    }
-
-    @inlinable func forPSide<R>(parent p: TreeNode<T>, ifLeft l: (TreeNode<T>) throws -> R, ifRight r: (TreeNode<T>) throws -> R) rethrows -> R {
-        if self === p._leftNode { return try l(p) }
-        if self === p._rightNode { return try r(p) }
-        fatalError(ErrorMsgGhostParent)
+        if let pp = p { return pp }
+        fatalError(message)
     }
 }
 
-@inlinable func foo<T>(_ q: DispatchQueue, _ l: Int, _ n: TreeNode<T>?, _ c: @escaping (TreeNode<T>) throws -> Void) -> Error? where T: Equatable & Comparable {
-    guard let _n = n else { return nil }
-    return bar(q, l, _n, c)
+extension TreeNode.Color {
+    @inlinable var isRed:   Bool { self == .Red }
+    @inlinable var isBlack: Bool { self == .Black }
+
+    @inlinable static func isRed(_ n: TreeNode<T>?) -> Bool { nilTest(n, whenNil: false, whenNotNil: { (n: TreeNode<T>) in ((n.data & RedMask) == RedMask) }) }
+
+    @inlinable static func isBlack(_ n: TreeNode<T>?) -> Bool { nilTest(n, whenNil: true, whenNotNil: { (n: TreeNode<T>) in ((n.data & RedMask) == 0) }) }
 }
 
-@inlinable func bar<T>(_ q: DispatchQueue, _ l: Int, _ n: TreeNode<T>, _ c: @escaping (TreeNode<T>) throws -> Void) -> Error? where T: Equatable & Comparable {
-    do {
-        try n.forEachFast(q, l, c)
-        return nil
+extension TreeNode.Side {
+    @inlinable var isLeft:    Bool { self == .Left }
+    @inlinable var isRight:   Bool { self == .Right }
+    @inlinable var isNeither: Bool { self == .Neither }
+
+    @inlinable static func side(_ node: TreeNode<T>) -> Self {
+        nilTest(node.parentNode, whenNil: .Neither) { (p: TreeNode<T>) in
+            ((node === p.leftNode) ? .Left : .Right)
+        }
     }
-    catch let e { return e }
+
+    @inlinable static prefix func ! (s: Self) -> Self { (s.isLeft ? .Right : (s.isRight ? .Left : .Neither)) }
 }

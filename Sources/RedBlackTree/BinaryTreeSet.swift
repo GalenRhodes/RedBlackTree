@@ -66,11 +66,7 @@ extension BinaryTreeSet {
         return copy
     }
 
-    @inlinable @discardableResult public func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) {
-        if let n = base[newMember] { return (inserted: false, memberAfterInsert: n) }
-        base.insert(element: newMember)
-        return (inserted: true, memberAfterInsert: newMember)
-    }
+    @inlinable @discardableResult public func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) { base.insert(element: newMember) }
 
     @inlinable @discardableResult public func insert(contentsOf treeSet: BinaryTreeSet<Element>) -> [(inserted: Bool, memberAfterInsert: Element)] {
         var out: [(inserted: Bool, memberAfterInsert: Element)] = []
@@ -98,7 +94,7 @@ extension BinaryTreeSet {
 
     @inlinable public func removeAll(keepingCapacity: Bool = false) { base.removeAll(fast: true) }
 
-    @inlinable @discardableResult public func update(with newMember: Element) -> Element? { base.insert(element: newMember) }
+    @inlinable @discardableResult public func update(with newMember: Element) -> Element? { base.update(element: newMember) }
 
     @inlinable @discardableResult public func update(withContentsOf tree: BinaryTreeSet<Element>) -> [Element?] {
         var out: [Element?] = []
@@ -127,7 +123,7 @@ extension BinaryTreeSet {
     @inlinable public func symmetricDifference(_ other: BinaryTreeSet<Element>) -> Self {
         let copy  = BinaryTreeSet<Element>()
         let lock  = NSLock()
-        let queue = DispatchQueue(label: UUID().uuidString, attributes: .concurrent)
+        let queue = DispatchQueue(label: UUID.new, attributes: .concurrent)
         let group = DispatchGroup()
         queue.async(group: group) { self.forEach { e in if !other.contains(e) { lock.withLock { copy.insert(e) } } } }
         queue.async(group: group) { other.forEach { e in if !self.contains(e) { lock.withLock { copy.insert(e) } } } }
@@ -207,7 +203,7 @@ extension BinaryTreeSet: SetAlgebra, Hashable where Element: Hashable {
     @inlinable public func symmetricDifference(_ other: Set<Element>) -> Self {
         let copy  = BinaryTreeSet<Element>()
         let lock  = NSLock()
-        let queue = DispatchQueue(label: UUID().uuidString, attributes: .concurrent)
+        let queue = DispatchQueue(label: UUID.new, attributes: .concurrent)
         let group = DispatchGroup()
         queue.async(group: group) { self.forEach { e in if !other.contains(e) { lock.withLock { copy.insert(e) } } } }
         queue.async(group: group) { other.forEach { e in if !self.contains(e) { lock.withLock { copy.insert(e) } } } }

@@ -17,11 +17,38 @@
 import Foundation
 import CoreFoundation
 
+/*==============================================================================================================*/
+/// An enum that specifies whether one
+/// <code>[Comparable](https://developer.apple.com/documentation/swift/Comparable)</code> object is equal to, less
+/// than, or greater than another
+/// <code>[Comparable](https://developer.apple.com/documentation/swift/Comparable)</code> object. Returned by the
+/// function `compare(a:b:)`.
+///
 public enum ComparisonResults {
-    case EqualTo, LessThan, GreaterThan
+    /*==========================================================================================================*/
+    /// Both objects are equal to each other.
+    ///
+    case EqualTo
+    /*==========================================================================================================*/
+    /// The first object `a` is less than the second object `b`.
+    ///
+    case LessThan
+    /*==========================================================================================================*/
+    /// The first object `a` is greather than the second object `b`.
+    ///
+    case GreaterThan
 }
 
-@inlinable func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable { ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan)) }
+/*==============================================================================================================*/
+/// Compares two objects that are both the same type and both conform to the
+/// <code>[Comparable](https://developer.apple.com/documentation/swift/Comparable)</code> protocol.
+///
+/// - Parameters:
+///   - a: The first object.
+///   - b: The second object.
+/// - Returns: An instance of `ComparisonResults`.
+///
+@inlinable public func compare<T>(a: T, b: T) -> ComparisonResults where T: Comparable { ((a == b) ? .EqualTo : ((a < b) ? .LessThan : .GreaterThan)) }
 
 @inlinable func foo<T>(start: T, _ body: (T) throws -> T?) rethrows -> T {
     var o1 = start
@@ -29,14 +56,18 @@ public enum ComparisonResults {
     return o1
 }
 
-@inlinable func with<T, R>(node: TreeNode<T>?, default def: @autoclosure () throws -> R, _ body: (TreeNode<T>) throws -> R) rethrows -> R where T: Comparable & Equatable {
-    guard let r = try with(node: node, body) else { return try def() }
-    return r
+@inlinable func with<T>(_ o: T?, do body: (T) throws -> Void) rethrows { if let n = o { try body(n) } }
+
+@inlinable func condExec<R>(_ predicate: Bool, yes: () throws -> R, no: () throws -> R) rethrows -> R { (predicate ? (try yes()) : (try no())) }
+
+@inlinable @discardableResult func nilTest<T, R>(_ o: T?, whenNil: @autoclosure () throws -> R, whenNotNil: (T) throws -> R) rethrows -> R {
+    guard let oo = o else { return try whenNil() }
+    return try whenNotNil(oo)
 }
 
-@inlinable @discardableResult func with<T, R>(node: TreeNode<T>?, _ body: (TreeNode<T>) throws -> R) rethrows -> R? where T: Comparable & Equatable {
-    guard let n = node else { return nil }
-    return try body(n)
+@inlinable @discardableResult func nilTest<T, R>(_ o: T?, whenNil: @autoclosure () -> String, whenNotNil: (T) throws -> R) rethrows -> R {
+    guard let oo = o else { fatalError(whenNil()) }
+    return try whenNotNil(oo)
 }
 
 extension NSLock {
@@ -53,4 +84,8 @@ extension NSRecursiveLock {
         defer { unlock() }
         return try body()
     }
+}
+
+extension UUID {
+    @inlinable static var new: String { UUID().uuidString }
 }
