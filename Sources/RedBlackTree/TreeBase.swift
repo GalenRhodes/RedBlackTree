@@ -98,11 +98,26 @@ extension TreeBase {
         else { try forEach(reverse: reverse, body) }
     }
 
-    @inlinable func node(forElement e: Element) -> Node? { nilTest(rootNode, whenNil: nil) { (n: Node) in n[e] } }
+    @inlinable func node(forIndex index: Index) -> Node {
+        guard let n = _searchNode(compareWith: { compare(a: index, b: $0.index )}) else { fatalError(ErrorMsgIndexOutOfBounds) }
+        return n
+    }
 
-    @inlinable func node(forIndex index: Index) -> Node { nilTest(rootNode, whenNil: ErrorMsgIndexOutOfBounds) { (n: Node) in n[index] } }
+    @inlinable func node(forElement e: Element) -> Node? { _searchNode { compare(a: e, b: $0.value) } }
 
-    @inlinable func searchNode(compareWith comp: (Element) throws -> ComparisonResults) rethrows -> Node? { try rootNode?.search(using: comp) }
+    @inlinable func searchNode(compareWith comp: (Element) throws -> ComparisonResults) rethrows -> Node? { try _searchNode { try comp($0.value) } }
+
+    @inlinable func _searchNode(compareWith comp: (Node) throws -> ComparisonResults) rethrows -> Node? {
+        var _n = rootNode
+        while let n = _n {
+            switch try comp(n) {
+                case .EqualTo:     return n
+                case .LessThan:    _n = n.leftNode
+                case .GreaterThan: _n = n.rightNode
+            }
+        }
+        return nil
+    }
 
     @inlinable @discardableResult func insert(element: Element) -> (inserted: Bool, memberAfterInsert: Element) {
         let x = (trackInsertOrder ? insertIONode(update: false, element: element) : insertNonIONode(update: false, element: element))
@@ -198,7 +213,7 @@ extension TreeBase {
         @usableFromInline let tree:  TreeBase<Element>
         @usableFromInline var stack: [Node] = []
 
-        @usableFromInline init(_ tree: TreeBase<Element>) {
+        @inlinable init(_ tree: TreeBase<Element>) {
             self.tree = tree
             go(start: self.tree.rootNode)
         }
@@ -222,7 +237,7 @@ extension TreeBase {
         @usableFromInline let tree:     TreeBase<Element>
         @usableFromInline var nextNode: IONode?
 
-        @usableFromInline init(_ tree: TreeBase<Element>) {
+        @inlinable init(_ tree: TreeBase<Element>) {
             self.tree = tree
             nextNode = self.tree.firstNode
         }

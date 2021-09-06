@@ -9,133 +9,133 @@
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 65,
+      "line": 62,
       "symbol": "BinaryTreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 357,
-      "symbol": "BinaryTreeDictionary.filter(fast:_:)",
+      "line": 344,
+      "symbol": "BinaryTreeDictionary.filter(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
+      "line": 350,
+      "symbol": "BinaryTreeDictionary.compactMapValues(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
+      "line": 356,
+      "symbol": "BinaryTreeDictionary.mapValues(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
+      "line": 362,
+      "symbol": "BinaryTreeDictionary.merge(_:uniquingKeysWith:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
       "line": 369,
-      "symbol": "BinaryTreeDictionary.compactMapValues(fast:_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 381,
-      "symbol": "BinaryTreeDictionary.mapValues(fast:_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 396,
       "symbol": "BinaryTreeDictionary.merge(_:uniquingKeysWith:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 403,
-      "symbol": "BinaryTreeDictionary.merge(fast:_:uniquingKeysWith:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 424,
+      "line": 376,
       "symbol": "BinaryTreeDictionary.merge(_:uniquingKeysWith:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 431,
+      "line": 383,
       "symbol": "BinaryTreeDictionary.merging(_:uniquingKeysWith:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 437,
+      "line": 389,
       "symbol": "BinaryTreeDictionary.merging(_:uniquingKeysWith:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 443,
+      "line": 395,
       "symbol": "BinaryTreeDictionary.merging(_:uniquingKeysWith:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 449,
-      "symbol": "BinaryTreeDictionary.forEach(fast:reverse:_:)",
+      "line": 401,
+      "symbol": "BinaryTreeDictionary.forEach(reverse:_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 665,
+      "line": 610,
       "symbol": "BinaryTreeDictionary.InsertOrderIterator",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 698,
+      "line": 643,
       "symbol": "BinaryTreeDictionary.InOrder",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 731,
+      "line": 676,
       "symbol": "BinaryTreeDictionary.Keys",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 750,
+      "line": 695,
       "symbol": "BinaryTreeDictionary.Values",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 793,
+      "line": 738,
       "symbol": "BinaryTreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 804,
+      "line": 749,
       "symbol": "BinaryTreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 811,
+      "line": 756,
       "symbol": "BinaryTreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeDictionary.swift",
-      "line": 815,
+      "line": 760,
       "symbol": "BinaryTreeDictionary",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
@@ -198,58 +198,65 @@
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 75,
+      "line": 71,
       "symbol": "BinaryTreeSet.insert(contentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 81,
+      "line": 77,
       "symbol": "BinaryTreeSet.insert(contentsOf:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
+      "line": 85,
+      "symbol": "BinaryTreeSet.remove(contentsOf:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
+      "line": 87,
+      "symbol": "BinaryTreeSet.remove(contentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
       "line": 89,
-      "symbol": "BinaryTreeSet.remove(contentsOf:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 91,
-      "symbol": "BinaryTreeSet.remove(contentsOf:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 93,
       "symbol": "BinaryTreeSet.remove(where:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 99,
+      "line": 95,
       "symbol": "BinaryTreeSet.removeAll(keepingCapacity:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 103,
+      "line": 99,
       "symbol": "BinaryTreeSet.update(withContentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 109,
+      "line": 105,
       "symbol": "BinaryTreeSet.update(withContentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
+      "line": 164,
+      "symbol": "BinaryTreeSet",
+      "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
@@ -261,7 +268,7 @@
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 172,
+      "line": 170,
       "symbol": "BinaryTreeSet",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
@@ -275,105 +282,98 @@
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 178,
-      "symbol": "BinaryTreeSet",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 181,
+      "line": 177,
       "symbol": "BinaryTreeSet.insert(contentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 187,
+      "line": 183,
       "symbol": "BinaryTreeSet.remove(contentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 189,
+      "line": 185,
       "symbol": "BinaryTreeSet.update(withContentsOf:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 195,
+      "line": 191,
       "symbol": "BinaryTreeSet.union(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 201,
+      "line": 197,
       "symbol": "BinaryTreeSet.intersection(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 207,
+      "line": 203,
       "symbol": "BinaryTreeSet.symmetricDifference(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 218,
+      "line": 214,
       "symbol": "BinaryTreeSet.formUnion(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 220,
+      "line": 216,
       "symbol": "BinaryTreeSet.formIntersection(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 222,
+      "line": 218,
       "symbol": "BinaryTreeSet.formSymmetricDifference(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 227,
+      "line": 223,
       "symbol": "BinaryTreeSet.subtracting(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 233,
+      "line": 229,
       "symbol": "BinaryTreeSet.isSubset(of:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 238,
+      "line": 234,
       "symbol": "BinaryTreeSet.isDisjoint(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 243,
+      "line": 239,
       "symbol": "BinaryTreeSet.isSuperset(of:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/grhodes/Projects/2021/RedBlackTree/Sources/RedBlackTree/BinaryTreeSet.swift",
-      "line": 245,
+      "line": 241,
       "symbol": "BinaryTreeSet.subtract(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

@@ -25,9 +25,8 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
 
     /*==========================================================================================================*/
     /// Designated Initializer.
-    ///
+    /// 
     /// - Parameters:
-    ///   - c: If `true` then the dictionary will be thread safe.
     ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
     ///   - a: The array of instances of KV to populate the tree with.
     ///
@@ -35,14 +34,14 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the data from the provided binary tree dictionary.
-    ///
+    /// 
     /// - Parameter other: the binary tree dictionary to copy the data from.
     ///
     public init(_ other: BinaryTreeDictionary<Key, Value>) { base = other.base.copy() }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the data decoded from the decoder.
-    ///
+    /// 
     /// - Parameter decoder: the decoder.
     /// - Throws: if a decoding error occurs.
     ///
@@ -52,7 +51,7 @@ public class BinaryTreeDictionary<Key, Value>: BidirectionalCollection, Expressi
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary with the given elements provided as a dictionary literal.
-    ///
+    /// 
     /// - Parameter elements: the elements.
     ///
     public convenience required init(dictionaryLiteral elements: (Key, Value)...) {
@@ -92,23 +91,23 @@ extension BinaryTreeDictionary {
     @inlinable public var last:               Element? { base.endNode?.element   }
     /*==========================================================================================================*/
     /// The position of the first element in a nonempty dictionary.
-    ///
+    /// 
     /// If the collection is empty, startIndex is equal to endIndex.
-    ///
+    /// 
     /// - Complexity: O(1)
     ///
     @inlinable public var startIndex:         Index    { base.startIndex         }
     /*==========================================================================================================*/
     /// The position of the last element in a nonempty dictionary.
-    ///
+    /// 
     /// If the collection is empty, startIndex is equal to endIndex.
-    ///
+    /// 
     /// - Complexity: O(1)
     ///
     @inlinable public var endIndex:           Index    { base.endIndex           }
     /*==========================================================================================================*/
     /// The number of key-value pairs in the dictionary.
-    ///
+    /// 
     /// - Complexity: O(1)
     ///
     @inlinable public var count:              Int      { base.count              }
@@ -121,56 +120,46 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Create a new empty binary tree dictionary.
-    ///
-    /// - Parameter c: If `true` then the dictionary will be thread safe.
-    ///
-    @inlinable public convenience init(concurrent c: Bool) { self.init(trackInsertOrder: false, []) }
-
-    /*==========================================================================================================*/
-    /// Create a new empty binary tree dictionary.
-    ///
+    /// 
     /// - Parameters:
-    ///   - c: If `true` then the dictionary will be thread safe.
     ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
     ///
-    @inlinable public convenience init(concurrent c: Bool = false, trackInsertOrder o: Bool) { self.init(trackInsertOrder: o, []) }
+    @inlinable public convenience init(trackInsertOrder o: Bool) { self.init(trackInsertOrder: o, []) }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary from the given sequence of elements.
-    ///
+    /// 
     /// - Parameters:
-    ///   - c: If `true` then the dictionary will be thread safe.
     ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
     ///   - s: The sequence of elements.
     ///
-    @inlinable public convenience init<S>(concurrent c: Bool = false, trackInsertOrder o: Bool = false, _ s: S) where S: Sequence, S.Element == Element {
+    @inlinable public convenience init<S>(trackInsertOrder o: Bool = false, _ s: S) where S: Sequence, S.Element == Element {
         self.init(trackInsertOrder: o, s.map { KV(key: $0.key, value: $0.value) })
     }
 
     /*==========================================================================================================*/
     /// Create a new binary tree dictionary from the elements in the given
     /// <code>[Dictionary](https://developer.apple.com/documentation/swift/Dictionary)</code>.
-    ///
+    /// 
     /// - Parameters:
-    ///   - c: If `true` then the dictionary will be thread safe.
     ///   - o: If `true` the the order the items are inserted into the tree will be remembered.
     ///   - d: The dictionary containing the keys and values to be put into this tree.
     ///
-    @inlinable public convenience init(concurrent c: Bool = false, trackInsertOrder o: Bool = false, _ d: [Key: Value]) where Key: Hashable {
+    @inlinable public convenience init(trackInsertOrder o: Bool = false, _ d: [Key: Value]) where Key: Hashable {
         self.init(trackInsertOrder: o, d.map { KV(key: $0.key, value: $0.value) })
     }
 
     /*==========================================================================================================*/
     /// A collection containing just the keys of the dictionary.
-    ///
+    /// 
     /// When iterated over, keys appear in this collection in the same order as they occur in the dictionary’s
     /// key-value pairs. Each key in the keys collection has a unique value.
-    ///
+    /// 
     /// ```
     /// let countryCodes: BinaryTreeDictionary<String, String> = ["BR": "Brazil", "GH": "Ghana", "JP": "Japan"]
     /// print(countryCodes)
     /// // Prints "["BR": "Brazil", "GH": "Ghana", "JP": "Japan"]"
-    ///
+    /// 
     /// for k in countryCodes.keys {
     ///     print(k)
     /// }
@@ -183,15 +172,15 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// A collection containing just the values of the dictionary.
-    ///
+    /// 
     /// When iterated over, values appear in this collection in the same order as they occur in the dictionary’s
     /// key-value pairs.
-    ///
+    /// 
     /// ```
     /// let countryCodes: BinaryTreeDictionary<String, String> = ["BR": "Brazil", "GH": "Ghana", "JP": "Japan"]
     /// print(countryCodes)
     /// // Prints "["BR": "Brazil", "GH": "Ghana", "JP": "Japan"]"
-    ///
+    /// 
     /// for v in countryCodes.values {
     ///     print(v)
     /// }
@@ -204,18 +193,18 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Returns the index for the given key.
-    ///
+    /// 
     /// If the given key is found in the dictionary, this method returns an index into the dictionary that
     /// corresponds with the key-value pair.
-    ///
+    /// 
     /// ```
     /// let countryCodes: BinaryTreeDictionary<String, String> = ["BR": "Brazil", "GH": "Ghana", "JP": "Japan"]
     /// let index = countryCodes.index(forKey: "JP")
-    ///
+    /// 
     /// print("Country code for \(countryCodes[index!].value): '\(countryCodes[index!].key)'.")
     /// // Prints "Country code for Japan: 'JP'."
     /// ```
-    ///
+    /// 
     /// - Parameter key: The key to find in the dictionary.
     /// - Returns: The index for key and its associated value if key is in the dictionary; otherwise, nil.
     ///
@@ -226,7 +215,7 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Returns the position immediately after the given index.
-    ///
+    /// 
     /// - Parameter i: A valid index of the dictionary. `i` must be less than `endIndex`.
     /// - Returns: The index value immediately after `i`.
     ///
@@ -234,7 +223,7 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Returns the position immediately before the given index.
-    ///
+    /// 
     /// - Parameter i: A valid index of the dictionary. `i` must be greater than `startIndex`.
     /// - Returns: The index value immediately before `i`.
     ///
@@ -242,7 +231,7 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Accesses the key-value pair at the specified position.
-    ///
+    /// 
     /// This subscript takes an index into the dictionary, instead of a key, and returns the corresponding
     /// key-value pair as a tuple. When performing collection-based operations that return an index into a
     /// dictionary, use this subscript with the resulting value. For example, to find the key for a particular
@@ -258,7 +247,7 @@ extension BinaryTreeDictionary {
     /// // Prints "(key: "JP", value: "Japan")"
     /// // Prints "Japan's country code is 'JP'."
     /// ```
-    ///
+    /// 
     /// - Parameter position: The position of the key-value pair to access. `position` must be a valid index of
     ///                       the dictionary and not equal to `endIndex`.
     /// - Returns: A two-element tuple with the key and value corresponding to `position`.
@@ -268,7 +257,7 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Not available. Returns `nil`.
-    ///
+    /// 
     /// - Parameter body: Ignored.
     /// - Returns: `nil`
     /// - Throws: Never.
@@ -277,11 +266,11 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Returns an iterator over the dictionary’s key-value pairs.
-    ///
+    /// 
     /// Iterating over a dictionary yields the key-value pairs as two-element tuples. You can decompose the tuple
     /// in a for-in loop, which calls makeIterator() behind the scenes, or when calling the iterator’s next()
     /// method directly.
-    ///
+    /// 
     /// ```
     /// let hues: BinaryTreeDictionary<String, Int> = ["Heliotrope": 296, "Coral": 16, "Aquamarine": 156]
     /// for (name, hueValue) in hues {
@@ -291,35 +280,35 @@ extension BinaryTreeDictionary {
     /// // Prints "The hue of Coral is 16."
     /// // Prints "The hue of Aquamarine is 156."
     /// ```
-    ///
+    /// 
     /// - Returns: An iterator over the dictionary with elements of type (key: Key, value: Value).
     ///
     @inlinable public func makeIterator() -> Iterator { Iterator(base.makeIterator()) }
 
     /*==========================================================================================================*/
     /// Returns an iterator over the dictionary’s key-value pairs **in the order they were inserted**.
-    ///
+    /// 
     /// Iterating over a dictionary yields the key-value pairs as two-element tuples.
-    ///
+    /// 
     /// - Returns: An iterator over the dictionary with elements of type (key: Key, value: Value).
     ///
     @inlinable public func makeInsertOrderIterator() -> InsertOrderIterator { InsertOrderIterator(base.makeInsertOrderIterator()) }
 
     /*==========================================================================================================*/
     /// Returns a random key-value pair of the dictionary.
-    ///
+    /// 
     /// Call randomElement() to select a random element from an array or another collection. This example picks a
     /// name at random from a BinaryTreeDictionary:
-    ///
+    /// 
     /// ```
     /// let names: BinaryTreeDictionary<String, Int> = ["Zoey": 234, "Chloe": 76, "Amani": 987, "Amaia": 7]
     /// let randomName = names.randomElement()!
     /// // randomName == (key: "Amani", value: 987)
     /// ```
-    ///
+    /// 
     /// This method is equivalent to calling randomElement(using:), passing in the system’s default random
     /// generator.
-    ///
+    /// 
     /// - Returns: A random key-value pair from the dictionary. If the dictionary is empty, the method returns nil.
     /// - Complexity: O(1)
     ///
@@ -327,16 +316,16 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Returns a random key-value pair of the dictionary, using the given generator as a source for randomness.
-    ///
+    /// 
     /// Call randomElement(using:) to select a random element from an array or another collection when you are
     /// using a custom random number generator. This example picks a name at random from a BinaryTreeDictionary:
-    ///
+    /// 
     /// ```
     /// let names: BinaryTreeDictionary<String, Int> = ["Zoey": 234, "Chloe": 76, "Amani": 987, "Amaia": 7]
     /// let randomName = names.randomElement(using: &myGenerator)!
     /// // randomName == (key: "Amani", value: 987)
     /// ```
-    ///
+    /// 
     /// - Parameter generator: The random number generator to use when choosing a random key-value pair.
     /// - Returns: A random key-value pair from the dictionary. If the dictionary is empty, the method returns nil.
     /// - Complexity: O(1)
@@ -347,7 +336,7 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Does nothing in a binary tree.
-    ///
+    /// 
     /// - Parameter minimumCapacity: ignored.
     ///
     @inlinable public func reserveCapacity(_ minimumCapacity: Int) {}
@@ -415,11 +404,11 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Accesses the value associated with the given key for reading and writing.
-    ///
+    /// 
     /// This key-based subscript returns the value for the given key if the key is found in the dictionary, or nil
     /// if the key is not found. The following example creates a new dictionary and prints the value of a key
     /// found in the dictionary ("Coral") and a key not found in the dictionary ("Cerise").
-    ///
+    /// 
     /// ```
     /// var hues: BinaryTreeDictionary<String, Int> = ["Heliotrope": 296, "Coral": 16, "Aquamarine": 156]
     /// print(hues["Coral"])
@@ -427,32 +416,32 @@ extension BinaryTreeDictionary {
     /// print(hues["Cerise"])
     /// // Prints "nil"
     /// ```
-    ///
+    /// 
     /// When you assign a value for a key and that key already exists, the dictionary overwrites the existing
     /// value. If the dictionary doesn’t contain the key, the key and value are added as a new key-value pair.
     /// Here, the value for the key "Coral" is updated from 16 to 18 and a new key-value pair is added for the key
     /// "Cerise".
-    ///
+    /// 
     /// ```
     /// hues["Coral"] = 18
     /// print(hues["Coral"])
     /// // Prints "Optional(18)"
-    ///
+    /// 
     /// hues["Cerise"] = 330
     /// print(hues["Cerise"])
     /// // Prints "Optional(330)"
     /// ```
-    ///
+    /// 
     /// If you assign nil as the value for the given key, the dictionary removes that key and its associated
     /// value. In the following example, the key-value pair for the key "Aquamarine" is removed from the
     /// dictionary by assigning nil to the key-based subscript.
-    ///
+    /// 
     /// ```
     /// hues["Aquamarine"] = nil
     /// print(hues)
     /// // Prints "["Coral": 18, "Heliotrope": 296, "Cerise": 330]"
     /// ```
-    ///
+    /// 
     /// - Parameter key: The key to find in the dictionary.
     /// - Returns: The value associated with key if key is in the dictionary; otherwise, nil.
     /// - Complexity: O(log n), where n is the number of key-value pairs in the dictionary.
@@ -465,17 +454,17 @@ extension BinaryTreeDictionary {
     /*==========================================================================================================*/
     /// Accesses the value with the given key. If the dictionary doesn’t contain the given key, accesses the
     /// provided default value as if the key and default value existed in the dictionary.
-    ///
+    /// 
     /// Use this subscript when you want either the value for a particular key or, when that key is not present in
     /// the dictionary, a default value. This example uses the subscript with a message to use in case an HTTP
     /// response code isn’t recognized:
-    ///
+    /// 
     /// ```
     /// var responseMessages: BinaryTreeDictionary<Int, String> = [200: "OK",
     ///                                                            403: "Access forbidden",
     ///                                                            404: "File not found",
     ///                                                            500: "Internal server error"]
-    ///
+    /// 
     /// let httpResponseCodes = [200, 403, 301]
     /// for code in httpResponseCodes {
     ///     let message = responseMessages[code, default: "Unknown response"]
@@ -485,11 +474,11 @@ extension BinaryTreeDictionary {
     /// // Prints "Response 403: Access forbidden"
     /// // Prints "Response 301: Unknown response"
     /// ```
-    ///
+    /// 
     /// When a dictionary’s Value type has value semantics, you can use this subscript to perform in-place
     /// operations on values in the dictionary. The following example uses this subscript while counting the
     /// occurrences of each letter in a string:
-    ///
+    /// 
     /// ```
     /// let message = "Hello, Elle!"
     /// var letterCounts: BinaryTreeDictionary<Character, Int> = [:]
@@ -498,15 +487,15 @@ extension BinaryTreeDictionary {
     /// }
     /// // letterCounts == ["H": 1, "e": 2, "l": 4, "o": 1, ...]
     /// ```
-    ///
+    /// 
     /// When letterCounts[letter, defaultValue: 0] += 1 is executed with a value of letter that isn’t already a
     /// key in letterCounts, the specified default value (0) is returned from the subscript, incremented, and then
     /// added to the dictionary under that key.
-    ///
+    /// 
     /// <blockquote> <b>Note</b> Do not use this subscript to modify dictionary values if the dictionary’s Value
     /// type is a class. In that case, the default value and key are not written back to the dictionary after an
     /// operation. </blockquote>
-    ///
+    /// 
     /// - Parameters:
     ///   - key: The `key` the look up in the dictionary.
     ///   - defaultValue: The default value to use if `key` doesn’t exist in the dictionary.
@@ -526,22 +515,22 @@ extension BinaryTreeDictionary {
     /*==========================================================================================================*/
     /// Updates the value stored in the dictionary for the given key, or adds a new key-value pair if the key does
     /// not exist.
-    ///
+    /// 
     /// Use this method instead of key-based subscripting when you need to know whether the new value supplants
     /// the value of an existing key. If the value of an existing key is updated, updateValue(_:forKey:) returns
     /// the original value.
-    ///
+    /// 
     /// ```
     /// var hues: BinaryTreeDictionary<String, Int> = ["Heliotrope": 296, "Coral": 16, "Aquamarine": 156]
-    ///
+    /// 
     /// if let oldValue = hues.updateValue(18, forKey: "Coral") {
     ///     print("The old value of \(oldValue) was replaced with a new one.")
     /// }
     /// // Prints "The old value of 16 was replaced with a new one."
     /// ```
-    ///
+    /// 
     /// If the given key is not present in the dictionary, this method adds the key-value pair and returns nil.
-    ///
+    /// 
     /// ```
     /// if let oldValue = hues.updateValue(330, forKey: "Cerise") {
     ///     print("The old value of \(oldValue) was replaced with a new one.")
@@ -550,8 +539,8 @@ extension BinaryTreeDictionary {
     /// }
     /// // Prints "No value was found in the dictionary for that key."
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// - Parameters:
     ///   - value: The new `value` to add to the dictionary.
     ///   - key: The `key` to associate with `value`. If `key` already exists in the dictionary, `value` replaces
@@ -564,10 +553,10 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Removes the given key and its associated value from the dictionary.
-    ///
+    /// 
     /// If the key is found in the dictionary, this method returns the key’s associated value. On removal, this
     /// method invalidates all indices with respect to the dictionary.
-    ///
+    /// 
     /// ```
     /// var hues: BinaryTreeDictionary<String, Int> = ["Heliotrope": 296, "Coral": 16, "Aquamarine": 156]
     /// if let value = hues.removeValue(forKey: "Coral") {
@@ -575,9 +564,9 @@ extension BinaryTreeDictionary {
     /// }
     /// // Prints "The value 16 was removed."
     /// ```
-    ///
+    /// 
     /// If the key isn’t found in the dictionary, removeValue(forKey:) returns nil.
-    ///
+    /// 
     /// ```
     /// if let value = hues.removeValue(forKey: "Cerise") {
     ///     print("The value \(value) was removed.")
@@ -586,7 +575,7 @@ extension BinaryTreeDictionary {
     /// }
     /// // Prints "No value found for that key.""
     /// ```
-    ///
+    /// 
     /// - Parameter key: The key to remove along with its associated value.
     /// - Returns: The value that was removed, or nil if the key was not present in the dictionary.
     /// - Complexity: O(log n), where n is the number of key-value pairs in the dictionary.
@@ -598,9 +587,9 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Removes and returns the key-value pair at the specified index.
-    ///
+    /// 
     /// Calling this method invalidates any existing indices for use with this dictionary.
-    ///
+    /// 
     /// - Parameter index: The position of the key-value pair to remove. `index` must be a valid index of the
     ///                    dictionary, and must not equal the dictionary’s `endIndex`.
     /// - Returns: The key-value pair that correspond to index.
@@ -610,7 +599,7 @@ extension BinaryTreeDictionary {
 
     /*==========================================================================================================*/
     /// Removes all key-value pairs from the dictionary.
-    ///
+    /// 
     /// - Parameter keepCapacity: Exists for compatibility with
     ///                           <code>[Dictionary](https://developer.apple.com/documentation/swift/Dictionary)</code>.
     ///                           Not applicable to a binary tree.
@@ -625,9 +614,9 @@ extension BinaryTreeDictionary {
 
         /*======================================================================================================*/
         /// Advances to the next element and returns it, or nil if no next element exists.
-        ///
+        /// 
         /// Once nil has been returned, all subsequent calls return nil.
-        ///
+        /// 
         /// - Returns: the next element or nil if there are no more elements.
         ///
         @inlinable public mutating func next() -> Element? { baseIterator.next()?.element }
@@ -643,9 +632,9 @@ extension BinaryTreeDictionary {
 
         /*======================================================================================================*/
         /// Advances to the next element and returns it, or nil if no next element exists.
-        ///
+        /// 
         /// Once nil has been returned, all subsequent calls return nil.
-        ///
+        /// 
         /// - Returns: the next element or nil if there are no more elements.
         ///
         @inlinable public mutating func next() -> Element? { baseIterator.next()?.element }

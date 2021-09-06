@@ -43,46 +43,48 @@ class RedBlackTreeTests: XCTestCase {
         try autoreleasepool { try decodedTree.base.rootNode?.drawTree(url: imageAfterURL) }
     }
 
-//    func testInOrder() throws {
-//        let tree:    BinaryTreeDictionary<String, NodeTestValue> = BinaryTreeDictionary<String, NodeTestValue>(trackOrder: true)
-//        let dataIns: [Character]                           = TestSet.shuffled()
-//        let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< 10]).shuffled()
-//
-//        print("Inserting: ", terminator: "")
-//        var str1: String = ""
-//        for ch in dataIns {
-//            let s = String(ch)
-//            str1 += s
-//            print(s, terminator: "")
-//            tree[s] = NodeTestValue()
-//        }
-//        print("")
-//
-//        print(" Checking: ", terminator: "")
-//        var str2: String = ""
-//        tree.forEachInInsertOrder {
-//            let s: String = $0.key
-//            str2 += s
-//            print(s, terminator: "")
-//        }
-//        print("")
-//        print("")
-//
-//        guard str1 == str2 else { XCTFail("Strings don't match: \"\(str1)\" != \"\(str2)\""); return }
-//        print("Strings match: \"\(str1)\" == \"\(str2)\"")
-//
-//        print("")
-//        print("Removing: \"", terminator: "")
-//        for ch in dataDel {
-//            let s = String(ch)
-//            print(s, terminator: "")
-//            tree.removeValue(forKey: s)
-//        }
-//        print("\"")
-//        print(" Results: \"", terminator: "")
-//        tree.forEachInInsertOrder { print($0.key, terminator: "") }
-//        print("\"")
-//    }
+    func testInOrder() throws {
+        let tree:    BinaryTreeDictionary<String, NodeTestValue> = BinaryTreeDictionary<String, NodeTestValue>(trackInsertOrder: true)
+        let dataIns: [Character]                           = TestSet.shuffled()
+        let dataDel: [Character]                           = Array<Character>(dataIns.shuffled()[0 ..< 10]).shuffled()
+
+        print("Inserting: ", terminator: "")
+        var str1: String = ""
+        for ch in dataIns {
+            let s = String(ch)
+            str1 += s
+            print(s, terminator: "")
+            tree[s] = NodeTestValue()
+        }
+        print("")
+
+        print(" Checking: ", terminator: "")
+        var str2: String = ""
+        var i = tree.makeInsertOrderIterator()
+        while let e = i.next() {
+            let s: String = e.key
+            str2 += s
+            print(s, terminator: "")
+        }
+        print("")
+        print("")
+
+        guard str1 == str2 else { XCTFail("Strings don't match: \"\(str1)\" != \"\(str2)\""); return }
+        print("Strings match: \"\(str1)\" == \"\(str2)\"")
+
+        print("")
+        print("Removing: \"", terminator: "")
+        for ch in dataDel {
+            let s = String(ch)
+            print(s, terminator: "")
+            tree.removeValue(forKey: s)
+        }
+        print("\"")
+        print(" Results: \"", terminator: "")
+        var j = tree.makeInsertOrderIterator()
+        while let e = j.next() { print(e.key, terminator: "") }
+        print("\"")
+    }
 
     func testInserts() throws {
         try performTests(rounds: 1, doDelete: false, doDraw: true)
@@ -207,6 +209,7 @@ class RedBlackTreeTests: XCTestCase {
               ("RedBlackTreeTests", testSlow),
               ("RedBlackTreeTests", testFast),
               ("RedBlackTreeTests", testCodable),
+              ("RedBlackTreeTests", testInOrder),
               ("RedBlackTreeTests", testSlowCopyPerformance),
               ("RedBlackTreeTests", testFastCopyPerformance),
             ]

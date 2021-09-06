@@ -42,7 +42,7 @@ public enum ComparisonResults {
 /*==============================================================================================================*/
 /// Compares two objects that are both the same type and both conform to the
 /// <code>[Comparable](https://developer.apple.com/documentation/swift/Comparable)</code> protocol.
-///
+/// 
 /// - Parameters:
 ///   - a: The first object.
 ///   - b: The second object.

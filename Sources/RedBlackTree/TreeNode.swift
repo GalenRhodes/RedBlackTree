@@ -60,7 +60,7 @@ import CoreFoundation
 
     /*==========================================================================================================*/
     /// Default constructor.
-    ///
+    /// 
     /// - Parameter v: The value.
     ///
     @usableFromInline init(value v: T) { value = v }
@@ -189,7 +189,7 @@ extension TreeNode {
 
     /*==========================================================================================================*/
     /// Copy this tree.  If this node is not the root then this call is transferred to the root.
-    ///
+    /// 
     /// - Returns: The root node of the copy.
     ///
     @inlinable func copyTree(fast: Bool) -> TNode {
@@ -201,7 +201,7 @@ extension TreeNode {
 
     /*==========================================================================================================*/
     /// Copy this tree slowly.  If this node is not the root then this call is transferred to the root.
-    ///
+    /// 
     /// - Returns: The root node of the copy.
     ///
     @usableFromInline func copyTreeSlow() -> TNode {
