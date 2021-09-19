@@ -44,6 +44,8 @@ extension BinaryTreeSet {
     @inlinable public var count:      Int { base.count }
     @inlinable public var isEmpty:    Bool { startIndex == endIndex }
 
+    @inlinable public func search(using body: (Element) throws -> ComparisonResults) rethrows -> Element? { try base.search(compareWith: body) }
+
     @inlinable public func index(before i: Index) -> Index { base.index(before: i) }
 
     @inlinable public func index(after i: Index) -> Index { base.index(after: i) }
