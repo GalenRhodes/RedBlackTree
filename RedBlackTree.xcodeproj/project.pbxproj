@@ -319,7 +319,7 @@
 			);
 			mainGroup = 83D5452526B47C3D00B136FC;
 			packageReferences = (
-				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */,
+				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */,
 			);
 			productRefGroup = 83D5453026B47C3D00B136FC /* Products */;
 			projectDirPath = "";
@@ -679,7 +679,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */ = {
+		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GalenRhodes/PGDocFixer.git";
 			requirement = {
@@ -692,12 +692,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		832D774626B987610005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
 			productName = PGDocFixer;
 		};
 		832D774A26B988740005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
 			productName = PGDocFixer;
 		};
 /* End XCSwiftPackageProductDependency section */
