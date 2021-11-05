@@ -97,13 +97,12 @@ extension TreeBase {
         if let ro = (r as? IONode) { try ro.forEachNode(insertOrder: true, reverse: reverse) { try body($0.value) } }
         else { try forEach(reverse: reverse, body) }
     }
-
     @inlinable func node(forIndex index: Index) -> Node {
-        guard let n = _searchNode(compareWith: { compare(a: index, b: $0.index )}) else { fatalError(ErrorMsgIndexOutOfBounds) }
+        guard let n = _searchNode(compareWith: { RedBlackTree.compare(a: index, b: $0.index) }) else { fatalError(ErrorMsgIndexOutOfBounds) }
         return n
     }
 
-    @inlinable func node(forElement e: Element) -> Node? { _searchNode { compare(a: e, b: $0.value) } }
+    @inlinable func node(forElement e: Element) -> Node? { _searchNode { RedBlackTree.compare(a: e, b: $0.value) } }
 
     @inlinable func searchNode(compareWith comp: (Element) throws -> ComparisonResults) rethrows -> Node? { try _searchNode { try comp($0.value) } }
 
