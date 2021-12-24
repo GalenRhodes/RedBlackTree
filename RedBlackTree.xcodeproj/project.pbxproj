@@ -10,6 +10,7 @@
 		1117D2B331AAF0D32EFB3E91 /* RedBlackTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
+		1117DE6B62AF2D669D3B4971 /* TreeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9D4156BCC75F11FCBA8 /* TreeSet.swift */; };
 		1117DF2C6945C9A091194B69 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D6CAB93B8E27FC9280B3 /* Node.swift */; };
 		832D774726B987610005063D /* PGDocFixer in Frameworks */ = {isa = PBXBuildFile; productRef = 832D774626B987610005063D /* PGDocFixer */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
@@ -49,6 +50,7 @@
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1117D6CAB93B8E27FC9280B3 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
+		1117D9D4156BCC75F11FCBA8 /* TreeSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeSet.swift; sourceTree = "<group>"; };
 		1117DA48540485F84963B2F1 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1117DB0005FABC039DC8381F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
 		1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeTests.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			children = (
 				1117D13A35E13BDFB2F826D1 /* Other */,
 				1117D6CAB93B8E27FC9280B3 /* Node.swift */,
+				1117D9D4156BCC75F11FCBA8 /* TreeSet.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1117DF2C6945C9A091194B69 /* Node.swift in Sources */,
+				1117DE6B62AF2D669D3B4971 /* TreeSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

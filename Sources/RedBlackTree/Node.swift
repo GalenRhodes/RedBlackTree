@@ -18,32 +18,32 @@
 import Foundation
 import CoreFoundation
 
-let colorBit:  UInt = (1 << (UInt.bitWidth - 1))
-let countBits: UInt = ~(colorBit)
+@usableFromInline let colorBit:  UInt = (1 << (UInt.bitWidth - 1))
+@usableFromInline let countBits: UInt = ~(colorBit)
 
-class Node<T>: Hashable where T: Hashable & Comparable {
+@usableFromInline class Node<T>: Hashable where T: Hashable & Comparable {
 
-    enum Color { case Black, Red }
+    @usableFromInline enum Color { case Black, Red }
 
-    enum Side: Int { case Left = 0, Right = 1 }
+    @usableFromInline enum Side: Int { case Left = 0, Right = 1 }
 
-    private(set) var item: T
+    @usableFromInline private(set) var item: T
 
-    init(item: T, color: Color = .Black) {
+    @usableFromInline init(item: T, color: Color = .Black) {
         self.item = item
         self.color = color
         self.count = 1
     }
 
-    subscript(i: T) -> Node<T>? { ((i == item) ? self : self[i < item ? .Left : .Right]?[i]) }
+    @usableFromInline subscript(i: T) -> Node<T>? { ((i == item) ? self : self[i < item ? .Left : .Right]?[i]) }
 
-    func insert(item i: T) -> Node<T> {
+    @usableFromInline func insert(item i: T) -> Node<T> {
         guard i == item else { return insert(item: i, side: ((i < item) ? Side.Left : Side.Right)) }
         item = i
         return root
     }
 
-    func remove() -> Node<T>? {
+    @usableFromInline func remove() -> Node<T>? {
         if let l = leftNode, let r = rightNode {
             let n = (Bool.random() ? l.farRightNode : r.farLeftNode)
             swap(&item, &n.item)
@@ -63,7 +63,7 @@ class Node<T>: Hashable where T: Hashable & Comparable {
         return nil
     }
 
-    func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
+    @usableFromInline func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
         var flag: Bool = false
         try forEach(flag: &flag, body)
         return flag
@@ -75,9 +75,9 @@ class Node<T>: Hashable where T: Hashable & Comparable {
         if !flag { try rightNode?.forEach(flag: &flag, body) }
     }
 
-    private var data:       UInt       = 0
-    private var parentNode: Node<T>?   = nil
-    private var children:   [Node<T>?] = [ nil, nil ]
+    @usableFromInline var data:       UInt       = 0
+    @usableFromInline var parentNode: Node<T>?   = nil
+    @usableFromInline var children:   [Node<T>?] = [ nil, nil ]
 }
 
 extension Node {
