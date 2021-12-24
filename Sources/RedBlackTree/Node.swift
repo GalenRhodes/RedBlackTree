@@ -29,10 +29,6 @@ class Node<T>: Hashable where T: Hashable & Comparable {
 
     private(set) var item: T
 
-    private var data:       UInt       = 0
-    private var parentNode: Node<T>?   = nil
-    private var children:   [Node<T>?] = [ nil, nil ]
-
     init(item: T, color: Color = .Black) {
         self.item = item
         self.color = color
@@ -42,12 +38,9 @@ class Node<T>: Hashable where T: Hashable & Comparable {
     subscript(i: T) -> Node<T>? { ((i == item) ? self : self[i < item ? .Left : .Right]?[i]) }
 
     func insert(item i: T) -> Node<T> {
-        if i == item { item = i; return root }
-        let s = ((i < item) ? Side.Left : Side.Right)
-        if let n = self[s] { return n.insert(item: i) }
-        let n = Node<T>(item: i, color: .Red)
-        self[s] = n
-        return n.postInsert()
+        guard i == item else { return insert(item: i, side: ((i < item) ? Side.Left : Side.Right)) }
+        item = i
+        return root
     }
 
     func remove() -> Node<T>? {
@@ -61,16 +54,39 @@ class Node<T>: Hashable where T: Hashable & Comparable {
             swapWith(node: c)
             return c.root
         }
+        else if let p = parentNode {
+            if Color.isBlack(self) { preRemove() }
+            makeOrphan()
+            return p.root
+        }
+
+        return nil
     }
+
+    func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
+        var flag: Bool = false
+        try forEach(flag: &flag, body)
+        return flag
+    }
+
+    private func forEach(flag: inout Bool, _ body: (Node<T>, inout Bool) throws -> Void) rethrows {
+        try leftNode?.forEach(flag: &flag, body)
+        if !flag { try body(self, &flag) }
+        if !flag { try rightNode?.forEach(flag: &flag, body) }
+    }
+
+    private var data:       UInt       = 0
+    private var parentNode: Node<T>?   = nil
+    private var children:   [Node<T>?] = [ nil, nil ]
 }
 
 extension Node {
     //@f:0
-    @inlinable var leftNode:     Node<T>? { children[Side.Left.rawValue]    }
-    @inlinable var rightNode:    Node<T>? { children[Side.Right.rawValue]   }
-    @inlinable var farLeftNode:  Node<T>  { leftNode?.farLeftNode ?? self   }
-    @inlinable var farRightNode: Node<T>  { rightNode?.farRightNode ?? self }
-    @inlinable var root:         Node<T>  { parentNode?.root ?? self        }
+    @inlinable var leftNode:     Node<T>? { get { children[Side.Left.rawValue] }  set { self[.Left] = newValue  } }
+    @inlinable var rightNode:    Node<T>? { get { children[Side.Right.rawValue] } set { self[.Right] = newValue } }
+    @inlinable var farLeftNode:  Node<T>  { leftNode?.farLeftNode ?? self                                         }
+    @inlinable var farRightNode: Node<T>  { rightNode?.farRightNode ?? self                                       }
+    @inlinable var root:         Node<T>  { parentNode?.root ?? self                                              }
 
     @inlinable var count:        Int      { get { Int(bitPattern: (data & countBits))      } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits))  } }
     @inlinable var color:        Color    { get { ((data & colorBit) == 0 ? .Black : .Red) } set { data = ((newValue == .Black) ? (data & countBits) : (data | colorBit)) } }
@@ -86,8 +102,8 @@ extension Node {
             let s = side.rawValue
             let c = children[s]
             guard c != newValue else { return }
-            if let n = c { n.parentNode = nil }
-            if let n = newValue { n.makeOrphan().parentNode = self }
+            c?.parentNode = nil
+            newValue?.makeOrphan().parentNode = self
             children[s] = newValue
             recount()
         }
@@ -103,11 +119,8 @@ extension Node {
     @inlinable func swapWith(node: Node<T>?) { if let p = parentNode { p[side(p)] = node } }
 
     @usableFromInline func recount() {
-        var cc = 1
-        if let n = self[.Left] { cc += n.count }
-        if let n = self[.Right] { cc += n.count }
-        count = cc
-        if let n = parentNode { n.recount() }
+        count = (1 + (leftNode?.count ?? 0) + (rightNode?.count ?? 0))
+        parentNode?.recount()
     }
 
     @inlinable func paintRed() { color = .Red }
@@ -120,6 +133,13 @@ extension Node {
         self[!sd] = c[sd]
         c[sd] = self
         swap(&color, &c.color)
+    }
+
+    @inlinable func insert(item i: T, side s: Side) -> Node<T> {
+        if let n = self[s] { return n.insert(item: i) }
+        let n = Node<T>(item: i, color: .Red)
+        self[s] = n
+        return n.postInsert()
     }
 
     @usableFromInline func postInsert() -> Node<T> {
