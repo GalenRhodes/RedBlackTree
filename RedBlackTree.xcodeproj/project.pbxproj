@@ -7,21 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1117D0BB55056A742BEA2097 /* TreeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D1D9E1729AADAAF2F2C8 /* TreeBase.swift */; };
 		1117D2B331AAF0D32EFB3E91 /* RedBlackTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */; };
-		1117D33D0819EC368507B05C /* NodeTestValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D0B0A96E394937F6886E /* NodeTestValue.swift */; };
-		1117D35AFA97B6795163D9A9 /* IOTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D989065455362B578DD6 /* IOTreeNode.swift */; };
-		1117D35D0DF312D0A4ACCD01 /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D3E55542C0F829DC5EE0 /* Set.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
-		1117D8485509945C911A15D0 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DAFA0332DD57221B41E3 /* Dictionary.swift */; };
-		1117DA0D4C718A8F715ECF9B /* BinaryTreeDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DFF5D3709537FCC5EF93 /* BinaryTreeDictionary.swift */; };
-		1117DAF4010F4BE7FA849026 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DAC5BB6B9403026DC25E /* Utils.swift */; };
-		1117DCA1812A7600A05D0E42 /* TreeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D373972B6BD84BE21FC4 /* TreeIndex.swift */; };
-		1117DF081246FB4D5B82D4A8 /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DD30E558D077A7C7050D /* TreeNode.swift */; };
-		1117DF224AF1CF1A962B831C /* BinaryTreeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D0092337E35E1630102B /* BinaryTreeSet.swift */; };
-		1117DF87D3C8C8EBF4622431 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D66249D5A0BFA534BCEC /* Utils.swift */; };
-		1117DFFDC61C257EE38F1F4C /* NodeDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBCCB65205961FC30420 /* NodeDrawing.swift */; };
+		1117DF2C6945C9A091194B69 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D6CAB93B8E27FC9280B3 /* Node.swift */; };
 		832D774726B987610005063D /* PGDocFixer in Frameworks */ = {isa = PBXBuildFile; productRef = 832D774626B987610005063D /* PGDocFixer */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
 /* End PBXBuildFile section */
@@ -56,29 +45,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1117D0092337E35E1630102B /* BinaryTreeSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryTreeSet.swift; sourceTree = "<group>"; };
-		1117D0B0A96E394937F6886E /* NodeTestValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeTestValue.swift; sourceTree = "<group>"; };
-		1117D1D9E1729AADAAF2F2C8 /* TreeBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeBase.swift; sourceTree = "<group>"; };
 		1117D2592B5FEFEC531E44E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
-		1117D373972B6BD84BE21FC4 /* TreeIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeIndex.swift; sourceTree = "<group>"; };
-		1117D3E55542C0F829DC5EE0 /* Set.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1117D66249D5A0BFA534BCEC /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		1117D6CAB93B8E27FC9280B3 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
-		1117D989065455362B578DD6 /* IOTreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOTreeNode.swift; sourceTree = "<group>"; };
 		1117DA48540485F84963B2F1 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		1117DAC5BB6B9403026DC25E /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		1117DAFA0332DD57221B41E3 /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
 		1117DB0005FABC039DC8381F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
-		1117DBCCB65205961FC30420 /* NodeDrawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeDrawing.swift; sourceTree = "<group>"; };
 		1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTreeTests.swift; sourceTree = "<group>"; };
 		1117DCB844F8D230DC871047 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		1117DCC4B505E10107FDCA70 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117DD1A7411CA7754BAECE7 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1117DD30E558D077A7C7050D /* TreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
 		1117DDDDD8D4C2B552CB7431 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
 		1117DF611A3BE5130735AAF8 /* .jazzy.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .jazzy.yaml; sourceTree = "<group>"; };
-		1117DFF5D3709537FCC5EF93 /* BinaryTreeDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryTreeDictionary.swift; sourceTree = "<group>"; };
 		832D773D26B986EB0005063D /* DocFixer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DocFixer; sourceTree = BUILT_PRODUCTS_DIR; };
 		832D774426B987030005063D /* DocFixer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DocFixer.entitlements; sourceTree = "<group>"; };
 		83D5452F26B47C3D00B136FC /* RedBlackTree.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RedBlackTree.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -174,15 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				1117D13A35E13BDFB2F826D1 /* Other */,
-				1117DAC5BB6B9403026DC25E /* Utils.swift */,
-				1117DD30E558D077A7C7050D /* TreeNode.swift */,
-				1117D989065455362B578DD6 /* IOTreeNode.swift */,
-				1117D1D9E1729AADAAF2F2C8 /* TreeBase.swift */,
-				1117DFF5D3709537FCC5EF93 /* BinaryTreeDictionary.swift */,
-				1117D373972B6BD84BE21FC4 /* TreeIndex.swift */,
-				1117DAFA0332DD57221B41E3 /* Dictionary.swift */,
-				1117D0092337E35E1630102B /* BinaryTreeSet.swift */,
-				1117D3E55542C0F829DC5EE0 /* Set.swift */,
+				1117D6CAB93B8E27FC9280B3 /* Node.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -192,9 +162,6 @@
 			children = (
 				1117DABE3EF5500CB553A04B /* Other */,
 				1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */,
-				1117DBCCB65205961FC30420 /* NodeDrawing.swift */,
-				1117D0B0A96E394937F6886E /* NodeTestValue.swift */,
-				1117D66249D5A0BFA534BCEC /* Utils.swift */,
 			);
 			path = RedBlackTreeTests;
 			sourceTree = "<group>";
@@ -362,15 +329,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1117DAF4010F4BE7FA849026 /* Utils.swift in Sources */,
-				1117DF081246FB4D5B82D4A8 /* TreeNode.swift in Sources */,
-				1117D35AFA97B6795163D9A9 /* IOTreeNode.swift in Sources */,
-				1117D0BB55056A742BEA2097 /* TreeBase.swift in Sources */,
-				1117DA0D4C718A8F715ECF9B /* BinaryTreeDictionary.swift in Sources */,
-				1117DCA1812A7600A05D0E42 /* TreeIndex.swift in Sources */,
-				1117D8485509945C911A15D0 /* Dictionary.swift in Sources */,
-				1117DF224AF1CF1A962B831C /* BinaryTreeSet.swift in Sources */,
-				1117D35D0DF312D0A4ACCD01 /* Set.swift in Sources */,
+				1117DF2C6945C9A091194B69 /* Node.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,9 +338,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */,
-				1117DFFDC61C257EE38F1F4C /* NodeDrawing.swift in Sources */,
-				1117D33D0819EC368507B05C /* NodeTestValue.swift in Sources */,
-				1117DF87D3C8C8EBF4622431 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

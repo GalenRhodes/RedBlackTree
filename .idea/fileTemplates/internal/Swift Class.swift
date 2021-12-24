@@ -3,5 +3,5 @@
 import Foundation
 import CoreFoundation
 
-open class ${NAME} {
+class ${NAME} {
 }

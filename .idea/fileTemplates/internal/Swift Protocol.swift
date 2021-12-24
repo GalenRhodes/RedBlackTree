@@ -3,5 +3,5 @@
 import Foundation
 import CoreFoundation
 
-public protocol ${NAME} {
+protocol ${NAME} {
 }
