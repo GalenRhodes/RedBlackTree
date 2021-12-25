@@ -29,10 +29,16 @@ import CoreFoundation
 
     @usableFromInline private(set) var item: T
 
-    @usableFromInline init(item: T, color: Color = .Black) {
+    @usableFromInline convenience init(item: T, color: Color = .Black) {
+        self.init(item: item, data: (1 | (color == .Red ? colorBit : 0)))
+    }
+
+    @usableFromInline init(item: T, data: UInt = 1, parentNode: Node<T>? = nil, leftNode: Node<T>? = nil, rightNode: Node<T>? = nil) {
         self.item = item
-        self.color = color
-        self.count = 1
+        self.data = data
+        self.parentNode = parentNode
+        self.leftNode = leftNode
+        self.rightNode = rightNode
     }
 
     @usableFromInline subscript(i: T) -> Node<T>? { ((i == item) ? self : self[i < item ? .Left : .Right]?[i]) }
@@ -63,38 +69,44 @@ import CoreFoundation
         return nil
     }
 
-    @usableFromInline func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
+    @usableFromInline func removeAll() {
+        if let n = leftNode { n.removeAll() }
+        if let n = rightNode { n.removeAll() }
+        children = [ nil, nil ]
+        parentNode = nil
+        data = 0
+    }
+
+    @usableFromInline func copy() -> Node<T> { Node<T>(item: item, data: data, parentNode: nil, leftNode: leftNode?.copy(), rightNode: rightNode?.copy()) }
+
+    @usableFromInline @discardableResult func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
         var flag: Bool = false
         try forEach(flag: &flag, body)
         return flag
     }
 
-    private func forEach(flag: inout Bool, _ body: (Node<T>, inout Bool) throws -> Void) rethrows {
-        try leftNode?.forEach(flag: &flag, body)
-        if !flag { try body(self, &flag) }
-        if !flag { try rightNode?.forEach(flag: &flag, body) }
-    }
-
-    @usableFromInline var data:       UInt       = 0
-    @usableFromInline var parentNode: Node<T>?   = nil
+    @usableFromInline var data:       UInt
+    @usableFromInline var parentNode: Node<T>?
     @usableFromInline var children:   [Node<T>?] = [ nil, nil ]
 }
 
 extension Node {
     //@f:0
-    @inlinable var leftNode:     Node<T>? { get { children[Side.Left.rawValue] }  set { self[.Left] = newValue  } }
-    @inlinable var rightNode:    Node<T>? { get { children[Side.Right.rawValue] } set { self[.Right] = newValue } }
-    @inlinable var farLeftNode:  Node<T>  { leftNode?.farLeftNode ?? self                                         }
-    @inlinable var farRightNode: Node<T>  { rightNode?.farRightNode ?? self                                       }
-    @inlinable var root:         Node<T>  { parentNode?.root ?? self                                              }
+    @inlinable var leftNode:     Node<T>? { get { self[Side.Left] }  set { self[.Left] = newValue  } }
+    @inlinable var rightNode:    Node<T>? { get { self[Side.Right] } set { self[.Right] = newValue } }
+    @inlinable var farLeftNode:  Node<T>  { leftNode?.farLeftNode ?? self                            }
+    @inlinable var farRightNode: Node<T>  { rightNode?.farRightNode ?? self                          }
+    @inlinable var root:         Node<T>  { parentNode?.root ?? self                                 }
 
     @inlinable var count:        Int      { get { Int(bitPattern: (data & countBits))      } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits))  } }
     @inlinable var color:        Color    { get { ((data & colorBit) == 0 ? .Black : .Red) } set { data = ((newValue == .Black) ? (data & countBits) : (data | colorBit)) } }
     //@f:1
 
-    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(item) }
-
-    @inlinable static func == (lhs: Node<T>, rhs: Node<T>) -> Bool { lhs === rhs }
+    @usableFromInline var index: Int {
+        let lc = (leftNode?.count ?? 0)
+        guard let p = parentNode else { return lc }
+        return ((side(p) == .Right) ? (p.index + lc + 1) : (p.index - lc - 1))
+    }
 
     @inlinable subscript(side: Side) -> Node<T>? {
         get { children[side.rawValue] }
@@ -107,6 +119,10 @@ extension Node {
             children[s] = newValue
             recount()
         }
+    }
+
+    @usableFromInline func nodeWith(index i: Int) -> Node<T>? {
+        ((i < index) ? leftNode?.nodeWith(index: i) : ((i > index) ? rightNode?.nodeWith(index: i) : self))
     }
 
     @inlinable func side(_ p: Node<T>) -> Side { ((self === p[.Left]) ? .Left : .Right) }
@@ -199,6 +215,16 @@ extension Node {
         guard let s = p[!side] else { fatalError("ERROR: Missing sibling node.") }
         return (side, s, s[side], s[!side])
     }
+
+    @usableFromInline func forEach(flag: inout Bool, _ body: (Node<T>, inout Bool) throws -> Void) rethrows {
+        try leftNode?.forEach(flag: &flag, body)
+        if !flag { try body(self, &flag) }
+        if !flag { try rightNode?.forEach(flag: &flag, body) }
+    }
+
+    @inlinable static func == (lhs: Node<T>, rhs: Node<T>) -> Bool { lhs === rhs }
+
+    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(item) }
 }
 
 extension Node.Side {
