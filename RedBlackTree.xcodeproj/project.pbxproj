@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		1117D2B331AAF0D32EFB3E91 /* RedBlackTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */; };
+		1117D63F11B27E7615671B6E /* TreeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D1F66DEE1BD8DC1545BC /* TreeMap.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117DE6B62AF2D669D3B4971 /* TreeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9D4156BCC75F11FCBA8 /* TreeSet.swift */; };
+		1117DF211C0CEE70C81B59C1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DDF3377C8CCD707E7FAC /* Utils.swift */; };
 		1117DF2C6945C9A091194B69 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D6CAB93B8E27FC9280B3 /* Node.swift */; };
 		832D774726B987610005063D /* PGDocFixer in Frameworks */ = {isa = PBXBuildFile; productRef = 832D774626B987610005063D /* PGDocFixer */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
@@ -46,6 +48,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1117D1F66DEE1BD8DC1545BC /* TreeMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeMap.swift; sourceTree = "<group>"; };
 		1117D2592B5FEFEC531E44E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1117D6CAB93B8E27FC9280B3 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -58,6 +61,7 @@
 		1117DCC4B505E10107FDCA70 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		1117DD1A7411CA7754BAECE7 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1117DDDDD8D4C2B552CB7431 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
+		1117DDF3377C8CCD707E7FAC /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		1117DF611A3BE5130735AAF8 /* .jazzy.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .jazzy.yaml; sourceTree = "<group>"; };
 		832D773D26B986EB0005063D /* DocFixer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DocFixer; sourceTree = BUILT_PRODUCTS_DIR; };
 		832D774426B987030005063D /* DocFixer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DocFixer.entitlements; sourceTree = "<group>"; };
@@ -97,6 +101,7 @@
 			children = (
 				1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */,
 				1117DCC4B505E10107FDCA70 /* Info.plist */,
+				1117DDF3377C8CCD707E7FAC /* Utils.swift */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 				1117D13A35E13BDFB2F826D1 /* Other */,
 				1117D6CAB93B8E27FC9280B3 /* Node.swift */,
 				1117D9D4156BCC75F11FCBA8 /* TreeSet.swift */,
+				1117D1F66DEE1BD8DC1545BC /* TreeMap.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -334,6 +340,8 @@
 			files = (
 				1117DF2C6945C9A091194B69 /* Node.swift in Sources */,
 				1117DE6B62AF2D669D3B4971 /* TreeSet.swift in Sources */,
+				1117D63F11B27E7615671B6E /* TreeMap.swift in Sources */,
+				1117DF211C0CEE70C81B59C1 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

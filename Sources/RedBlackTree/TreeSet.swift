@@ -21,7 +21,6 @@ import CoreFoundation
 @usableFromInline let ERR_MSG_OUT_OF_BOUNDS: String = "Index out of bounds."
 
 public class TreeSet<T>: BidirectionalCollection, SetAlgebra, Hashable where T: Hashable & Comparable {
-    public var test: Set<T> = Set<T>()
 
     public typealias Element = T
 
@@ -32,9 +31,19 @@ public class TreeSet<T>: BidirectionalCollection, SetAlgebra, Hashable where T: 
     public var isEmpty:    Bool { (treeRoot == nil) }
 
     required public init() {}
+
+    required public convenience init<S>(_ s: S) where S: Sequence, S.Element == T {
+        self.init()
+        insert(from: s)
+    }
 }
 
 extension TreeSet {
+
+    @inlinable public convenience init(_ tree: TreeSet<T>) {
+        self.init()
+        formUnion(tree)
+    }
 
     @inlinable subscript(value: T) -> Node<T>? { treeRoot?[value] }
 
@@ -82,6 +91,10 @@ extension TreeSet {
     @inlinable public func index(before i: Index) -> Index {
         guard i > startIndex else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
         return i.advanced(by: -1)
+    }
+
+    @inlinable public func insert<S>(from src: S) where S: Sequence, S.Element == T {
+        for e: T in src { insert(e) }
     }
 
     @inlinable @discardableResult public func insert(_ value: T) -> (inserted: Bool, memberAfterInsert: T) {
@@ -133,20 +146,20 @@ extension TreeSet {
 
     @inlinable public __consuming func symmetricDifference(_ other: __owned TreeSet<T>) -> Self { withCopy { $0.formSymmetricDifference(other) } }
 
-    @inlinable public func formUnion(_ other: __owned TreeSet<T>) { other.forEach { v in update(with: v) } }
+    @inlinable public func formUnion(_ other: __owned TreeSet<T>) { other.forEach { insert($0) } }
 
     @inlinable public func formIntersection(_ other: TreeSet<T>) {
         guard let r1 = treeRoot else { return }
-        guard let r2 = other.treeRoot else { removeAll(); return }
+        guard let r2 = other.treeRoot else { return removeAll() }
         treeRoot = getIntersection(r1, r2, remove: true)
     }
 
     @inlinable public func formSymmetricDifference(_ other: __owned TreeSet<T>) {
-        guard let r2 = other.treeRoot else { return } // Nothhing to do.
-        guard treeRoot != nil else { treeRoot = r2.copy(); return }
-
-        let nr = withBlankTree { t in
-
+        if other.isEmpty { return }
+        if isEmpty { return formUnion(other) }
+        other.forEach { i in
+            if let v = self[i] { remove(v.item) }
+            else { insert(i) }
         }
     }
 
@@ -154,7 +167,12 @@ extension TreeSet {
 
     @inlinable public func forEach(_ body: (T) throws -> Void) rethrows { if let r = treeRoot { try r.forEach { n, f in try body(n.item) } } }
 
-    @inlinable public static func == (lhs: TreeSet<T>, rhs: TreeSet<T>) -> Bool { fatalError() }
+    @inlinable public static func == (lhs: TreeSet<T>, rhs: TreeSet<T>) -> Bool {
+        guard lhs !== rhs else { return true }
+        guard lhs.count == rhs.count else { return false }
+        for i in (lhs.startIndex ..< lhs.endIndex) { guard lhs[i] == rhs[i] else { return false } }
+        return true
+    }
 
     @frozen public struct Index: Hashable, Strideable, ExpressibleByIntegerLiteral {
         public typealias Stride = Int

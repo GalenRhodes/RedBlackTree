@@ -27,7 +27,7 @@ import CoreFoundation
 
     @usableFromInline enum Side: Int { case Left = 0, Right = 1 }
 
-    @usableFromInline private(set) var item: T
+    @usableFromInline var item: T
 
     @usableFromInline convenience init(item: T, color: Color = .Black) {
         self.init(item: item, data: (1 | (color == .Red ? colorBit : 0)))
@@ -41,7 +41,15 @@ import CoreFoundation
         self.rightNode = rightNode
     }
 
-    @usableFromInline subscript(i: T) -> Node<T>? { ((i == item) ? self : self[i < item ? .Left : .Right]?[i]) }
+    @usableFromInline subscript(i: T) -> Node<T>? { find { RedBlackTree.compare(i, $0) } }
+
+    @usableFromInline func find(_ comparator: (T) throws -> ComparisonResult) rethrows -> Node<T>? {
+        switch try comparator(item) {
+            case .orderedSame:       return self
+            case .orderedAscending:  return try leftNode?.find(comparator)
+            case .orderedDescending: return try rightNode?.find(comparator)
+        }
+    }
 
     @usableFromInline func insert(item i: T) -> Node<T> {
         guard i == item else { return insert(item: i, side: ((i < item) ? Side.Left : Side.Right)) }
