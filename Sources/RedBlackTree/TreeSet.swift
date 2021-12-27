@@ -36,6 +36,11 @@ public class TreeSet<T>: BidirectionalCollection, SetAlgebra, Hashable where T: 
         self.init()
         insert(from: s)
     }
+
+    public required init(from decoder: Decoder) throws where T: Codable {
+        var c = try decoder.unkeyedContainer()
+        while !c.isAtEnd { try insert(c.decode(T.self)) }
+    }
 }
 
 extension TreeSet {
@@ -181,10 +186,17 @@ extension TreeSet {
 
         @inlinable public func distance(to other: Index) -> Stride { (other.index - index) }
 
-        @inlinable public func advanced(by n: Stride) -> Index { Index((index + n)) }
+        @inlinable public func advanced(by n: Stride) -> Index { Index(index + n) }
 
         @inlinable init(_ index: Int) { self.index = index }
 
         @inlinable public init(integerLiteral value: IntegerLiteralType) { index = value }
+    }
+}
+
+extension TreeSet: Codable where T: Codable {
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.unkeyedContainer()
+        try forEach { v in try c.encode(v) }
     }
 }
