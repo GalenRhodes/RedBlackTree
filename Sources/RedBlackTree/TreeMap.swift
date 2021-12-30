@@ -42,43 +42,10 @@ public class TreeMap<Key, Value>: ExpressibleByDictionaryLiteral where Key: Hash
 }
 
 extension TreeMap {
-
-    @inlinable public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
-        guard let v = self[key] else { return defaultValue() }
-        return v
+    @inlinable public convenience init(_ other: TreeMap<Key, Value>) {
+        self.init()
+        if let r = other.treeRoot { treeRoot = r.copy() }
     }
-
-    @inlinable public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> TreeMap<Key, T> {
-        let t = TreeMap<Key, T>()
-        try forEach { (e: Element) in t[e.key] = try transform(e.value) }
-        return t
-    }
-
-    @inlinable public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeMap<Key, T> {
-        let t = TreeMap<Key, T>()
-        try forEach { (e: Element) in if let v = try transform(e.value) { t[e.key] = v } }
-        return t
-    }
-
-    @inlinable public func updateValue(_ value: Value, forKey key: Key) -> Value? {
-        let o = self[key]
-        self[key] = value
-        return o
-    }
-
-    @inlinable public func merge<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {}
-
-    @inlinable public func merge(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {}
-
-    @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> [Key: Value] where S: Sequence, S.Element == (Key, Value) {}
-
-    @inlinable public func merging(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> [Key: Value] {}
-
-    @inlinable public func remove(at index: Dictionary<Key, Value>.Index) -> Dictionary<Key, Value>.Element {}
-
-    @inlinable public func removeValue(forKey key: Key) -> Value? {}
-
-    @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) {}
 
     @inlinable public convenience init<S>(uniqueKeysWithValues keysAndValues: S) where S: Sequence, S.Element == (Key, Value) {
         self.init()
@@ -111,15 +78,12 @@ extension TreeMap {
             }
         }
     }
+}
 
-    @inlinable public func forEach(_ body: (Key, Value) throws -> Void) rethrows {
-        guard let r = treeRoot else { return }
-        try r.forEach { n, _ in try body(n.item.key, n.item.value) }
-    }
-
-    @inlinable func forEach(_ body: (Key, Value, inout Bool) throws -> Void) rethrows -> Bool {
-        guard let r = treeRoot else { return false }
-        return try r.forEach { n, f in try body(n.item.key, n.item.value, &f) }
+extension TreeMap {
+    @inlinable public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
+        guard let v = self[key] else { return defaultValue() }
+        return v
     }
 
     @inlinable public subscript(key: Key) -> Value? {
@@ -143,9 +107,92 @@ extension TreeMap {
         }
     }
 
+    @inlinable public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> TreeMap<Key, T> {
+        let t = TreeMap<Key, T>()
+        try forEach { t[$0.key] = try transform($0.value) }
+        return t
+    }
+
+    @inlinable public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeMap<Key, T> {
+        let t = TreeMap<Key, T>()
+        try forEach { if let v = try transform($0.value) { t[$0.key] = v } }
+        return t
+    }
+
+    @inlinable public func updateValue(_ value: Value, forKey key: Key) -> Value? {
+        let v = self[key]
+        self[key] = value
+        return v
+    }
+
+    @inlinable public func merge<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
+        try other.forEach { (e: S.Element) in try self.combine(e, combine) }
+    }
+
+    @inlinable public func merge(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+        try other.forEach { try self.combine($0, combine) }
+    }
+
+    @inlinable public func merge(_ other: TreeMap<Key, Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+        try other.forEach { try self.combine($0, combine) }
+    }
+
+    @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeMap<Key, Value> where S: Sequence, S.Element == (Key, Value) {
+        try withCopy { try $0.merging(other, uniquingKeysWith: combine) }
+    }
+
+    @inlinable public func merging(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeMap<Key, Value> {
+        try withCopy { try $0.merging(other, uniquingKeysWith: combine) }
+    }
+
+    @inlinable public func merging(_ other: TreeMap<Key, Value>, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> TreeMap<Key, Value> {
+        try withCopy { try $0.merging(other, uniquingKeysWith: combine) }
+    }
+
+    @inlinable public func remove(at index: Index) -> Element {
+        guard let r = treeRoot, let n = r.nodeWith(index: index.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
+        treeRoot = n.remove()
+        return (key: n.item.key, value: n.item.value)
+    }
+
+    @inlinable public func removeValue(forKey key: Key) -> Value? {
+        guard let r = treeRoot, let n = r.find({ t in RedBlackTree.compare(key, t.key) }) else { return nil }
+        treeRoot = n.remove()
+        return n.item.value
+    }
+
+    @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) {
+        guard let r = treeRoot else { return }
+        treeRoot = nil
+        r.removeAll()
+    }
+
+    @inlinable public func forEach(_ body: (Element) throws -> Void) rethrows {
+        guard let r = treeRoot else { return }
+        try r.forEach { n, _ in try body(n.item.element) }
+    }
+
+    @inlinable func forEach(_ body: (Element, inout Bool) throws -> Void) rethrows -> Bool {
+        guard let r = treeRoot else { return false }
+        return try r.forEach { n, f in try body(n.item.element, &f) }
+    }
+
+    @inlinable func withCopy(_ body: (TreeMap<Key, Value>) throws -> Void) rethrows -> TreeMap<Key, Value> {
+        var t = TreeMap<Key, Value>(self)
+        try body(t)
+        return t
+    }
+
+    @inlinable func combine(_ e: Element, _ body: (Value, Value) throws -> Value) throws {
+        if let v0 = self[e.key] { self[e.key] = try body(v0, e.value) }
+        else { self[e.key] = e.value }
+    }
+
     @usableFromInline struct T: Hashable, Comparable {
         @usableFromInline let key:   Key
         @usableFromInline var value: Value
+
+        @inlinable var element: Element { (key, value) }
 
         @inlinable init(key: Key, value: Value) {
             self.key = key
