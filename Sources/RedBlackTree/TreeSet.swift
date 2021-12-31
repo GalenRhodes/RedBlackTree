@@ -79,7 +79,7 @@ extension TreeSet {
     }
 
     @inlinable func nodeWith(index i: Index) -> Node<T> {
-        guard let n = treeRoot?.nodeWith(index: i.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
+        guard let n = treeRoot?.find(index: i.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
         return n
     }
 
@@ -105,7 +105,7 @@ extension TreeSet {
     @inlinable @discardableResult public func insert(_ value: T) -> (inserted: Bool, memberAfterInsert: T) {
         if let r = treeRoot {
             if let o = r[value] { return (false, o.item) }
-            treeRoot = r.insert(item: value)
+            treeRoot = r.insert(item: <#T##T##T#>)
         }
         else {
             treeRoot = Node<T>(item: value)
@@ -117,7 +117,7 @@ extension TreeSet {
     @inlinable @discardableResult public func update(with newMember: T) -> T? {
         if let r = treeRoot {
             let o = r[newMember]
-            treeRoot = r.insert(item: newMember)
+            treeRoot = r.insert(item: <#T##T##T#>)
             if let _o = o { return _o.item }
         }
         else {

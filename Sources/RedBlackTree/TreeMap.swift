@@ -36,7 +36,7 @@ public class TreeMap<Key, Value>: ExpressibleByDictionaryLiteral where Key: Hash
         var c = try decoder.unkeyedContainer()
         while !c.isAtEnd {
             let t: T = try c.decode(T.self)
-            treeRoot = ((treeRoot == nil) ? Node<T>(item: t) : treeRoot!.insert(item: t))
+            treeRoot = ((treeRoot == nil) ? Node<T>(item: t) : treeRoot!.insert(item: <#T##T##T#>))
         }
     }
 }
@@ -88,17 +88,17 @@ extension TreeMap {
 
     @inlinable public subscript(key: Key) -> Value? {
         get {
-            guard let r = treeRoot, let n = r.find({ RedBlackTree.compare(key, $0.key) }) else { return nil }
+            guard let r = treeRoot, let n = r.find(using: { RedBlackTree.compare(key, $0.key) }) else { return nil }
             return n.item.value
         }
         set {
             if let r = treeRoot {
-                if let n = r.find({ RedBlackTree.compare(key, $0.key) }) {
+                if let n = r.find(using: { RedBlackTree.compare(key, $0.key) }) {
                     if let v = newValue { n.item.value = v }
                     else { treeRoot = n.remove() }
                 }
                 else if let v = newValue {
-                    treeRoot = r.insert(item: T(key: key, value: v))
+                    treeRoot = r.insert(item: <#T##T##T#>)
                 }
             }
             else if let v = newValue {
@@ -150,13 +150,13 @@ extension TreeMap {
     }
 
     @inlinable public func remove(at index: Index) -> Element {
-        guard let r = treeRoot, let n = r.nodeWith(index: index.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
+        guard let r = treeRoot, let n = r.find(index: index.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
         treeRoot = n.remove()
         return (key: n.item.key, value: n.item.value)
     }
 
     @inlinable public func removeValue(forKey key: Key) -> Value? {
-        guard let r = treeRoot, let n = r.find({ t in RedBlackTree.compare(key, t.key) }) else { return nil }
+        guard let r = treeRoot, let n = r.find(using: { t in RedBlackTree.compare(key, t.key) }) else { return nil }
         treeRoot = n.remove()
         return n.item.value
     }
@@ -229,7 +229,7 @@ extension TreeMap: BidirectionalCollection {
     @inlinable public var endIndex: Index { Index(treeRoot?.count ?? 0) }
 
     @inlinable public subscript(position: Index) -> Element {
-        guard let r = treeRoot, let n = r.nodeWith(index: position.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
+        guard let r = treeRoot, let n = r.find(index: position.index) else { fatalError(ERR_MSG_OUT_OF_BOUNDS) }
         return (key: n.item.key, value: n.item.value)
     }
 

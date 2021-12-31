@@ -21,3 +21,15 @@ import CoreFoundation
 @inlinable public func compare<T>(_ l: T, _ r: T) -> ComparisonResult where T: Comparable {
     return ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame))
 }
+
+@inlinable func ifNil<T, R>(_ v: T?, do a: () throws -> R, else b: (T) throws -> R) rethrows -> R {
+    guard let v = v else { return try a() }
+    return try b(v)
+}
+
+@inlinable func doIf(_ predicate: Bool, _ whenTrue: () throws -> Void, else whenFalse: () throws -> Void) rethrows {
+    if predicate { try whenTrue() }
+    else { try whenFalse() }
+}
+
+@inlinable func ifNotNil<T>(_ v: T?, do body: (T) throws -> Void) rethrows { if let v = v { try body(v) } }
