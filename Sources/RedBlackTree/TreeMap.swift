@@ -88,17 +88,16 @@ extension TreeMap {
 
     @inlinable public subscript(key: Key) -> Value? {
         get {
-            guard let r = treeRoot, let n = r.find(using: { RedBlackTree.compare(key, $0.key) }) else { return nil }
-            return n.item.value
+            if let r = treeRoot, let n = r.find(using: { RedBlackTree.compare(key, $0.key) }) { return n.item.value }
+            return nil
         }
         set {
             if let r = treeRoot {
                 if let n = r.find(using: { RedBlackTree.compare(key, $0.key) }) {
-                    if let v = newValue { n.item.value = v }
-                    else { treeRoot = n.remove() }
+                    ifNil(newValue) { treeRoot = n.remove() } else: { (v: Value) in n.item.value = v }
                 }
                 else if let v = newValue {
-                    treeRoot = r.insert(item: <#T##T##T#>)
+                    treeRoot = r.insert(item: T(key: key, value: v))
                 }
             }
             else if let v = newValue {
