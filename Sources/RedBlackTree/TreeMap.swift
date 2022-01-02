@@ -20,10 +20,12 @@ import CoreFoundation
 
 public class TreeMap<Key, Value>: ExpressibleByDictionaryLiteral where Key: Hashable & Comparable {
 
-    @usableFromInline typealias N = Node<T>
+    private(set) lazy var queue: DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
+
+    typealias N = Node<T>
     public typealias Map = TreeMap<Key, Value>
 
-    @usableFromInline var treeRoot: N? = nil
+    var treeRoot: N? = nil
 
     public let startIndex: Index = 0
 
@@ -45,17 +47,17 @@ public class TreeMap<Key, Value>: ExpressibleByDictionaryLiteral where Key: Hash
 }
 
 extension TreeMap {
-    @inlinable public convenience init(_ other: Map) {
+    public convenience init(_ other: Map) {
         self.init()
-        if let r = other.treeRoot { treeRoot = r.copy() }
+        if let r = other.treeRoot { treeRoot = N(node: r) }
     }
 
-    @inlinable public convenience init<S>(uniqueKeysWithValues keysAndValues: S) where S: Sequence, S.Element == (Key, Value) {
+    public convenience init<S>(uniqueKeysWithValues keysAndValues: S) where S: Sequence, S.Element == (Key, Value) {
         self.init()
         keysAndValues.forEach { e in self[e.0] = e.1 }
     }
 
-    @inlinable public convenience init<S>(_ keysAndValues: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
+    public convenience init<S>(_ keysAndValues: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
         self.init()
         try keysAndValues.forEach { e in
             if let v = self[e.0] {
@@ -67,7 +69,7 @@ extension TreeMap {
         }
     }
 
-    @inlinable public convenience init<S>(grouping values: S, by keyForValue: (S.Element) throws -> Key) rethrows where Value == [S.Element], S: Sequence {
+    public convenience init<S>(grouping values: S, by keyForValue: (S.Element) throws -> Key) rethrows where Value == [S.Element], S: Sequence {
         self.init()
         try values.forEach { v in
             let k = try keyForValue(v)
@@ -84,133 +86,133 @@ extension TreeMap {
 }
 
 extension TreeMap {
-    @inlinable func error(_ msg: @autoclosure () -> String = String()) { fatalError(msg()) }
+    func error(_ msg: @autoclosure () -> String = String()) { fatalError(msg()) }
 
-    @inlinable public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value { self[key] ?? defaultValue() }
+    public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value { self[key] ?? defaultValue() }
 
-    @inlinable public subscript(key: Key) -> Value? {
-        get { treeRoot?.find(using: { comp(key, $0.key) })?.item.value }
+    public subscript(key: Key) -> Value? {
+        get { treeRoot?.find(using: { key <=> $0.item.key })?.item.value }
         set {
             if let v = newValue {
                 let t = T(key: key, value: v)
                 treeRoot = ((treeRoot?.insert(item: t)) ?? N(item: t))
             }
-            else if let n = treeRoot?.find(using: { comp(key, $0.key) }) {
+            else if let n = treeRoot?.find(using: { key <=> $0.item.key }) {
                 treeRoot = n.remove()
             }
         }
     }
 
-    @inlinable public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> TreeMap<Key, T> {
+    public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> TreeMap<Key, T> {
         let t = TreeMap<Key, T>()
         try forEach { t[$0.key] = try transform($0.value) }
         return t
     }
 
-    @inlinable public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeMap<Key, T> {
+    public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> TreeMap<Key, T> {
         let t = TreeMap<Key, T>()
         try forEach { if let v = try transform($0.value) { t[$0.key] = v } }
         return t
     }
 
-    @inlinable public func updateValue(_ value: Value, forKey key: Key) -> Value? {
+    public func updateValue(_ value: Value, forKey key: Key) -> Value? {
         let v = self[key]
         self[key] = value
         return v
     }
 
-    @inlinable public func merge<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
+    public func merge<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows where S: Sequence, S.Element == (Key, Value) {
         try other.forEach { (e: S.Element) in try self.combine(e, combine) }
     }
 
-    @inlinable public func merge(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+    public func merge(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
         try other.forEach { try self.combine($0, combine) }
     }
 
-    @inlinable public func merge(_ other: Map, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
+    public func merge(_ other: Map, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows {
         try other.forEach { try self.combine($0, combine) }
     }
 
-    @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> Map where S: Sequence, S.Element == (Key, Value) {
-        try withCopy { try $0.merging(other, uniquingKeysWith: combine) }
+    public func merging<S>(_ other: S, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> Map where S: Sequence, S.Element == (Key, Value) {
+        try withCopy { try $0.merge(other, uniquingKeysWith: combine) }
     }
 
-    @inlinable public func merging(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> Map {
-        try withCopy { try $0.merging(other, uniquingKeysWith: combine) }
+    public func merging(_ other: [Key: Value], uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> Map {
+        try withCopy { try $0.merge(other, uniquingKeysWith: combine) }
     }
 
-    @inlinable public func merging(_ other: Map, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> Map {
-        try withCopy { try $0.merging(other, uniquingKeysWith: combine) }
+    public func merging(_ other: Map, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> Map {
+        try withCopy { try $0.merge(other, uniquingKeysWith: combine) }
     }
 
-    @inlinable public func remove(at index: Index) -> Element {
-        guard let r = treeRoot, let n = r.find(index: index.index) else { error(ERR_MSG_OUT_OF_BOUNDS) }
+    public func remove(at index: Index) -> Element {
+        guard let r = treeRoot, let n = r[index.index] else { error(ERR_MSG_OUT_OF_BOUNDS) }
         treeRoot = n.remove()
         return (key: n.item.key, value: n.item.value)
     }
 
-    @inlinable public func removeValue(forKey key: Key) -> Value? {
-        guard let r = treeRoot, let n = r.find(using: { t in comp(key, t.key) }) else { return nil }
+    public func removeValue(forKey key: Key) -> Value? {
+        guard let r = treeRoot, let n = r.find(using: { key <=> $0.item.key }) else { return nil }
         treeRoot = n.remove()
         return n.item.value
     }
 
-    @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    public func removeAll(keepingCapacity keepCapacity: Bool = false) {
         guard let r = treeRoot else { return }
         treeRoot = nil
-        r.removeAll()
+        queue.async { r.removeAll() }
     }
 
-    @inlinable public func forEach(_ body: (Element) throws -> Void) rethrows {
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
         guard let r = treeRoot else { return }
         try r.forEach { n, _ in try body(n.item.element) }
     }
 
-    @inlinable func forEach(_ body: (Element, inout Bool) throws -> Void) rethrows -> Bool {
+    func forEach(_ body: (Element, inout Bool) throws -> Void) rethrows -> Bool {
         guard let r = treeRoot else { return false }
         return try r.forEach { n, f in try body(n.item.element, &f) }
     }
 
-    @inlinable func withCopy(_ body: (Map) throws -> Void) rethrows -> Map {
-        var t = Map(self)
+    func withCopy(_ body: (Map) throws -> Void) rethrows -> Map {
+        let t = Map(self)
         try body(t)
         return t
     }
 
-    @inlinable func combine(_ e: Element, _ body: (Value, Value) throws -> Value) throws {
+    func combine(_ e: Element, _ body: (Value, Value) throws -> Value) throws {
         if let v0 = self[e.key] { self[e.key] = try body(v0, e.value) }
         else { self[e.key] = e.value }
     }
 
-    @usableFromInline struct T: Hashable, Comparable {
-        @usableFromInline let key:   Key
-        @usableFromInline var value: Value
+    struct T: Hashable, Comparable {
+        let key:   Key
+        var value: Value
 
-        @inlinable var element: Element { (key, value) }
+        var element: Element { (key, value) }
 
-        @inlinable init(key: Key, value: Value) {
+        init(key: Key, value: Value) {
             self.key = key
             self.value = value
         }
 
-        @inlinable func hash(into hasher: inout Hasher) { hasher.combine(key) }
+        func hash(into hasher: inout Hasher) { hasher.combine(key) }
 
-        @inlinable static func < (lhs: T, rhs: T) -> Bool { lhs.key < rhs.key }
+        static func < (lhs: T, rhs: T) -> Bool { lhs.key < rhs.key }
 
-        @inlinable static func == (lhs: T, rhs: T) -> Bool { lhs.key == rhs.key }
+        static func == (lhs: T, rhs: T) -> Bool { lhs.key == rhs.key }
     }
 }
 
 extension TreeMap.T: Codable where Key: Codable, Value: Codable {
-    @usableFromInline enum CodingKeys: CodingKey { case Key, Value }
+    enum CodingKeys: CodingKey { case Key, Value }
 
-    @inlinable init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let c: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
         key = try c.decode(Key.self, forKey: CodingKeys.Key)
         value = try c.decode(Value.self, forKey: CodingKeys.Value)
     }
 
-    @inlinable func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(key, forKey: .Key)
         try c.encode(value, forKey: .Value)
@@ -220,19 +222,19 @@ extension TreeMap.T: Codable where Key: Codable, Value: Codable {
 extension TreeMap: BidirectionalCollection {
     public typealias Element = (key: Key, value: Value)
 
-    @inlinable public var endIndex: Index { Index(treeRoot?.count ?? 0) }
+    public var endIndex: Index { Index(treeRoot?.count ?? 0) }
 
-    @inlinable public subscript(position: Index) -> Element {
-        guard let r = treeRoot, let n = r.find(index: position.index) else { error(ERR_MSG_OUT_OF_BOUNDS) }
+    public subscript(position: Index) -> Element {
+        guard let r = treeRoot, let n = r[position.index] else { error(ERR_MSG_OUT_OF_BOUNDS) }
         return (key: n.item.key, value: n.item.value)
     }
 
-    @inlinable public func index(after i: Index) -> Index {
+    public func index(after i: Index) -> Index {
         guard i < endIndex else { error(ERR_MSG_OUT_OF_BOUNDS) }
         return i.advanced(by: 1)
     }
 
-    @inlinable public func index(before i: Index) -> Index {
+    public func index(before i: Index) -> Index {
         guard i > startIndex else { error(ERR_MSG_OUT_OF_BOUNDS) }
         return i.advanced(by: -1)
     }
@@ -240,36 +242,36 @@ extension TreeMap: BidirectionalCollection {
     @frozen public struct Index: Hashable, Strideable, ExpressibleByIntegerLiteral {
         public typealias Stride = Int
 
-        @usableFromInline let index: Int
+        let index: Int
 
-        @inlinable init(_ index: Int) { self.index = index }
+        init(_ index: Int) { self.index = index }
 
-        @inlinable public init(integerLiteral value: IntegerLiteralType) { index = value }
+        public init(integerLiteral value: IntegerLiteralType) { index = value }
 
-        @inlinable public func distance(to other: Index) -> Stride { (other.index - index) }
+        public func distance(to other: Index) -> Stride { (other.index - index) }
 
-        @inlinable public func advanced(by n: Stride) -> Index { Index((index + n)) }
+        public func advanced(by n: Stride) -> Index { Index((index + n)) }
 
-        @inlinable public func hash(into hasher: inout Hasher) { hasher.combine(index) }
+        public func hash(into hasher: inout Hasher) { hasher.combine(index) }
 
-        @inlinable public static func < (lhs: Index, rhs: Index) -> Bool { (lhs.index < rhs.index) }
+        public static func < (lhs: Index, rhs: Index) -> Bool { (lhs.index < rhs.index) }
 
-        @inlinable public static func <= (lhs: Index, rhs: Index) -> Bool { ((lhs < rhs) || (lhs == rhs)) }
+        public static func <= (lhs: Index, rhs: Index) -> Bool { ((lhs < rhs) || (lhs == rhs)) }
 
-        @inlinable public static func >= (lhs: Index, rhs: Index) -> Bool { !(lhs < rhs) }
+        public static func >= (lhs: Index, rhs: Index) -> Bool { !(lhs < rhs) }
 
-        @inlinable public static func > (lhs: Index, rhs: Index) -> Bool { !(lhs <= rhs) }
+        public static func > (lhs: Index, rhs: Index) -> Bool { !(lhs <= rhs) }
 
-        @inlinable public static func == (lhs: Index, rhs: Index) -> Bool { (lhs.index == rhs.index) }
+        public static func == (lhs: Index, rhs: Index) -> Bool { (lhs.index == rhs.index) }
     }
 }
 
 extension TreeMap: Equatable where Value: Equatable {
-    @inlinable public static func == (l: Map, r: Map) -> Bool { ((l === r) || ((l.count == r.count) && !l.forEach({ $1 = ($0.value != r[$0.key]) }))) }
+    public static func == (l: Map, r: Map) -> Bool { ((l === r) || ((l.count == r.count) && !l.forEach({ $1 = ($0.value != r[$0.key]) }))) }
 }
 
 extension TreeMap: Hashable where Value: Hashable {
-    @inlinable public func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         guard let r = treeRoot else { return }
         r.forEach { n, _ in
             hasher.combine(n.item.key)
@@ -279,7 +281,7 @@ extension TreeMap: Hashable where Value: Hashable {
 }
 
 extension TreeMap: Encodable where Key: Codable, Value: Codable {
-    @inlinable public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var c = encoder.unkeyedContainer()
         try forEach { try c.encode(T(key: $0.key, value: $0.value)) }
     }

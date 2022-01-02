@@ -18,41 +18,18 @@
 import Foundation
 import CoreFoundation
 
-infix operator ?=: ComparisonPrecedence
+infix operator <=>: ComparisonPrecedence
 
-@inlinable func comp<T>(_ l: T, _ r: T) -> ComparisonResult where T: Comparable {
-    return ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame))
+func <=><T>(l: T, r: T) -> ComparisonResult where T: Comparable {
+    ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame))
 }
 
-@inlinable func assertNotNil<T, R>(_ v: T?, _ msg: @autoclosure () -> String, _ body: (T) throws -> R) rethrows -> R {
+func assertNotNil<T, R>(_ v: T?, _ msg: @autoclosure () -> String, _ body: (T) throws -> R) rethrows -> R {
     guard let v = v else { fatalError(msg()) }
     return try body(v)
 }
 
-@inlinable func ifNil<T, R>(_ v: T?, do a: () throws -> R, else b: (T) throws -> R) rethrows -> R {
-    guard let v = v else { return try a() }
-    return try b(v)
-}
-
-@inlinable func doIf(_ predicate: Bool, _ whenTrue: () throws -> Void, else whenFalse: () throws -> Void) rethrows {
-    if predicate { try whenTrue() }
-    else { try whenFalse() }
-}
-
-@inlinable func ifNotNil<T>(_ v: T?, do body: (T) throws -> Void) rethrows { if let v = v { try body(v) } }
-
-@usableFromInline typealias DoWithStuff<T, R> = ([T?], ([T]) -> R)
-
-@usableFromInline func doWith<T, R>(default defaultValue: @autoclosure () -> R, _ stuff: DoWithStuff<T, R>...) -> R {
-    for dws in stuff { if let r = _doWith(stuff: dws) { return r } }
-    return defaultValue()
-}
-
-private func _doWith<T, R>(stuff dws: DoWithStuff<T, R>) -> R? {
-    var ar: [T] = []
-    for x in dws.0 {
-        guard let y = x else { return nil }
-        ar.append(y)
-    }
-    return dws.1(ar)
+func assertNotNil<T>(_ v: T?, _ msg: @autoclosure () -> String) -> T {
+    guard let v = v else { fatalError(msg()) }
+    return v
 }
