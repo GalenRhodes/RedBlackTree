@@ -27,16 +27,24 @@ import CoreFoundation
 @usableFromInline let ERR_NO_DISTANT_NEPHEW: String = "ERROR: Missing distant nephew node."
 @usableFromInline let ERR_NO_SIBLING:        String = "ERROR: Missing sibling node."
 
-@usableFromInline class Node<T>: Hashable where T: Hashable & Comparable {
+@usableFromInline class Node<T> where T: Hashable & Comparable {
     @usableFromInline typealias ND = Node<T>
 
     @usableFromInline enum Color { case Black, Red }
 
     @usableFromInline enum Side { case Left, Right }
 
-    @usableFromInline var item: T
+    //@f:0
+    @usableFromInline var item:       T
+    @usableFromInline var data:       UInt
+    @usableFromInline var parentNode: ND?
+    @usableFromInline var leftNode:   ND? = nil { willSet { _foo(newValue,  leftNode) } didSet { _bar(leftNode,  oldValue) } }
+    @usableFromInline var rightNode:  ND? = nil { willSet { _foo(newValue, rightNode) } didSet { _bar(rightNode, oldValue) } }
+    //@f:1
 
-    @usableFromInline convenience init(item: T, color: Color = .Black) { self.init(item: item, data: color.d(1)) }
+    @usableFromInline convenience init(item: T, color: Color = .Black) {
+        self.init(item: item, data: color.d(1))
+    }
 
     @usableFromInline init(item: T, data: UInt = 1, leftNode: ND? = nil, rightNode: ND? = nil) {
         self.item = item
@@ -53,25 +61,6 @@ import CoreFoundation
         }
     }
 
-    @usableFromInline func remove() -> ND? {
-        if let l = leftNode, let r = rightNode {
-            let n = (Bool.random() ? l.farRightNode : r.farLeftNode)
-            swap(&item, &n.item)
-            return n.remove()
-        }
-        else if let c = (leftNode ?? rightNode) {
-            c.color = .Black
-            _withParent { $0[$1] = c }
-            return c.root
-        }
-        else if let p = parentNode {
-            if self == Color.Black { preRemove() }
-            p[self ?= p] = nil
-            return p.root
-        }
-        return nil
-    }
-
     @usableFromInline func removeAll() {
         leftNode?.removeAll()
         rightNode?.removeAll()
@@ -82,13 +71,6 @@ import CoreFoundation
     }
 
     @usableFromInline func copy() -> ND { ND(item: item, data: data, leftNode: leftNode?.copy(), rightNode: rightNode?.copy()) }
-
-    //@f:0
-    @usableFromInline var data:       UInt
-    @usableFromInline var parentNode: ND?
-    @usableFromInline var leftNode:   ND? = nil { willSet { _foo(newValue,  leftNode) } didSet { _bar(leftNode,  oldValue) } }
-    @usableFromInline var rightNode:  ND? = nil { willSet { _foo(newValue, rightNode) } didSet { _bar(rightNode, oldValue) } }
-    //@f:1
 }
 
 extension Node {
@@ -103,78 +85,129 @@ extension Node {
     @inlinable var count:        Int   { get { Int(bitPattern: (data & countBits)) } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits)) } }
     @inlinable var color:        Color { get { Color.color(data)                   } set { data = newValue.d(data)                                         } }
     //@f:1
+}
 
-    @inlinable subscript(side: Side) -> ND? {
-        get { side.with { leftNode } right: { rightNode } }
-        set { side.with { leftNode = newValue } right: { rightNode = newValue } }
-    }
+extension Node {
+    //@f:0
+    @inlinable subscript(side: Side) -> ND? { get { side.with { leftNode } right: { rightNode } } set { side.with { leftNode = newValue } right: { rightNode = newValue } } }
+    @inlinable subscript(index: T)   -> ND? { find { comp(index, $0) } }
+    //@f:1
+}
 
-    @inlinable subscript(i: T) -> ND? { find { comp(i, $0) } }
-
+extension Node {
     @inlinable func find(index i: Int) -> ND? { findNode { comp(i, $0.index) } }
 
     @inlinable func find(using comparator: (T) throws -> ComparisonResult) rethrows -> ND? { try findNode { try comparator($0.item) } }
+}
 
+extension Node {
     @inlinable @discardableResult func forEach(_ body: (ND, inout Bool) throws -> Void) rethrows -> Bool {
         var stop: Bool = false
         try _forEach(flag: &stop, do: body)
         return stop
     }
 
+    @usableFromInline func _forEach(flag stop: inout Bool, do body: (ND, inout Bool) throws -> Void) rethrows {
+        guard !stop else { return }
+        try _with(node: leftNode) { try $0._forEach(flag: &stop, do: body) }
+        guard !stop else { return }
+        try body(self, &stop)
+        guard !stop else { return }
+        try _with(node: rightNode) { try $0._forEach(flag: &stop, do: body) }
+    }
+}
+
+extension Node {
     @usableFromInline func insert(item i: T) -> ND {
         switch comp(i, item) {
             case .orderedSame:       item = i
-            case .orderedAscending:  return _insert(item: i, side: .Left)
-            case .orderedDescending: return _insert(item: i, side: .Right)
+            case .orderedAscending:  return _i1(item: i, side: .Left)
+            case .orderedDescending: return _i1(item: i, side: .Right)
         }
         return root
     }
 
-    @usableFromInline func postInsert() -> ND { _withParent { pi1() } do: { ($0 == Color.Red) ? root : pi2($0, $1) } }
-
-    @inlinable func pi1() -> ND { color = .Black; return self }
-
-    @inlinable func pi2(_ p: ND, _ ns: Side) -> ND { p._withParent(ERR_NO_GRANDPARENT) { pi3($0, p, ns, $1) } }
-
-    @inlinable func pi3(_ g: ND, _ p: ND, _ ns: Side, _ ps: Side) -> ND {
-        _with(node: g[!ps]) { (($0 == Color.Black) ? pi4(g, p, ns, ps) : pi5(g, p, $0)) } else: { pi4(g, p, ns, ps) }
+    @inlinable func _i1(item i: T, side sd: Side) -> ND {
+        if let n = self[sd] { return n.insert(item: i) }
+        let n = ND(item: item, color: .Red)
+        self[sd] = n
+        return n._i2()
     }
 
-    @inlinable func pi4(_ g: ND, _ p: ND, _ ns: Side, _ ps: Side) -> ND {
+    @usableFromInline func _i2() -> ND { _withParent { _i3() } do: { ($0 == Color.Red) ? root : _i4($0, $1) } }
+
+    @inlinable func _i3() -> ND { color = .Black; return self }
+
+    @inlinable func _i4(_ p: ND, _ ns: Side) -> ND { p._withParent(ERR_NO_GRANDPARENT) { _i5($0, p, ns, $1) } }
+
+    @inlinable func _i5(_ g: ND, _ p: ND, _ ns: Side, _ ps: Side) -> ND {
+        _with(node: g[!ps]) { (($0 == Color.Black) ? _i6(g, p, ns, ps) : _i7(g, p, $0)) } else: { _i6(g, p, ns, ps) }
+    }
+
+    @inlinable func _i6(_ g: ND, _ p: ND, _ ns: Side, _ ps: Side) -> ND {
         if ps != ns { p._rotate(ps) }
         g._rotate(!ps)
         return root
     }
 
-    @inlinable func pi5(_ g: ND, _ p: ND, _ u: ND) -> ND {
+    @inlinable func _i7(_ g: ND, _ p: ND, _ u: ND) -> ND {
         p.color = .Black
         u.color = .Black
         g.color = .Red
-        return g.postInsert()
+        return g._i2()
+    }
+}
+
+extension Node {
+    @usableFromInline func remove() -> ND? {
+        //@f:0
+        doWith(default: nil,
+               ([ leftNode, rightNode ],     { (a: [ND]) -> ND? in self._r1(left: a[0], right: a[1]) }),
+               ([ (leftNode ?? rightNode) ], { (a: [ND]) -> ND? in self._r2(child: a[0])             }),
+               ([ parentNode ],              { (a: [ND]) -> ND? in self._r3(parent: a[0])            }))
+        //@f:1
     }
 
-    @inlinable func _error(_ message: @autoclosure () -> String = String()) {
-        fatalError(message())
+    @inlinable func _r1(left l: ND, right r: ND) -> ND? {
+        let n = Bool.random() ? l.farRightNode : r.farLeftNode
+        swap(&item, &n.item)
+        return n.remove()
     }
 
-    @usableFromInline func preRemove() {
-        if let p = parentNode {
-            var (sd, s, cn, dn) = _siblings(parent: p, side: self ?= p)
+    @inlinable func _r2(child c: ND) -> ND? {
+        c.color = .Black
+        _withParent { $0[$1] = c }
+        return c.root
+    }
 
-            if s == Color.Red { (s, cn, dn) = _xr(parent: p, nSide: sd, node: p, dir: sd) }
+    @inlinable func _r3(parent p: ND) -> ND? {
+        if self == Color.Black { _r4() }
+        p[self ?= p] = nil
+        return p.root
+    }
 
-            if s == Color.Black && cn == Color.Black && dn == Color.Black {
-                s.color = .Red
-                guard p == Color.Black else { return p.color = .Black }
-                return p.preRemove()
+    @usableFromInline typealias tup1 = (Side, ND, ND?, ND?)
+    @usableFromInline typealias tup2 = (ND, ND?, ND?)
+
+    @usableFromInline func _r4() {
+        if let parent = parentNode {
+            var (side, sibling, closeNephew, distantNephew) = _r5(parent: parent, side: self ?= parent)
+
+            if sibling == Color.Red { (sibling, closeNephew, distantNephew) = _r6(parent: parent, nSide: side, node: parent, dir: side) }
+
+            if sibling == Color.Black && closeNephew == Color.Black && distantNephew == Color.Black {
+                sibling.color = .Red
+                guard parent == Color.Black else { return parent.color = .Black }
+                return parent._r4()
             }
 
-            if cn == Color.Red { (s, cn, dn) = _xr(parent: p, nSide: sd, node: s, dir: !sd) }
-            guard let n = dn else { _error(ERR_NO_DISTANT_NEPHEW) }
-            n.color = .Black
-            p._rotate(sd)
+            if closeNephew == Color.Red { (sibling, closeNephew, distantNephew) = _r6(parent: parent, nSide: side, node: sibling, dir: !side) }
+            _with(node: distantNephew, ERR_NO_DISTANT_NEPHEW) { $0.color = .Black }
+            parent._rotate(side)
         }
     }
+
+    @inlinable func _r5(parent p: ND, side: Side) -> tup1 { assertNotNil(p[!side], ERR_NO_SIBLING) { (s: ND) -> tup1 in (side, s, s[side], s[!side]) } }
 
     /// Performs a rotation that, in some way, is going to affect this node's sibling. Once the rotation is done this
     /// method will return this nodes new sibling, close nephew, and distant nephew.
@@ -186,16 +219,41 @@ extension Node {
     ///   - dir: The direction of rotation.
     /// - Returns: A tuple that includes the new sibling, close nephew, and distant nephew.
     ///
-    @inlinable func _xr(parent p: ND, nSide: Side, node n: ND, dir: Side) -> (ND, ND?, ND?) {
+    @inlinable func _r6(parent p: ND, nSide: Side, node n: ND, dir: Side) -> tup2 {
         n._rotate(dir)
-        let t = _siblings(parent: p, side: nSide)
+        let t = _r5(parent: p, side: nSide)
         return (t.1, t.2, t.3)
     }
+}
 
-    @inlinable func _siblings(parent p: ND, side: Side) -> (Side, ND, ND?, ND?) {
-        assertNotNil(p[!side], ERR_NO_SIBLING) { (s: ND) -> (Side, ND, ND?, ND?) in (side, s, s[side], s[!side]) }
+extension Node {
+    @inlinable @discardableResult func _withParent(do action: (ND, Side) throws -> Void) rethrows -> ND {
+        try _withParent(none: {}, do: action); return self
     }
 
+    @inlinable func _withParent<R>(none noneAction: () throws -> R, do action: (ND, Side) throws -> R) rethrows -> R {
+        guard let p = parentNode else { return try noneAction() }
+        return try action(p, (self ?= p))
+    }
+
+    @inlinable func _withParent<R>(_ msg: @autoclosure () -> String, _ action: (ND, Side) throws -> R) rethrows -> R { try assertNotNil(parentNode, msg()) { try action($0, (self ?= $0)) } }
+
+    @inlinable func _with(node: ND?, do action: (ND) throws -> Void) rethrows { if let n = node { try action(n) } }
+
+    @inlinable func _with<R>(node: ND?, _ msg: @autoclosure () -> String, _ action: (ND) throws -> R) rethrows -> R { try assertNotNil(node, msg(), action) }
+
+    @inlinable func _with<R>(node: ND?, do action: (ND) throws -> R, else noAction: () throws -> R) rethrows -> R {
+        guard let n = node else { return try noAction() }
+        return try action(n)
+    }
+
+    @inlinable func _get<R>(from node: ND?, default defaultValue: @autoclosure () -> R, _ getter: (ND) throws -> R) rethrows -> R {
+        guard let n = node else { return defaultValue() }
+        return try getter(n)
+    }
+}
+
+extension Node {
     @usableFromInline func _recount() {
         count = (1 + leftCount + rightCount)
         _withParent { p, _ in p._recount() }
@@ -210,38 +268,6 @@ extension Node {
         }
     }
 
-    @inlinable func _insert(item i: T, side sd: Side) -> ND {
-        if let n = self[sd] { return n.insert(item: i) }
-        let n = ND(item: item, color: .Red)
-        self[sd] = n
-        return n.postInsert()
-    }
-
-    @inlinable @discardableResult func _withParent(do action: (ND, Side) throws -> Void) rethrows -> ND {
-        try _withParent(none: {}, do: action); return self
-    }
-
-    @inlinable func _withParent<R>(none noneAction: () throws -> R, do action: (ND, Side) throws -> R) rethrows -> R {
-        guard let p = parentNode else { return try noneAction() }
-        return try action(p, (self ?= p))
-    }
-
-    @inlinable func _withParent<R>(_ msg: @autoclosure () -> String, _ action: (ND, Side) throws -> R) rethrows -> R {
-        try assertNotNil(parentNode, msg()) { (p: ND) -> R in try action(p, (self ?= p)) }
-    }
-
-    @inlinable func _with(node: ND?, do action: (ND) throws -> Void) rethrows { if let n = node { try action(n) } }
-
-    @inlinable func _with<R>(node: ND?, do action: (ND) throws -> R, else noAction: () throws -> R) rethrows -> R {
-        guard let n = node else { return try noAction() }
-        return try action(n)
-    }
-
-    @inlinable func _get<R>(from node: ND?, default defaultValue: @autoclosure () -> R, _ getter: (ND) throws -> R) rethrows -> R {
-        guard let n = node else { return defaultValue() }
-        return try getter(n)
-    }
-
     @inlinable func _foo(_ newNode: ND?, _ oldNode: ND?) {
         guard newNode !== oldNode else { return }
         _with(node: oldNode) { $0.parentNode = nil }
@@ -253,19 +279,6 @@ extension Node {
 
     @inlinable func _bar(_ newNode: ND?, _ oldNode: ND?) { if newNode !== oldNode { _recount() } }
 
-    @usableFromInline func _forEach(flag stop: inout Bool, do body: (ND, inout Bool) throws -> Void) rethrows {
-        guard !stop else { return }
-        try _with(node: leftNode) { try $0._forEach(flag: &stop, do: body) }
-        guard !stop else { return }
-        try body(self, &stop)
-        guard !stop else { return }
-        try _with(node: rightNode) { try $0._forEach(flag: &stop, do: body) }
-    }
-
-    @inlinable static func == (lhs: ND, rhs: ND) -> Bool { lhs === rhs }
-
-    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(item) }
-
     @inlinable static func ?= (lhs: ND, rhs: ND) -> Side {
         if lhs.parentNode === rhs {
             return lhs === rhs.leftNode ? .Left : .Right
@@ -275,6 +288,12 @@ extension Node {
         }
         fatalError("ERROR: Hierarchy Error")
     }
+}
+
+extension Node: Hashable {
+    @inlinable static func == (lhs: ND, rhs: ND) -> Bool { lhs === rhs }
+
+    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(item) }
 }
 
 extension Node.Side {

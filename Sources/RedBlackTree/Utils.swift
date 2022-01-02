@@ -40,3 +40,19 @@ infix operator ?=: ComparisonPrecedence
 }
 
 @inlinable func ifNotNil<T>(_ v: T?, do body: (T) throws -> Void) rethrows { if let v = v { try body(v) } }
+
+@usableFromInline typealias DoWithStuff<T, R> = ([T?], ([T]) -> R)
+
+@usableFromInline func doWith<T, R>(default defaultValue: @autoclosure () -> R, _ stuff: DoWithStuff<T, R>...) -> R {
+    for dws in stuff { if let r = _doWith(stuff: dws) { return r } }
+    return defaultValue()
+}
+
+private func _doWith<T, R>(stuff dws: DoWithStuff<T, R>) -> R? {
+    var ar: [T] = []
+    for x in dws.0 {
+        guard let y = x else { return nil }
+        ar.append(y)
+    }
+    return dws.1(ar)
+}
