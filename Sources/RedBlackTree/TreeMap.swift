@@ -20,14 +20,14 @@ import CoreFoundation
 
 public class TreeMap<Key, Value>: ExpressibleByDictionaryLiteral where Key: Hashable & Comparable {
 
-    private(set) lazy var queue: DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
-
     typealias N = Node<T>
     public typealias Map = TreeMap<Key, Value>
 
-    var treeRoot: N? = nil
-
-    public let startIndex: Index = 0
+    //@f:0
+    fileprivate lazy var queue:      DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
+    fileprivate      var treeRoot:   N?            = nil
+    public           let startIndex: Index         = 0
+    //@f:1
 
     public required init() {}
 
