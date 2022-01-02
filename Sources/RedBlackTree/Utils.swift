@@ -18,8 +18,15 @@
 import Foundation
 import CoreFoundation
 
-@inlinable public func compare<T>(_ l: T, _ r: T) -> ComparisonResult where T: Comparable {
+infix operator ?=: ComparisonPrecedence
+
+@inlinable func comp<T>(_ l: T, _ r: T) -> ComparisonResult where T: Comparable {
     return ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame))
+}
+
+@inlinable func assertNotNil<T, R>(_ v: T?, _ msg: @autoclosure () -> String, _ body: (T) throws -> R) rethrows -> R {
+    guard let v = v else { fatalError(msg()) }
+    return try body(v)
 }
 
 @inlinable func ifNil<T, R>(_ v: T?, do a: () throws -> R, else b: (T) throws -> R) rethrows -> R {
