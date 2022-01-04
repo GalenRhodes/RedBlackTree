@@ -20,16 +20,41 @@ import CoreFoundation
 
 infix operator <=>: ComparisonPrecedence
 
-func <=><T>(l: T, r: T) -> ComparisonResult where T: Comparable {
-    ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame))
-}
+@inlinable func <=><T>(l: T, r: T) -> ComparisonResult where T: Comparable { ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame)) }
 
-func assertNotNil<T, R>(_ v: T?, _ msg: @autoclosure () -> String, _ body: (T) throws -> R) rethrows -> R {
-    guard let v = v else { fatalError(msg()) }
-    return try body(v)
-}
+@inlinable func preconditionNotNil<T, R>(_ v: T?, _ msg: @autoclosure () -> String, _ body: (T) throws -> R) rethrows -> R { try body(preconditionNotNil(v, msg())) }
 
-func assertNotNil<T>(_ v: T?, _ msg: @autoclosure () -> String) -> T {
+@inlinable func preconditionNotNil<T>(_ v: T?, _ msg: @autoclosure () -> String) -> T {
     guard let v = v else { fatalError(msg()) }
     return v
+}
+
+@inlinable func ifNil<T, R>(_ v: T?, _ a: () throws -> R, else b: (T) throws -> R) rethrows -> R {
+    guard let v = v else { return try a() }
+    return try b(v)
+}
+
+@inlinable func unwrap<T, R>(_ v: T?, def defaultValue: @autoclosure () -> R, _ body: (T) throws -> R) rethrows -> R {
+    try ifNil(v) { defaultValue() } else: { (v: T) in try body(v) }
+}
+
+@inlinable func unwrap<T>(_ v: T?, _ body: (T) throws -> Void) rethrows {
+    if let v = v { try body(v) }
+}
+
+extension Collection where Index: Strideable, Index.Stride: SignedInteger {
+    @usableFromInline func componentsJoined(with separator: String) -> String {
+        guard !isEmpty else { return "" }
+        var string: String = "\"\(self[startIndex])"
+        for i in (index(after: startIndex) ..< endIndex) { string += "\(separator)\(self[i])" }
+        return string + "\""
+    }
+}
+
+extension NSRecursiveLock {
+    @inlinable @discardableResult func withLock<R>(_ body: () throws -> R) rethrows -> R {
+        lock()
+        defer { unlock() }
+        return try body()
+    }
 }

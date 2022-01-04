@@ -18,7 +18,7 @@
 import Foundation
 import CoreFoundation
 
-let ERR_MSG_OUT_OF_BOUNDS: String = "Index out of bounds."
+@usableFromInline let ERR_MSG_OUT_OF_BOUNDS: String = "Index out of bounds."
 
 public class TreeSet<T>: BidirectionalCollection, SetAlgebra, Hashable where T: Hashable & Comparable {
 

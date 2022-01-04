@@ -18,61 +18,48 @@
 import Foundation
 import CoreFoundation
 
-private let NAME_LEFT:  String = "left"
-private let NAME_RIGHT: String = "right"
-private let NAME_ERROR: String = "ERROR"
+@usableFromInline let NAME_LEFT:  String = "left"
+@usableFromInline let NAME_RIGHT: String = "right"
+@usableFromInline let NAME_ERROR: String = "ERROR"
 
-private let ERR_MISSING_SIBLING:     String = "\(NAME_ERROR): Missing sibling node."
-private let ERR_MISSING_GRANDPARENT: String = "\(NAME_ERROR): Missing grandparent node."
-private let ERR_MISSING_NEPHEW:      String = "\(NAME_ERROR): Missing distant nephew node."
-private let ERR_NOT_PARENT:          String = "\(NAME_ERROR): Neither node is a parent of the other."
-private let ERR_ROTATE_LEFT:         String = "\(NAME_ERROR): Cannot rotate node to the \(NAME_LEFT) because there is no \(NAME_RIGHT) child node."
-private let ERR_ROTATE_RIGHT:        String = "\(NAME_ERROR): Cannot rotate node to the \(NAME_RIGHT) because there is no \(NAME_LEFT) child node."
+@usableFromInline let ERR_MISSING_SIBLING:     String = "\(NAME_ERROR): Missing sibling node."
+@usableFromInline let ERR_MISSING_GRANDPARENT: String = "\(NAME_ERROR): Missing grandparent node."
+@usableFromInline let ERR_MISSING_NEPHEW:      String = "\(NAME_ERROR): Missing distant nephew node."
+@usableFromInline let ERR_NOT_PARENT:          String = "\(NAME_ERROR): Neither node is a parent of the other."
+@usableFromInline let ERR_ROTATE_LEFT:         String = "\(NAME_ERROR): Cannot rotate node to the \(NAME_LEFT) because there is no \(NAME_RIGHT) child node."
+@usableFromInline let ERR_ROTATE_RIGHT:        String = "\(NAME_ERROR): Cannot rotate node to the \(NAME_RIGHT) because there is no \(NAME_LEFT) child node."
 
-class Node<T> where T: Hashable & Comparable {
+@usableFromInline class Node<T> where T: Hashable & Comparable {
     //@f:0
-    enum Color { case Black, Red }
-    enum Side  { case Left, Right }
+    @usableFromInline enum Color { case Black, Red }
+    @usableFromInline enum Side  { case Left, Right }
 
-    private var data: UInt = 1
-
-    private(set) var item:       T
-    private(set) var parentNode: Node<T>? = nil
-    private(set) var leftNode:   Node<T>? = nil { willSet { child_willSet(leftNode,  newValue) } didSet { child_didSet(oldValue,  leftNode) } }
-    private(set) var rightNode:  Node<T>? = nil { willSet { child_willSet(rightNode, newValue) } didSet { child_didSet(oldValue, rightNode) } }
-
-    private(set) var color:      Color { get { Color.color(data)                 } set { data = ((data & countBits) | newValue.bit)                            } }
-    private(set) var count:      Int   { get { Int(bitPattern: data & countBits) } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits)) } }
-
-    private var leftCount:  Int     { leftNode?.count ?? 0        }
-    private var rightCount: Int     { rightNode?.count ?? 0       }
-
-    var farLeftNode:  Node<T> { leftNode?.farLeftNode ?? self   }
-    var farRightNode: Node<T> { rightNode?.farRightNode ?? self }
-    var root:         Node<T> { parentNode?.root ?? self }
-    var index:        Int     {
-        guard let p = parentNode else { return leftCount }
-        return (self === p.leftNode ? p.index - leftCount - 1 : p.index + leftCount + 1)
-    }
+    @usableFromInline var item:       T
+    @usableFromInline var data:       UInt = 1
+    @usableFromInline var parentNode: Node<T>? = nil
+    @usableFromInline var leftNode:   Node<T>? = nil { willSet { child_willSet(leftNode,  newValue) } didSet { child_didSet(oldValue,  leftNode) } }
+    @usableFromInline var rightNode:  Node<T>? = nil { willSet { child_willSet(rightNode, newValue) } didSet { child_didSet(oldValue, rightNode) } }
     //@f:1
 
-    init(item i: T, color: Color = .Black) {
+    @usableFromInline init(item i: T, color: Color = .Black) {
         item = i
         data = (1 | color.bit)
     }
 
-    init(node: Node<T>) {
+    @usableFromInline init(node: Node<T>) {
         item = node.item
         data = node.data
         if let n = node.leftNode { leftNode = Node<T>(node: n) }
         if let n = node.rightNode { rightNode = Node<T>(node: n) }
     }
+}
 
-    subscript(index: Int) -> Node<T>? { find { index <=> $0.index } }
+extension Node {
+    @inlinable subscript(index: Int) -> Node<T>? { find { index <=> $0.index } }
 
-    subscript(item: T) -> Node<T>? { find { item <=> $0.item } }
+    @inlinable subscript(item: T) -> Node<T>? { find { item <=> $0.item } }
 
-    func find(using comparator: (Node<T>) throws -> ComparisonResult) rethrows -> Node<T>? {
+    @usableFromInline func find(using comparator: (Node<T>) throws -> ComparisonResult) rethrows -> Node<T>? {
         switch try comparator(self) {
             case .orderedSame:       return self
             case .orderedAscending:  return try leftNode?.find(using: comparator)
@@ -80,13 +67,13 @@ class Node<T> where T: Hashable & Comparable {
         }
     }
 
-    @discardableResult func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
+    @inlinable @discardableResult func forEach(_ body: (Node<T>, inout Bool) throws -> Void) rethrows -> Bool {
         var flag = false
         try forEach(body, stop: &flag)
         return flag
     }
 
-    func insert(item i: T) -> Node<T> {
+    @usableFromInline func insert(item i: T) -> Node<T> {
         switch i <=> item {
             case .orderedSame:       item = i
             case .orderedAscending:  return insert(item: i, side: .Left)
@@ -95,7 +82,7 @@ class Node<T> where T: Hashable & Comparable {
         return root
     }
 
-    func remove() -> Node<T>? {
+    @usableFromInline func remove() -> Node<T>? {
         if let l = leftNode, let r = rightNode {
             let n = (Bool.random() ? l.farRightNode : r.farLeftNode)
             swap(&item, &n.item)
@@ -114,7 +101,7 @@ class Node<T> where T: Hashable & Comparable {
         return nil
     }
 
-    func removeAll() {
+    @usableFromInline func removeAll() {
         if let n = leftNode {
             n.removeAll()
             leftNode = nil
@@ -127,14 +114,14 @@ class Node<T> where T: Hashable & Comparable {
         data = 1
     }
 
-    private func preRemove() {
+    @usableFromInline func preRemove() {
         if let p = parentNode {
             let side    = (self <=> p)
-            var sibling = assertNotNil(p[!side], ERR_MISSING_SIBLING)
+            var sibling = preconditionNotNil(p[!side], ERR_MISSING_SIBLING)
 
             if sibling == Color.Red {
                 p.rotate(dir: side)
-                sibling = assertNotNil(p[!side], ERR_MISSING_SIBLING)
+                sibling = preconditionNotNil(p[!side], ERR_MISSING_SIBLING)
             }
 
             if sibling == Color.Black && sibling.leftNode == Color.Black && sibling.rightNode == Color.Black {
@@ -147,13 +134,13 @@ class Node<T> where T: Hashable & Comparable {
                     sibling.rotate(dir: !side)
                     sibling = nn
                 }
-                assertNotNil(sibling[!side], ERR_MISSING_NEPHEW).color = .Black
+                preconditionNotNil(sibling[!side], ERR_MISSING_NEPHEW).color = .Black
                 p.rotate(dir: side)
             }
         }
     }
 
-    private func insert(item i: T, side: Side) -> Node<T> {
+    @inlinable func insert(item i: T, side: Side) -> Node<T> {
         if let n = self[side] { return n.insert(item: i) }
         let n = Node<T>(item: i, color: .Red)
         self[side] = n
@@ -161,10 +148,10 @@ class Node<T> where T: Hashable & Comparable {
         return root
     }
 
-    private func postInsert() {
+    @usableFromInline func postInsert() {
         if let p = parentNode {
             if p == Color.Red {
-                let g  = assertNotNil(p.parentNode, ERR_MISSING_GRANDPARENT)
+                let g  = preconditionNotNil(p.parentNode, ERR_MISSING_GRANDPARENT)
                 let s1 = (p <=> g)
                 let s2 = !s1
 
@@ -183,22 +170,22 @@ class Node<T> where T: Hashable & Comparable {
         color = .Black
     }
 
-    private func rotate(dir d: Side) {
+    @inlinable func rotate(dir d: Side) {
         let _d = !d
-        let c = assertNotNil(self[_d], d.isLeft ? ERR_ROTATE_LEFT : ERR_ROTATE_RIGHT)
+        let c  = preconditionNotNil(self[_d], d.isLeft ? ERR_ROTATE_LEFT : ERR_ROTATE_RIGHT)
         unLink(newNode: c)
         self[_d] = c[d]
         c[d] = self
         swap(&color, &c.color)
     }
 
-    @discardableResult private func unLink(newNode: Node<T>? = nil) -> Node<T> {
+    @usableFromInline @discardableResult func unLink(newNode: Node<T>? = nil) -> Node<T> {
         if let p = parentNode { p[self <=> p] = newNode }
         else if let n = newNode { n.unLink() }
         return self
     }
 
-    private func forEach(_ body: (Node<T>, inout Bool) throws -> Void, stop flag: inout Bool) rethrows {
+    @usableFromInline func forEach(_ body: (Node<T>, inout Bool) throws -> Void, stop flag: inout Bool) rethrows {
         if let n = leftNode { try n.forEach(body, stop: &flag) }
         if !flag {
             try body(self, &flag)
@@ -207,49 +194,62 @@ class Node<T> where T: Hashable & Comparable {
     }
 
     //@f:0
-    private subscript(side: Side) -> Node<T>? {
+    @inlinable subscript(side: Side) -> Node<T>? {
         get { side.isLeft ? leftNode : rightNode }
         set { if side.isLeft { leftNode = newValue } else { rightNode = newValue } }
     }
     //@f:1
 
-    private func child_willSet(_ oldNode: Node<T>?, _ newNode: Node<T>?) {
+    @inlinable func child_willSet(_ oldNode: Node<T>?, _ newNode: Node<T>?) {
         if oldNode !== newNode {
             if let n = oldNode { n.parentNode = nil }
             if let n = newNode { n.unLink().parentNode = self }
         }
     }
 
-    private func child_didSet(_ oldNode: Node<T>?, _ newNode: Node<T>?) {
+    @inlinable func child_didSet(_ oldNode: Node<T>?, _ newNode: Node<T>?) {
         if oldNode !== newNode { recount() }
     }
 
-    private func recount() {
+    @usableFromInline func recount() {
         count = (1 + leftCount + rightCount)
         parentNode?.recount()
     }
 
-    static func <=> (l: Node<T>, r: Node<T>) -> Side {
+    @inlinable static func <=> (l: Node<T>, r: Node<T>) -> Side {
         if l.parentNode === r { return l === r.leftNode ? .Left : .Right }
         if r.parentNode === l { return r === l.leftNode ? .Left : .Right }
         fatalError(ERR_NOT_PARENT)
     }
+
+    //@f:0
+    @usableFromInline var farLeftNode:  Node<T> { leftNode?.farLeftNode ?? self   }
+    @usableFromInline var farRightNode: Node<T> { rightNode?.farRightNode ?? self }
+    @usableFromInline var root:         Node<T> { parentNode?.root ?? self        }
+
+    @inlinable        var color:        Color   { get { Color.color(data) } set { data = ((data & countBits) | newValue.bit) } }
+
+    @inlinable        var count:        Int     { get { Int(bitPattern: data & countBits) } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits)) }                                 }
+    @inlinable        var leftCount:    Int     { leftNode?.count ?? 0                                                                                                                                    }
+    @inlinable        var rightCount:   Int     { rightNode?.count ?? 0                                                                                                                                   }
+    @usableFromInline var index:        Int     { ifNil(parentNode) { () -> Int in leftCount } else: { (p: Node<T>) -> Int in (self === p.leftNode ? p.index - leftCount - 1 : p.index + leftCount + 1) } }
+    //@f:1
 }
 
 extension Node.Side {
-    var isLeft:      Bool { self == .Left }
-    var isRight:     Bool { self == .Right }
+    @inlinable var isLeft:  Bool { self == .Left }
+    @inlinable var isRight: Bool { self == .Right }
 
-    static prefix func ! (s: Self) -> Self { s.isLeft ? .Right : .Left }
+    @inlinable static prefix func ! (s: Self) -> Self { s.isLeft ? .Right : .Left }
 }
 
-fileprivate let colorBit:  UInt = (1 << (UInt.bitWidth - 1))
-fileprivate let countBits: UInt = ~colorBit
+@usableFromInline let colorBit:  UInt = (1 << (UInt.bitWidth - 1))
+@usableFromInline let countBits: UInt = ~colorBit
 
 extension Node.Color {
-    var bit: UInt { self == .Red ? colorBit : 0 }
+    @inlinable var bit: UInt { self == .Red ? colorBit : 0 }
 
-    static func color(_ d: UInt) -> Self { (d & colorBit) == 0 ? .Black : .Red }
+    @inlinable static func color(_ d: UInt) -> Self { (d & colorBit) == 0 ? .Black : .Red }
 
-    static func == (l: Node?, r: Self) -> Bool { (l?.color ?? .Black) == r }
+    @inlinable static func == (l: Node?, r: Self) -> Bool { (l?.color ?? .Black) == r }
 }
