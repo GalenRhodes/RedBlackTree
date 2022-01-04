@@ -17,6 +17,7 @@
 
 import Foundation
 import CoreFoundation
+import ReadWriteLock
 
 public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLiteral where K: Hashable & Comparable {
     //@f:0
@@ -27,7 +28,7 @@ public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLite
     /// I know it's a performance hit to do locking but binary trees do NOT recover well
     /// from concurrent updates. Bad things happen. So we will do locking so that we can
     /// use this class concurrently without having to worry about loosing data.
-    @usableFromInline      let lock:     NSRecursiveLock = NSRecursiveLock()
+    @usableFromInline      let lock: ReadWriteLock = ReadWriteLock()
 
     /// And since we're doing locking we might as well take advantage of multiple threads
     /// to make some tasks faster. For example, with multiple CPUs you can split the tree
@@ -57,18 +58,18 @@ public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLite
 
 extension TreeMap {
     //@f:0
-    @inlinable public var endIndex:   Index   { Index(count)                                                                   }
-    @inlinable public var count:      Int     { lock.withLock { unwrap(treeRoot, def: 0) { (r: N) in r.count } }               }
-    @inlinable public var isEmpty:    Bool    { lock.withLock { treeRoot == nil }                                              }
-    @inlinable public var keys:       Keys    { Keys(map: self)                                                                }
-    @inlinable public var values:     Values  { Values(map: self)                                                              }
-    @inlinable public var first:      Element { preconditionNotNil(treeRoot?.farLeftNode,  ERR_MSG_OUT_OF_BOUNDS).item.element }
-    @inlinable public var last:       Element { preconditionNotNil(treeRoot?.farRightNode, ERR_MSG_OUT_OF_BOUNDS).item.element }
+    @inlinable public var endIndex:   Index   { Index(count)                                                                                         }
+    @inlinable public var count:      Int     { lock.withReadLock { unwrap(treeRoot, def: 0) { (r: N) in r.count } }                                 }
+    @inlinable public var isEmpty:    Bool    { lock.withReadLock { treeRoot == nil }                                                                }
+    @inlinable public var keys:       Keys    { Keys(map: self)                                                                                      }
+    @inlinable public var values:     Values  { Values(map: self)                                                                                    }
+    @inlinable public var first:      Element { lock.withReadLock { preconditionNotNil(treeRoot?.farLeftNode,  ERR_MSG_OUT_OF_BOUNDS).item.element } }
+    @inlinable public var last:       Element { lock.withReadLock { preconditionNotNil(treeRoot?.farRightNode, ERR_MSG_OUT_OF_BOUNDS).item.element } }
     //@f:1
 
     @inlinable public convenience init(_ other: Map) {
         self.init()
-        other.lock.withLock { if let r = other.treeRoot { treeRoot = N(node: r) } }
+        other.lock.withReadLock { if let r = other.treeRoot { treeRoot = N(node: r) } }
     }
 
     @inlinable public convenience init<S>(uniqueKeysWithValues keysAndValues: S) where S: Sequence, S.Element == (K, V) {
@@ -100,16 +101,16 @@ extension TreeMap {
     }
 
     @inlinable public subscript(key: K, default defaultValue: @autoclosure () -> V) -> V {
-        lock.withLock { _value(forKey: key) ?? defaultValue() }
+        lock.withReadLock { _value(forKey: key) ?? defaultValue() }
     }
 
     @inlinable public subscript(key: K) -> V? {
-        get { lock.withLock { _value(forKey: key) } }
-        set { lock.withLock { _set(value: newValue, forKey: key) } }
+        get { lock.withReadLock { _value(forKey: key) } }
+        set { lock.withWriteLock { _set(value: newValue, forKey: key) } }
     }
 
     @inlinable public subscript(position: Index) -> Element {
-        lock.withLock { _node(at: position).item.element }
+        lock.withReadLock { _node(at: position).item.element }
     }
 
     @inlinable public func mapValues<O>(_ transform: (V) throws -> O) rethrows -> TreeMap<K, O> {
@@ -121,19 +122,19 @@ extension TreeMap {
     }
 
     @inlinable @discardableResult public func updateValue(_ value: V, forKey key: K) -> V? {
-        lock.withLock { _set(value: value, forKey: key) }
+        lock.withWriteLock { _set(value: value, forKey: key) }
     }
 
     @inlinable public func merge<S>(_ other: S, uniquingKeysWith combine: (V, V) throws -> V) rethrows where S: Sequence, S.Element == (K, V) {
-        try lock.withLock { try other.forEach { (e: S.Element) in try _combine(e, combine) } }
+        try lock.withWriteLock { try other.forEach { (e: S.Element) in try _combine(e, combine) } }
     }
 
     @inlinable public func merge(_ other: [K: V], uniquingKeysWith combine: (V, V) throws -> V) rethrows {
-        try lock.withLock { try other.forEach { try _combine($0, combine) } }
+        try lock.withWriteLock { try other.forEach { try _combine($0, combine) } }
     }
 
     @inlinable public func merge(_ other: Map, uniquingKeysWith combine: (V, V) throws -> V) rethrows {
-        try lock.withLock { try other.forEach { try _combine($0, combine) } }
+        try lock.withWriteLock { try other.forEach { try _combine($0, combine) } }
     }
 
     @inlinable public func merging<S>(_ other: S, uniquingKeysWith combine: (V, V) throws -> V) rethrows -> Map where S: Sequence, S.Element == (K, V) {
@@ -149,29 +150,29 @@ extension TreeMap {
     }
 
     @inlinable public func remove(at index: Index) -> Element {
-        lock.withLock { _remove(node: _node(at: index)).element }
+        lock.withWriteLock { _remove(node: _node(at: index)).element }
     }
 
     @inlinable public func removeValue(forKey key: K) -> V? {
-        lock.withLock { _remove(forKey: key) }
+        lock.withWriteLock { _remove(forKey: key) }
     }
 
     @inlinable public func removeAll(keepingCapacity keepCapacity: Bool = false) {
-        lock.withLock { unwrap(treeRoot) { (r: N) in treeRoot = nil; queue.async { r.removeAll() } } }
+        lock.withWriteLock { unwrap(treeRoot) { (r: N) in treeRoot = nil; queue.async { r.removeAll() } } }
     }
 
     @inlinable public func forEach(_ body: (Element) throws -> Void) rethrows {
-        try lock.withLock { try _forEach { e, _ in try body(e) } }
+        try lock.withReadLock { try _forEach { e, _ in try body(e) } }
     }
 
     @inlinable public func popFirst() -> Element? {
-        lock.withLock { unwrap(treeRoot, def: nil) { (r: N) in _remove(node: r.farLeftNode).element } }
+        lock.withWriteLock { unwrap(treeRoot, def: nil) { (r: N) in _remove(node: r.farLeftNode).element } }
     }
 
     @inlinable public func reserveCapacity(_ minimumCapacity: Int) {}
 
     @inlinable public func makeIterator() -> Iterator {
-        lock.withLock { Iterator(map: self) }
+        lock.withReadLock { Iterator(map: self) }
     }
 
     @inlinable public func index(after i: Index) -> Index {
@@ -242,7 +243,7 @@ extension TreeMap {
 
         @inlinable public  var startIndex:       Index  { map.startIndex }
         @inlinable public  var endIndex:         Index  { map.endIndex }
-        @inlinable public  var description:      String { "TreeMap.keys [ \(componentsJoined(with: "\", \"")) ]" }
+        @inlinable public  var description:      String { "TreeMap.keys [ \(map.lock.withReadLock { componentsJoined(with: "\", \"") }) ]" }
         @inlinable public  var debugDescription: String { description }
         @inlinable public  var count:            Int    { map.count }
         @inlinable public  var isEmpty:          Bool   { map.isEmpty }
@@ -278,7 +279,7 @@ extension TreeMap {
 
         @inlinable public  var startIndex:       Index  { map.startIndex }
         @inlinable public  var endIndex:         Index  { map.endIndex }
-        @inlinable public  var description:      String { "TreeMap.values [ \(componentsJoined(with: "\", \"")) ]" }
+        @inlinable public  var description:      String { "TreeMap.values [ \(map.lock.withReadLock { componentsJoined(with: "\", \"") }) ]" }
         @inlinable public  var debugDescription: String { description }
         @inlinable public  var count:            Int    { map.count }
         @inlinable public  var isEmpty:          Bool   { map.isEmpty }
@@ -339,7 +340,7 @@ extension TreeMap {
     }
 
     @inlinable func _resolve(old v1: V?, new v2: V, _ c: (V, V) throws -> V) rethrows -> V {
-        unwrap(v1, def: v2) { (v1: V) in try c(v1, v2) }
+        try unwrap(v1, def: v2) { (v1: V) in try c(v1, v2) }
     }
 
     @inlinable func _node(at i: Index) -> Node<Item> {
@@ -436,7 +437,16 @@ extension TreeMap.Item: Codable where K: Codable, V: Codable {
 }
 
 extension TreeMap: Equatable where V: Equatable {
-    @inlinable public static func == (l: Map, r: Map) -> Bool { ((l === r) || ((l.count == r.count) && !l._forEach({ $1 = ($0.value != r[$0.key]) }))) }
+    @inlinable public static func == (l: Map, r: Map) -> Bool {
+        l.lock.withReadLock {
+            r.lock.withReadLock {
+                guard l !== r else { return true }
+                guard type(of: l) == type(of: r) else { return false }
+                guard l.count == r.count else { return false }
+                return !l._forEach { e, f in f = !(e.value == r._value(forKey: e.key)) }
+            }
+        }
+    }
 }
 
 extension TreeMap: Hashable where V: Hashable {
@@ -451,7 +461,7 @@ extension TreeMap: Hashable where V: Hashable {
 extension TreeMap: Encodable where K: Codable, V: Codable {
     @inlinable public func encode(to encoder: Encoder) throws {
         var c = encoder.unkeyedContainer()
-        try forEach { key, value in try c.encode(Item(key: key, value: value)) }
+        try lock.withReadLock { _ = try _forEachItem { item, _ in try c.encode(item) } }
     }
 }
 

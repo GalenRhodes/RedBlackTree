@@ -105,7 +105,7 @@ extension TreeSet {
     @discardableResult public func insert(_ value: T) -> (inserted: Bool, memberAfterInsert: T) {
         if let r = treeRoot {
             if let o = r[value] { return (false, o.item) }
-            treeRoot = r.insert(item: <#T##T##T#>)
+            treeRoot = r.insert(item: value)
         }
         else {
             treeRoot = Node<T>(item: value)
@@ -117,7 +117,7 @@ extension TreeSet {
     @discardableResult public func update(with newMember: T) -> T? {
         if let r = treeRoot {
             let o = r[newMember]
-            treeRoot = r.insert(item: <#T##T##T#>)
+            treeRoot = r.insert(item: newMember)
             if let _o = o { return _o.item }
         }
         else {

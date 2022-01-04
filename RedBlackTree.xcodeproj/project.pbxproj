@@ -14,6 +14,7 @@
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117DCB49879DEBF2B2D1F45 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D4E6FD0C50F7AABB6123 /* Utils.swift */; };
 		1117DE6B62AF2D669D3B4971 /* TreeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D9D4156BCC75F11FCBA8 /* TreeSet.swift */; };
+		831F4AAC2784D6EC00B278B9 /* ReadWriteLock in Frameworks */ = {isa = PBXBuildFile; productRef = 831F4AAB2784D6EC00B278B9 /* ReadWriteLock */; };
 		832D774726B987610005063D /* PGDocFixer in Frameworks */ = {isa = PBXBuildFile; productRef = 832D774626B987610005063D /* PGDocFixer */; };
 		83D5453926B47C3D00B136FC /* RedBlackTree.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */; };
 /* End PBXBuildFile section */
@@ -82,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				831F4AAC2784D6EC00B278B9 /* ReadWriteLock in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,6 +245,9 @@
 			dependencies = (
 			);
 			name = RedBlackTree;
+			packageProductDependencies = (
+				831F4AAB2784D6EC00B278B9 /* ReadWriteLock */,
+			);
 			productName = RedBlackTree;
 			productReference = 83D5452F26B47C3D00B136FC /* RedBlackTree.framework */;
 			productType = "com.apple.product-type.framework";
@@ -295,7 +300,8 @@
 			);
 			mainGroup = 83D5452526B47C3D00B136FC;
 			packageReferences = (
-				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */,
+				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */,
+				831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock" */,
 			);
 			productRefGroup = 83D5453026B47C3D00B136FC /* Products */;
 			projectDirPath = "";
@@ -647,7 +653,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */ = {
+		831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GalenRhodes/ReadWriteLock.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
+			};
+		};
+		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GalenRhodes/PGDocFixer.git";
 			requirement = {
@@ -658,14 +672,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		831F4AAB2784D6EC00B278B9 /* ReadWriteLock */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock" */;
+			productName = ReadWriteLock;
+		};
 		832D774626B987610005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
 			productName = PGDocFixer;
 		};
 		832D774A26B988740005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
 			productName = PGDocFixer;
 		};
 /* End XCSwiftPackageProductDependency section */
