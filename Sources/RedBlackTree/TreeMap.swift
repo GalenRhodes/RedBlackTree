@@ -28,15 +28,15 @@ public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLite
     /// I know it's a performance hit to do locking but binary trees do NOT recover well
     /// from concurrent updates. Bad things happen. So we will do locking so that we can
     /// use this class concurrently without having to worry about loosing data.
-    @usableFromInline      let lock: ReadWriteLock = ReadWriteLock()
+    @usableFromInline let lock: ReadWriteLock = ReadWriteLock()
 
     /// And since we're doing locking we might as well take advantage of multiple threads
     /// to make some tasks faster. For example, with multiple CPUs you can split the tree
     /// in half to do searches as long as you're not depending on the order.
-    @usableFromInline lazy var queue:    DispatchQueue   = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
+    @usableFromInline lazy var queue: DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
 
     /// The root of our tree.
-    @usableFromInline      var treeRoot: N?              = nil
+    @usableFromInline var treeRoot: N? = nil
 
     public let capacity:   Int    = Int.max
     public let startIndex: Index  = 0
@@ -59,7 +59,7 @@ public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLite
 extension TreeMap {
     //@f:0
     @inlinable public var endIndex:   Index   { Index(count)                                                                                         }
-    @inlinable public var count:      Int     { lock.withReadLock { unwrap(treeRoot, def: 0) { (r: N) in r.count } }                                 }
+    @inlinable public var count:      Int     { lock.withReadLock { _count }                                                                         }
     @inlinable public var isEmpty:    Bool    { lock.withReadLock { treeRoot == nil }                                                                }
     @inlinable public var keys:       Keys    { Keys(map: self)                                                                                      }
     @inlinable public var values:     Values  { Values(map: self)                                                                                    }
@@ -327,6 +327,8 @@ extension TreeMap {
         }
     }
 
+    @inlinable var _count: Int { unwrap(treeRoot, def: 0) { (r: N) in r.count } }
+
     @inlinable func _forEach(_ body: (Element, inout Bool) throws -> Void) rethrows -> Bool {
         try _forEachItem { i, f in try body(i.element, &f) }
     }
@@ -438,11 +440,11 @@ extension TreeMap.Item: Codable where K: Codable, V: Codable {
 
 extension TreeMap: Equatable where V: Equatable {
     @inlinable public static func == (l: Map, r: Map) -> Bool {
-        l.lock.withReadLock {
+        guard l !== r else { return true }
+        guard type(of: l) == type(of: r) else { return false }
+        return l.lock.withReadLock {
             r.lock.withReadLock {
-                guard l !== r else { return true }
-                guard type(of: l) == type(of: r) else { return false }
-                guard l.count == r.count else { return false }
+                guard l._count == r._count else { return false }
                 return !l._forEach { e, f in f = !(e.value == r._value(forKey: e.key)) }
             }
         }

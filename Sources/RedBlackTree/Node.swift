@@ -101,17 +101,12 @@ extension Node {
         return nil
     }
 
-    @usableFromInline func removeAll() {
-        if let n = leftNode {
-            n.removeAll()
-            leftNode = nil
-        }
-        if let n = rightNode {
-            n.removeAll()
-            rightNode = nil
-        }
+    @usableFromInline @discardableResult func removeAll() -> Node<T>? {
+        if let n = leftNode { leftNode = n.removeAll() }
+        if let n = rightNode { rightNode = n.removeAll() }
         parentNode = nil
         data = 1
+        return nil
     }
 
     @usableFromInline func preRemove() {
