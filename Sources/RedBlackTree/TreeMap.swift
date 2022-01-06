@@ -19,11 +19,13 @@ import Foundation
 import CoreFoundation
 import ReadWriteLock
 
-public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLiteral where K: Hashable & Comparable {
+public class TreeMap<K, V>: TreeIteratorOwner, BidirectionalCollection, ExpressibleByDictionaryLiteral where K: Hashable & Comparable {
     //@f:0
     public            typealias Element = (key: K, value: V)
     public            typealias Map     = TreeMap<K, V>
     @usableFromInline typealias N       = Node<Item>
+    @usableFromInline typealias E       = Item
+    @usableFromInline typealias L       = Iterator
 
     /// I know it's a performance hit to do locking but binary trees do NOT recover well
     /// from concurrent updates. Bad things happen. So we will do locking so that we can
@@ -35,11 +37,10 @@ public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLite
     /// in half to do searches as long as you're not depending on the order.
     @usableFromInline lazy var queue: DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
 
+    @usableFromInline var notificationCenter: NotificationCenter = NotificationCenter()
+
     /// The root of our tree.
     @usableFromInline var treeRoot: N? = nil
-
-    public let capacity:   Int    = Int.max
-    public let startIndex: Index  = 0
     //@f:1
 
     public required init() {}
@@ -57,16 +58,6 @@ public class TreeMap<K, V>: BidirectionalCollection, ExpressibleByDictionaryLite
 }
 
 extension TreeMap {
-    //@f:0
-    @inlinable public var endIndex:   Index   { Index(count)                                                                                         }
-    @inlinable public var count:      Int     { lock.withReadLock { _count }                                                                         }
-    @inlinable public var isEmpty:    Bool    { lock.withReadLock { treeRoot == nil }                                                                }
-    @inlinable public var keys:       Keys    { Keys(map: self)                                                                                      }
-    @inlinable public var values:     Values  { Values(map: self)                                                                                    }
-    @inlinable public var first:      Element { lock.withReadLock { preconditionNotNil(treeRoot?.farLeftNode,  ERR_MSG_OUT_OF_BOUNDS).item.element } }
-    @inlinable public var last:       Element { lock.withReadLock { preconditionNotNil(treeRoot?.farRightNode, ERR_MSG_OUT_OF_BOUNDS).item.element } }
-    //@f:1
-
     @inlinable public convenience init(_ other: Map) {
         self.init()
         other.lock.withReadLock { if let r = other.treeRoot { treeRoot = N(node: r) } }
@@ -93,12 +84,20 @@ extension TreeMap {
             else { _set(value: [ e ], forKey: k) }
         }
     }
+}
 
-    @inlinable public convenience init(_unsafeUninitializedCapacity capacity: Int,
-                                       allowingDuplicates: Bool,
-                                       initializingWith initializer: (_ keys: UnsafeMutableBufferPointer<K>, _ values: UnsafeMutableBufferPointer<V>) -> Int) {
-        self.init()
-    }
+extension TreeMap {
+    //@f:0
+    @inlinable public var startIndex: Index   { 0                                                                                                            }
+    @inlinable public var endIndex:   Index   { Index(count)                                                                                                 }
+    @inlinable public var capacity:   Int     { Swift.max(10, count * 2) /* The true capacity is how much memory you have but we don't want to show that. */ }
+    @inlinable public var count:      Int     { lock.withReadLock { _count }                                                                                 }
+    @inlinable public var isEmpty:    Bool    { lock.withReadLock { treeRoot == nil }                                                                        }
+    @inlinable public var keys:       Keys    { Keys(map: self)                                                                                              }
+    @inlinable public var values:     Values  { Values(map: self)                                                                                            }
+    @inlinable public var first:      Element { lock.withReadLock { preconditionNotNil(treeRoot?.farLeftNode,  ERR_MSG_OUT_OF_BOUNDS).item.element }         }
+    @inlinable public var last:       Element { lock.withReadLock { preconditionNotNil(treeRoot?.farRightNode, ERR_MSG_OUT_OF_BOUNDS).item.element }         }
+    //@f:1
 
     @inlinable public subscript(key: K, default defaultValue: @autoclosure () -> V) -> V {
         lock.withReadLock { _value(forKey: key) ?? defaultValue() }
@@ -172,7 +171,7 @@ extension TreeMap {
     @inlinable public func reserveCapacity(_ minimumCapacity: Int) {}
 
     @inlinable public func makeIterator() -> Iterator {
-        lock.withReadLock { Iterator(map: self) }
+        lock.withReadLock { Iterator(self) }
     }
 
     @inlinable public func index(after i: Index) -> Index {
@@ -211,28 +210,24 @@ extension TreeMap {
         @inlinable public static func == (lhs: Index, rhs: Index) -> Bool { (lhs.index == rhs.index) }
     }
 
-    @frozen public struct Iterator: IteratorProtocol {
-        public typealias Element = Map.Element
+    public class Iterator: TreeListener, IteratorProtocol {
 
-        @usableFromInline var stack: [N] = []
+        @usableFromInline let _iter: TreeIterator<TreeMap<K, V>, Item>
 
-        @usableFromInline init(map: Map) {
-            prime(node: map.treeRoot)
+        @inlinable init(_ tree: TreeMap<K, V>) {
+            _iter = TreeIterator<TreeMap<K, V>, Item>(owner: tree)
+            tree.addTreeIteratorListener(self)
         }
 
-        @inlinable mutating func prime(node n: N?) {
-            var n = n
-            while let node = n {
-                stack.append(node)
-                n = node.leftNode
-            }
-        }
+        deinit { _iter.owner.removeTreeIteratorListener(self) }
 
-        @inlinable public mutating func next() -> Element? {
-            guard let n = stack.popLast() else { return nil }
-            prime(node: n.rightNode)
-            return n.item.element
-        }
+        @inlinable public func next() -> Element? { _iter.next()?.element }
+
+        @inlinable func allRemoved() { _iter.allRemoved() }
+
+        @inlinable func nodeRemoved(node: Node<Item>) { _iter.nodeRemoved(node: node) }
+
+        @inlinable func nodeInserted(node: Node<Item>) { _iter.nodeInserted(node: node) }
     }
 
     @frozen public struct Keys: BidirectionalCollection, Hashable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -320,7 +315,7 @@ extension TreeMap {
             self.value = value
         }
 
-        @usableFromInline required init(from decoder: Decoder) throws where K: Codable, V: Codable {
+        public required init(from decoder: Decoder) throws where K: Codable, V: Codable {
             let c: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
             key = try c.decode(K.self, forKey: CodingKeys.Key)
             value = try c.decode(V.self, forKey: CodingKeys.Value)
@@ -421,11 +416,11 @@ extension TreeMap.Values: Hashable where V: Hashable {
 extension TreeMap.Item {
     @inlinable var element: TreeMap.Element { (key, value) }
 
-    @inlinable func hash(into hasher: inout Hasher) { hasher.combine(key) }
+    @inlinable public func hash(into hasher: inout Hasher) { hasher.combine(key) }
 
-    @inlinable static func < (lhs: TreeMap.Item, rhs: TreeMap.Item) -> Bool { lhs.key < rhs.key }
+    @inlinable public static func < (lhs: TreeMap.Item, rhs: TreeMap.Item) -> Bool { lhs.key < rhs.key }
 
-    @inlinable static func == (lhs: TreeMap.Item, rhs: TreeMap.Item) -> Bool { lhs.key == rhs.key }
+    @inlinable public static func == (lhs: TreeMap.Item, rhs: TreeMap.Item) -> Bool { lhs.key == rhs.key }
 }
 
 extension TreeMap.Item: Codable where K: Codable, V: Codable {

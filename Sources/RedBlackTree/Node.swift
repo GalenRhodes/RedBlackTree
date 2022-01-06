@@ -29,7 +29,7 @@ import CoreFoundation
 @usableFromInline let ERR_ROTATE_LEFT:         String = "\(NAME_ERROR): Cannot rotate node to the \(NAME_LEFT) because there is no \(NAME_RIGHT) child node."
 @usableFromInline let ERR_ROTATE_RIGHT:        String = "\(NAME_ERROR): Cannot rotate node to the \(NAME_RIGHT) because there is no \(NAME_LEFT) child node."
 
-@usableFromInline class Node<T> where T: Hashable & Comparable {
+public class Node<T> where T: Hashable & Comparable {
     //@f:0
     @usableFromInline enum Color { case Black, Red }
     @usableFromInline enum Side  { case Left, Right }

@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1117D0668461B7247D0B3162 /* TreeIteratorOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D1D81F69FE2E8F3977A6 /* TreeIteratorOwner.swift */; };
 		1117D2B331AAF0D32EFB3E91 /* RedBlackTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1117D2FE343F26C054AD5DB2 /* RedBlackTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DBD94DA68D43EBBA2BFA /* RedBlackTreeTests.swift */; };
+		1117D317715BB5890F9CD3C5 /* TreeIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D11B02EC4CD69004E7C1 /* TreeIterator.swift */; };
 		1117D385CC9D90DC7EF4A6BF /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DCDA43C6F5BF6121A903 /* Node.swift */; };
+		1117D554E9C69C812041F983 /* TreeListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D440F6AC3BB5C7ABA30D /* TreeListener.swift */; };
 		1117D63F11B27E7615671B6E /* TreeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D1F66DEE1BD8DC1545BC /* TreeMap.swift */; };
 		1117D6CB290FBEFB7A4E8DA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117DA48540485F84963B2F1 /* main.swift */; };
 		1117DCB49879DEBF2B2D1F45 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1117D4E6FD0C50F7AABB6123 /* Utils.swift */; };
@@ -49,8 +52,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1117D11B02EC4CD69004E7C1 /* TreeIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeIterator.swift; sourceTree = "<group>"; };
+		1117D1D81F69FE2E8F3977A6 /* TreeIteratorOwner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeIteratorOwner.swift; sourceTree = "<group>"; };
 		1117D1F66DEE1BD8DC1545BC /* TreeMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeMap.swift; sourceTree = "<group>"; };
 		1117D2592B5FEFEC531E44E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		1117D440F6AC3BB5C7ABA30D /* TreeListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeListener.swift; sourceTree = "<group>"; };
 		1117D4BD6FA1EF387509B8D3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1117D4E6FD0C50F7AABB6123 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		1117D75C0DDF54FF6E353F4B /* RedBlackTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBlackTree.h; sourceTree = "<group>"; };
@@ -164,6 +170,9 @@
 				1117D1F66DEE1BD8DC1545BC /* TreeMap.swift */,
 				1117D4E6FD0C50F7AABB6123 /* Utils.swift */,
 				1117DCDA43C6F5BF6121A903 /* Node.swift */,
+				1117D11B02EC4CD69004E7C1 /* TreeIterator.swift */,
+				1117D1D81F69FE2E8F3977A6 /* TreeIteratorOwner.swift */,
+				1117D440F6AC3BB5C7ABA30D /* TreeListener.swift */,
 			);
 			path = RedBlackTree;
 			sourceTree = "<group>";
@@ -300,8 +309,8 @@
 			);
 			mainGroup = 83D5452526B47C3D00B136FC;
 			packageReferences = (
-				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */,
-				831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock" */,
+				832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */,
+				831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock.git" */,
 			);
 			productRefGroup = 83D5453026B47C3D00B136FC /* Products */;
 			projectDirPath = "";
@@ -348,6 +357,9 @@
 				1117D63F11B27E7615671B6E /* TreeMap.swift in Sources */,
 				1117DCB49879DEBF2B2D1F45 /* Utils.swift in Sources */,
 				1117D385CC9D90DC7EF4A6BF /* Node.swift in Sources */,
+				1117D317715BB5890F9CD3C5 /* TreeIterator.swift in Sources */,
+				1117D0668461B7247D0B3162 /* TreeIteratorOwner.swift in Sources */,
+				1117D554E9C69C812041F983 /* TreeListener.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,7 +665,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock" */ = {
+		831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GalenRhodes/ReadWriteLock.git";
 			requirement = {
@@ -661,7 +673,7 @@
 				minimumVersion = 1.0.1;
 			};
 		};
-		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */ = {
+		832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GalenRhodes/PGDocFixer.git";
 			requirement = {
@@ -674,17 +686,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		831F4AAB2784D6EC00B278B9 /* ReadWriteLock */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock" */;
+			package = 831F4AAA2784D6EC00B278B9 /* XCRemoteSwiftPackageReference "ReadWriteLock.git" */;
 			productName = ReadWriteLock;
 		};
 		832D774626B987610005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
 			productName = PGDocFixer;
 		};
 		832D774A26B988740005063D /* PGDocFixer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer" */;
+			package = 832D774526B987610005063D /* XCRemoteSwiftPackageReference "PGDocFixer.git" */;
 			productName = PGDocFixer;
 		};
 /* End XCSwiftPackageProductDependency section */
