@@ -20,7 +20,7 @@ import CoreFoundation
 
 infix operator <=>: ComparisonPrecedence
 
-@inlinable func <=><T>(l: T, r: T) -> ComparisonResult where T: Comparable { ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame)) }
+@inlinable func <=> <T>(l: T, r: T) -> ComparisonResult where T: Comparable { ((l < r) ? .orderedAscending : ((r < l) ? .orderedDescending : .orderedSame)) }
 
 @inlinable func preconditionNotNil<T, R>(_ v: T?, _ msg: @autoclosure () -> String, _ body: (T) throws -> R) rethrows -> R { try body(preconditionNotNil(v, msg())) }
 
