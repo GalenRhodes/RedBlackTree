@@ -17,33 +17,22 @@
 
 import Foundation
 import CoreFoundation
+import ReadWriteLock
 
 @usableFromInline let ALL_NODES_REMOVED_NOTIFICATION: Notification.Name = Notification.Name("ALL_NODES_REMOVED_NOTIFICATION_NAME")
 @usableFromInline let NODE_REMOVED_NOTIFICATION:      Notification.Name = Notification.Name("NODE_REMOVED_NOTIFICATION_NAME")
 @usableFromInline let NODE_INSERTED_NOTIFICATION:     Notification.Name = Notification.Name("NODE_INSERTED_NOTIFICATION_NAME")
 
+@usableFromInline let NOTIFICATION_NODE_KEY: String = "NOTIFICATION_NODE_KEY_NAME"
+
 @usableFromInline protocol TreeIteratorOwner {
-    associatedtype E
+    associatedtype E where E: Hashable & Comparable
     associatedtype L where L: TreeListener, L.E == E
 
-    var notificationCenter: NotificationCenter { get }
-    var queue:              DispatchQueue { get }
-
     var treeRoot: Node<E>? { get }
+    var lock:     ReadWriteLock { get }
 
     func addTreeIteratorListener(_ listener: L)
 
     func removeTreeIteratorListener(_ listener: L)
-}
-
-extension TreeIteratorOwner {
-    @inlinable func addTreeIteratorListener(_ listener: L) {
-        notificationCenter.addObserver(forName: ALL_NODES_REMOVED_NOTIFICATION, object: listener, queue: nil) { notification in }
-        notificationCenter.addObserver(forName: NODE_REMOVED_NOTIFICATION, object: listener, queue: nil) { notification in }
-        notificationCenter.addObserver(forName: NODE_INSERTED_NOTIFICATION, object: listener, queue: nil) { notification in }
-    }
-
-    @inlinable func removeTreeIteratorListener(_ listener: L) {
-        notificationCenter.removeObserver(listener)
-    }
 }

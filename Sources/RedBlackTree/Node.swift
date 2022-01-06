@@ -55,7 +55,8 @@ public class Node<T> where T: Hashable & Comparable {
 }
 
 extension Node {
-    @inlinable subscript(index: Int) -> Node<T>? { find { index <=> $0.index } }
+
+    @inlinable func nodeWith(index: Int) -> Node<T>? { find { index <=> $0.index } }
 
     @inlinable subscript(item: T) -> Node<T>? { find { item <=> $0.item } }
 
@@ -211,6 +212,12 @@ extension Node {
         parentNode?.recount()
     }
 
+    @inlinable func _nextUpComingFrom(_ d: Side) -> Node<T>? {
+        guard let p = parentNode else { return nil }
+        guard self === (d.isRight ? p.rightNode : p.leftNode) else { return p }
+        return p._nextUpComingFrom(d)
+    }
+
     @inlinable static func <=> (l: Node<T>, r: Node<T>) -> Side {
         if l.parentNode === r { return l === r.leftNode ? .Left : .Right }
         if r.parentNode === l { return r === l.leftNode ? .Left : .Right }
@@ -218,16 +225,18 @@ extension Node {
     }
 
     //@f:0
-    @usableFromInline var farLeftNode:  Node<T> { leftNode?.farLeftNode ?? self   }
-    @usableFromInline var farRightNode: Node<T> { rightNode?.farRightNode ?? self }
-    @usableFromInline var root:         Node<T> { parentNode?.root ?? self        }
+    @usableFromInline var root:         Node<T>  { parentNode?.root ?? self                                                                         }
+    @usableFromInline var farLeftNode:  Node<T>  { leftNode?.farLeftNode ?? self                                                                    }
+    @usableFromInline var farRightNode: Node<T>  { rightNode?.farRightNode ?? self                                                                  }
+    @usableFromInline var nextNode:     Node<T>? { unwrap(rightNode, def: _nextUpComingFrom(.Right)) { (r: Node<T>) -> Node<T>? in r.farLeftNode  } }
+    @usableFromInline var previousNode: Node<T>? { unwrap(leftNode,  def: _nextUpComingFrom(.Left))  { (l: Node<T>) -> Node<T>? in l.farRightNode } }
 
-    @inlinable        var color:        Color   { get { Color.color(data) } set { data = ((data & countBits) | newValue.bit) } }
+    @inlinable        var color:        Color    { get { Color.color(data) } set { data = ((data & countBits) | newValue.bit) } }
 
-    @inlinable        var count:        Int     { get { Int(bitPattern: data & countBits) } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits)) }                                 }
-    @inlinable        var leftCount:    Int     { leftNode?.count ?? 0                                                                                                                                    }
-    @inlinable        var rightCount:   Int     { rightNode?.count ?? 0                                                                                                                                   }
-    @usableFromInline var index:        Int     { ifNil(parentNode) { () -> Int in leftCount } else: { (p: Node<T>) -> Int in (self === p.leftNode ? p.index - leftCount - 1 : p.index + leftCount + 1) } }
+    @inlinable        var count:        Int      { get { Int(bitPattern: data & countBits) } set { data = ((data & colorBit) | (UInt(bitPattern: newValue) & countBits)) }                                 }
+    @inlinable        var leftCount:    Int      { leftNode?.count ?? 0                                                                                                                                    }
+    @inlinable        var rightCount:   Int      { rightNode?.count ?? 0                                                                                                                                   }
+    @usableFromInline var index:        Int      { ifNil(parentNode) { () -> Int in leftCount } else: { (p: Node<T>) -> Int in (self === p.leftNode ? p.index - leftCount - 1 : p.index + leftCount + 1) } }
     //@f:1
 }
 

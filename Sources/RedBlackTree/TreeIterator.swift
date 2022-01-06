@@ -18,41 +18,67 @@
 import Foundation
 import CoreFoundation
 
-@usableFromInline class TreeIterator<O, E>: TreeListener, IteratorProtocol where O: TreeIteratorOwner, O.E == E {
+/// An iterator that is immune to changes in the tree.
+///
+@usableFromInline class TreeIterator<O, E>: TreeListener, IteratorProtocol where E: Hashable & Comparable, O: TreeIteratorOwner, O.E == E {
     @usableFromInline typealias Element = E
-    @usableFromInline typealias N = Node<E>
 
-    @usableFromInline var owner: O
-    @usableFromInline var stack: [N] = []
+    @usableFromInline var owner:     O
+    @usableFromInline var nextNode:  Node<E>? = nil
+    @usableFromInline var nextIndex: Int      = -1
 
+    /// Create a new iterator with the TreeMap or TreeSet that owns it.
+    ///
+    /// - Parameter owner: The TreeMap or TreeSet that owns it.
+    ///
     @usableFromInline init(owner: O) {
         self.owner = owner
-        spelunk(startingAt: owner.treeRoot as N?)
-    }
-}
-
-extension TreeIterator {
-    @inlinable func next() -> E? {
-        guard let n = stack.popLast() else { return nil }
-        spelunk(startingAt: n.rightNode)
-        return n.item
+        nextNode = (owner.treeRoot as Node<E>?)?.farLeftNode
     }
 
-    @inlinable func spelunk(startingAt node: N?) {
-        var _n = node
-        while let n = _n {
-            stack.append(n)
-            _n = n.leftNode
+    /// Get the item from the next node.  If there is no next node then nil is returned.
+    ///
+    /// - Returns: The item from the next node or nil if there is no next node.
+    ///
+    @usableFromInline func next() -> E? {
+        owner.lock.withReadLock {
+            guard let n = nextNode else {
+                nextIndex = -1
+                return nil
+            }
+            nextNode = n.nextNode
+            nextIndex = n.index + 1
+            return n.item
         }
     }
 
-    @inlinable func allRemoved() { stack.removeAll() }
-
-    @inlinable func nodeRemoved(node: N) {
-
+    /// If all the nodes got removed then there is no next node and this iterator is finished.
+    ///
+    @usableFromInline func allRemoved() {
+        owner.lock.withReadLock {
+            nextNode = nil
+            nextIndex = -1
+        }
     }
 
-    @inlinable func nodeInserted(node: N) {
+    /// If a new node is inserted then there is nothing for us to do.
+    ///
+    /// - Parameter node: The inserted node.
+    ///
+    @usableFromInline func nodeInserted(node: Node<E>) {
+        /* Nothing to do. */
+    }
 
+    /// If the node that was removed was our next node then attempt to find that node's next node using the index. We
+    /// can do this because if a node is removed then it's index is simply taken over by it's next node.
+    ///
+    /// - Parameter node: The node that was removed.
+    ///
+    @usableFromInline func nodeRemoved(node: Node<E>) {
+        owner.lock.withReadLock {
+            if node === nextNode {
+                nextNode = ((nextIndex < 0) ? nil : unwrap(owner.treeRoot as Node<E>?, def: nil, { (r: Node<E>) -> Node<E>? in r.nodeWith(index: nextIndex) }))
+            }
+        }
     }
 }

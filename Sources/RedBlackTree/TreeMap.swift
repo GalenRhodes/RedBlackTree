@@ -38,6 +38,8 @@ public class TreeMap<K, V>: TreeIteratorOwner, BidirectionalCollection, Expressi
     @usableFromInline lazy var queue: DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
 
     @usableFromInline var notificationCenter: NotificationCenter = NotificationCenter()
+    @usableFromInline var notificationNodes:  [String: Node<Item>] = [:]
+    @usableFromInline var notificationGroups: [String: DispatchGroup] = [:]
 
     /// The root of our tree.
     @usableFromInline var treeRoot: N? = nil
@@ -54,6 +56,56 @@ public class TreeMap<K, V>: TreeIteratorOwner, BidirectionalCollection, Expressi
         self.init()
         var c = try decoder.unkeyedContainer()
         while !c.isAtEnd { _insert(item: try c.decode(Item.self)) }
+    }
+
+    @inlinable func addTreeIteratorListener(_ listener: L) {
+        notificationCenter.addObserver(forName: ALL_NODES_REMOVED_NOTIFICATION, object: listener, queue: nil) { [weak self] (notification) in
+            guard let self = self,
+                  let obj = notification.object as? L,
+                  let ui = notification.userInfo,
+                  let key = ui[NOTIFICATION_NODE_KEY] as? String,
+                  let group = self.notificationGroups[key] else { return }
+
+            self.queue.async(group: group) { obj.allRemoved() }
+        }
+        notificationCenter.addObserver(forName: NODE_REMOVED_NOTIFICATION, object: listener, queue: nil) { [weak self] (notification) in
+            guard let self = self,
+                  let obj = notification.object as? L,
+                  let ui = notification.userInfo,
+                  let key = ui[NOTIFICATION_NODE_KEY] as? String,
+                  let node = self.notificationNodes[key],
+                  let group = self.notificationGroups[key] else { return }
+
+            self.queue.async(group: group) { obj.nodeRemoved(node: node) }
+        }
+        notificationCenter.addObserver(forName: NODE_INSERTED_NOTIFICATION, object: listener, queue: nil) { [weak self] (notification) in
+            guard let self = self,
+                  let obj = notification.object as? L,
+                  let ui = notification.userInfo,
+                  let key = ui[NOTIFICATION_NODE_KEY] as? String,
+                  let node = self.notificationNodes[key],
+                  let group = self.notificationGroups[key] else { return }
+
+            self.queue.async(group: group) { obj.nodeInserted(node: node) }
+        }
+    }
+
+    @inlinable func removeTreeIteratorListener(_ listener: L) {
+        notificationCenter.removeObserver(listener)
+    }
+
+    @usableFromInline func _broadcastNotification(name: Notification.Name, node: Node<Item>?) {
+        let key   = UUID().uuidString
+        let group = DispatchGroup()
+        var ui    = Dictionary<AnyHashable, Any>()
+
+        ui[NOTIFICATION_NODE_KEY] = key
+        notificationGroups[key] = group
+        if let n = node { notificationNodes[key] = n }
+        notificationCenter.post(name: name, object: self, userInfo: ui)
+        group.wait()
+        notificationGroups.removeValue(forKey: key)
+        notificationNodes.removeValue(forKey: key)
     }
 }
 
@@ -341,7 +393,7 @@ extension TreeMap {
     }
 
     @inlinable func _node(at i: Index) -> Node<Item> {
-        preconditionNotNil(preconditionNotNil(treeRoot, ERR_MSG_OUT_OF_BOUNDS)[i.index], ERR_MSG_OUT_OF_BOUNDS)
+        preconditionNotNil(preconditionNotNil(treeRoot, ERR_MSG_OUT_OF_BOUNDS).nodeWith(index: i.index), ERR_MSG_OUT_OF_BOUNDS)
     }
 
     @inlinable func _node(forKey k: K) -> Node<Item>? {

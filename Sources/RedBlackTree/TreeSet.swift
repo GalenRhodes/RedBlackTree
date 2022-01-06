@@ -36,10 +36,12 @@ public class TreeSet<Element>: TreeIteratorOwner, BidirectionalCollection, SetAl
     /// in half to do searches as long as you're not depending on the order.
     @usableFromInline lazy var queue: DispatchQueue = DispatchQueue(label: UUID().uuidString, qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem)
 
-    @usableFromInline var notificationCenter: NotificationCenter = NotificationCenter()
+    @usableFromInline var notificationCenter: NotificationCenter      = NotificationCenter()
+    @usableFromInline var notificationNodes:  [String: Node<Element>] = [:]
+    @usableFromInline var notificationGroups: [String: DispatchGroup] = [:]
 
     /// The root of our tree.
-    @usableFromInline var treeRoot: Node<Element>? = nil
+    @usableFromInline var treeRoot:           Node<Element>?          = nil
 
     //@f:0
     public let capacity:   Int   = Int.max
@@ -58,9 +60,55 @@ public class TreeSet<Element>: TreeIteratorOwner, BidirectionalCollection, SetAl
         while !c.isAtEnd { try _insert(c.decode(Element.self)) }
     }
 
-    @usableFromInline func addTreeIteratorListener(_ listener: Iterator) {}
+    @inlinable func addTreeIteratorListener(_ listener: L) {
+        notificationCenter.addObserver(forName: ALL_NODES_REMOVED_NOTIFICATION, object: listener, queue: nil) { [weak self] (notification) in
+            guard let self = self,
+                  let obj = notification.object as? L,
+                  let ui = notification.userInfo,
+                  let key = ui[NOTIFICATION_NODE_KEY] as? String,
+                  let group = self.notificationGroups[key] else { return }
 
-    @usableFromInline func removeTreeIteratorListener(_ listener: Iterator) {}
+            self.queue.async(group: group) { obj.allRemoved() }
+        }
+        notificationCenter.addObserver(forName: NODE_REMOVED_NOTIFICATION, object: listener, queue: nil) { [weak self] (notification) in
+            guard let self = self,
+                  let obj = notification.object as? L,
+                  let ui = notification.userInfo,
+                  let key = ui[NOTIFICATION_NODE_KEY] as? String,
+                  let node = self.notificationNodes[key],
+                  let group = self.notificationGroups[key] else { return }
+
+            self.queue.async(group: group) { obj.nodeRemoved(node: node) }
+        }
+        notificationCenter.addObserver(forName: NODE_INSERTED_NOTIFICATION, object: listener, queue: nil) { [weak self] (notification) in
+            guard let self = self,
+                  let obj = notification.object as? L,
+                  let ui = notification.userInfo,
+                  let key = ui[NOTIFICATION_NODE_KEY] as? String,
+                  let node = self.notificationNodes[key],
+                  let group = self.notificationGroups[key] else { return }
+
+            self.queue.async(group: group) { obj.nodeInserted(node: node) }
+        }
+    }
+
+    @inlinable func removeTreeIteratorListener(_ listener: L) {
+        notificationCenter.removeObserver(listener)
+    }
+
+    @usableFromInline func _broadcastNotification(name: Notification.Name, node: Node<Element>?) {
+        let key   = UUID().uuidString
+        let group = DispatchGroup()
+        var ui    = Dictionary<AnyHashable, Any>()
+
+        ui[NOTIFICATION_NODE_KEY] = key
+        notificationGroups[key] = group
+        if let n = node { notificationNodes[key] = n }
+        notificationCenter.post(name: name, object: self, userInfo: ui)
+        group.wait()
+        notificationGroups.removeValue(forKey: key)
+        notificationNodes.removeValue(forKey: key)
+    }
 }
 
 extension TreeSet {
@@ -199,10 +247,15 @@ extension TreeSet {
         @inlinable public func advanced(by n: Stride) -> Index { Index(index + n) }
     }
 
-    @frozen public struct Iterator: TreeListener, IteratorProtocol {
+    public class Iterator: TreeListener, IteratorProtocol {
         @usableFromInline let _iter: TreeIterator<TreeSet<Element>, Element>
 
-        @inlinable init(_ tree: TreeSet<Element>) { _iter = TreeIterator<TreeSet<Element>, Element>(owner: tree) }
+        @inlinable init(_ tree: TreeSet<Element>) {
+            _iter = TreeIterator<TreeSet<Element>, Element>(owner: tree)
+            tree.addTreeIteratorListener(self)
+        }
+
+        deinit { _iter.owner.removeTreeIteratorListener(self) }
 
         @inlinable public func next() -> Element? { _iter.next() }
 
@@ -287,7 +340,7 @@ extension TreeSet {
     }
 
     @inlinable func _nodeWith(index i: Index) -> Node<Element> {
-        preconditionNotNil(preconditionNotNil(treeRoot, ERR_MSG_OUT_OF_BOUNDS)[i.index], ERR_MSG_OUT_OF_BOUNDS)
+        preconditionNotNil(preconditionNotNil(treeRoot, ERR_MSG_OUT_OF_BOUNDS).nodeWith(index: i.index), ERR_MSG_OUT_OF_BOUNDS)
     }
 
     @inlinable func _trim(tree t: TreeSet<Element>) -> Node<Element>? {
